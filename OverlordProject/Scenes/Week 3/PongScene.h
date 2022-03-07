@@ -17,8 +17,20 @@ protected:
 	void OnGUI() override;
 
 private:
+	void Resart();
+
+	void VerticalHit(GameObject* pTriggerObject, GameObject* pOtherObject, PxTriggerAction action);
+	void HorizontalHit(GameObject* pTriggerObject, GameObject* pOtherObject, PxTriggerAction action);
+	void Score(GameObject* pTriggerObject, GameObject* pOtherObject, PxTriggerAction action);
+
 	GameObject* m_pPeddle1{};
 	GameObject* m_pPeddle2{};
+
+	GameObject* m_pTopBoundary{};
+	GameObject* m_pBottomBoundary{};
+
 	GameObject* m_pBall{};
+
+	XMFLOAT3 m_pBallVelocity{};
 
 };
