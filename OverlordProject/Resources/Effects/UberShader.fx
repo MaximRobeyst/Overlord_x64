@@ -288,24 +288,51 @@ struct VS_Output
 
 float3 CalculateSpecularBlinn(float3 viewDirection, float3 normal, float2 texCoord)
 {
-	return float3(0,0,0);
+	float3 halfVector = normalize(gLightDirection + viewDirection);
+	float specularStrength = dot(halfVector, normal);
+	
+	specularStrength = saturate(specularStrength);
+	specularStrength = pow(specularStrength, gShininess);
+	
+	float3 specColor = gColorSpecular.rgb * specularStrength;
+	
+	return specColor;
 }
 
 float3 CalculateSpecularPhong(float3 viewDirection, float3 normal, float2 texCoord)
 {
-	return float3(0,0,0);
+	float3 phongReflect = reflect(-gLightDirection, normal);
+	float cosa = saturate(dot(viewDirection, phongReflect));
+	
+	return gColorSpecular.rgb * pow(cosa, gShininess);
 }
 
 float3 CalculateSpecular(float3 viewDirection, float3 normal, float2 texCoord)
 {
+	// not finished
 	float3 specColor = float3(0,0,0);
+	if(gUseSpecularPhong)
+		specColor = CalculateSpecularPhong(viewDirection, normal, texCoord);
+	if(gUseSpecularBlinn)
+		specColor = CalculateSpecularBlinn(viewDirection, normal, texCoord);
 				
 	return specColor;
 }
 
 float3 CalculateNormal(float3 tangent, float3 normal, float2 texCoord)
 {
-	float3 newNormal = normal;
+	if(!gUseTextureNormal)
+		return normal;
+		
+	float3 binormal = normalize(cross(tangent, normal));
+	float3x3 localAxis = float3x3(tangent, binormal, normal);
+	
+	float3 sampledNormal = gTextureNormal.Sample(gTextureSampler, texCoord);
+	float3 newNormal = 2 * (sampledNormal) - 1;
+	if(gFlipGreenChannel)
+		newNormal.g *= -1;
+	
+	newNormal = normalize(mul(newNormal,localAxis));
 	
 	return newNormal;
 }
@@ -314,22 +341,44 @@ float3 CalculateDiffuse(float3 normal, float2 texCoord)
 {
 	float3 diffColor = gColorDiffuse;
 		
-	return diffColor;
+	if(gUseTextureDiffuse)
+		diffColor = gTextureDiffuse.Sample(gTextureSampler, texCoord) * diffColor;
+	
+	float intensity = saturate(dot(normal, -gLightDirection)) * 0.5 + 0.5;
+	intensity *= intensity;
+		
+	return diffColor * intensity;
 }
 
 float3 CalculateFresnelFalloff(float3 normal, float3 viewDirection, float3 environmentColor)
 {
-	return float3(0,0,0);
+	if(!gUseFresnelFalloff)
+		return environmentColor;
+	
+	float fresnel = (pow(1-saturate(abs(dot(normal, viewDirection))), gFresnelPower)) * gFresnelMultiplier;
+	float fresnelMask = pow((1-saturate(dot(float3(0,-1,0), normal))), gFresnelHardness);
+	
+	return fresnel * fresnelMask * gColorFresnel* environmentColor;
 }
 
 float3 CalculateEnvironment(float3 viewDirection, float3 normal)
 {
-	return float3(0,0,0);
+	if(!gUseEnvironmentMapping)
+		return float3(0,0,0);
+	
+	float3 samplePoint = reflect(viewDirection, normal);
+	float3 refractpoint = refract(viewDirection , normal, gRefractionIndex);
+	return (gCubeEnvironment.Sample(gTextureSampler, samplePoint) * gReflectionStrength) +
+	(gCubeEnvironment.Sample(gTextureSampler, refractpoint) * gReflectionStrength);
 }
 
 float CalculateOpacity(float2 texCoord)
 {
 	float opacity = gOpacityIntensity;
+	if(!gTextureOpacityIntensity)
+		return opacity;
+	
+	opacity = gTextureOpacity.Sample(gTextureSampler,texCoord);
 	
 	return opacity;
 }

@@ -1,5 +1,6 @@
 #pragma once
-#pragma once
+
+class DiffuseMaterial;
 class ModelTestScene final : public GameScene
 {
 public:
@@ -18,5 +19,6 @@ protected:
 	void OnGUI() override;
 
 private:
+	DiffuseMaterial* m_pColorMaterial;
 };
 
