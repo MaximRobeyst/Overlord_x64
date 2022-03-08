@@ -118,7 +118,14 @@ void PongScene::OnGUI()
 
 void PongScene::Resart()
 {
-	Initialize();
+	m_pPeddle1->GetTransform()->Translate(-5.f, 0.f, 0.f);
+	m_pPeddle2->GetTransform()->Translate(5, 0.f, 0.f);
+
+	m_pBallVelocity = XMFLOAT3{ 1.f, 1.f, 0.f };
+
+	m_pBall->GetTransform()->Translate(0.f, 0.f, 0.f);
+
+	//Initialize();
 }
 
 void PongScene::VerticalHit(GameObject* pTriggerObject, GameObject* pOtherObject, PxTriggerAction action)
@@ -151,7 +158,6 @@ void PongScene::Score(GameObject* pTriggerObject, GameObject* pOtherObject, PxTr
 
 	if (action == PxTriggerAction::ENTER)
 	{
-		Logger::LogInfo(L"Restart");
 		Resart();
 	}
 }
