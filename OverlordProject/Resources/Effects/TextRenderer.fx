@@ -54,32 +54,39 @@ VS_DATA MainVS(VS_DATA input)
 void CreateVertex(inout TriangleStream<GS_DATA> triStream, float3 pos, float4 col, float2 texCoord, int channel)
 {
 	//Create a new GS_DATA object
+	GS_DATA vertex = (GS_DATA)0;
 	//Fill in all the fields
+	vertex.Position = mul(float4(pos,1.0f), gTransform);
+	vertex.Color = col;
+	vertex.TexCoord = texCoord;
+	vertex.Channel = channel;
+	
 	//Append it to the TriangleStream
+    triStream.Append(vertex);
 }
 
 [maxvertexcount(4)]
 void MainGS(point VS_DATA vertex[1], inout TriangleStream<GS_DATA> triStream)
 {
-	//REMOVE THIS >
-	GS_DATA dummyData = (GS_DATA)0; //Just some dummy data
-	triStream.Append(dummyData); //The geometry shader needs to emit something, see what happens if it doesn't emit anything.
-	//< STOP REMOVING
-
 	//Create a Quad using the character information of the given vertex
 	//Note that the Vertex.CharSize is in screenspace, TextureCoordinates aren't ;) [Range 0 > 1]
-
+	
+	
 	//1. Vertex Left-Top
-	//CreateVertex(...);
+	CreateVertex(triStream, vertex[0].Position, vertex[0].Color, vertex[0].TexCoord, vertex[0].Channel);
 
 	//2. Vertex Right-Top
-	//...
+	float2 texCharSize = float2(vertex[0].CharSize.x / gTextureSize.x, vertex[0].CharSize.y / gTextureSize.y);
+	float2 thisTexCoords = vertex[0].TexCoord + float2(texCharSize.x,0);
+	CreateVertex(triStream, vertex[0].Position + float3(vertex[0].CharSize.x, 0, 0), vertex[0].Color, thisTexCoords, vertex[0].Channel);
 
 	//3. Vertex Left-Bottom
-	//...
+	thisTexCoords = vertex[0].TexCoord + float2(0,texCharSize.y);
+	CreateVertex(triStream, vertex[0].Position + float3(0, vertex[0].CharSize.y, 0), vertex[0].Color, thisTexCoords, vertex[0].Channel);
 
 	//4. Vertex Right-Bottom
-	//...
+	thisTexCoords = vertex[0].TexCoord + float2(texCharSize.x,texCharSize.y);
+	CreateVertex(triStream, vertex[0].Position + float3(vertex[0].CharSize.x, vertex[0].CharSize.y, 0), vertex[0].Color, thisTexCoords, vertex[0].Channel);
 }
 
 //PIXEL SHADER
@@ -87,10 +94,13 @@ void MainGS(point VS_DATA vertex[1], inout TriangleStream<GS_DATA> triStream)
 float4 MainPS(GS_DATA input) : SV_TARGET{
 
 	//Sample the texture and return the correct channel [Vertex.Channel]
+	float4 color = gSpriteTexture.Sample(samPoint, input.TexCoord);
 	//You can iterate a float4 just like an array, using the index operator
+	float value = color[input.Channel];
 	//Also, don't forget to colorize ;) [Vertex.Color]
+	float4 valueToReturn = value * input.Color;
 
-	return input.Color; //TEMP
+	return valueToReturn;
 }
 
 // Default Technique
