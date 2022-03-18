@@ -91,33 +91,70 @@ SpriteFont* SpriteFontLoader::LoadContent(const ContentLoadInfo& loadInfo)
 	//	>> page texture should be stored next to the .fnt file, pageName contains the name of the texture file
 	//	>> full texture path = asset parent_path of .fnt file (see loadInfo.assetFullPath > get parent_path) + pageName (filesystem::path::append)
 	//	>> Load the texture (ContentManager::Load<TextureData>) & Store [fontDesc.pTexture]
-	
-	//ContentManager::Load<TextureData>();
+	fontDesc.pTexture = ContentManager::Load<TextureData>(loadInfo.assetFullPath.parent_path().append(pageName));
 
 	//**********
 	// BLOCK 3 *
 	//**********
 	//Retrieve the blockId and blockSize
+	blockId = pReader->Read<uint8_t>();
+	blockSize = pReader->Read<int>();
+
 	//Retrieve Character Count (see documentation)
+	size_t wordCount = blockSize / sizeof(FontMetric);
+	//pReader->MoveBufferPosition(20);
 	//Create loop for Character Count, and:
-	//> Retrieve CharacterId (store Local) and cast to a 'wchar_t'
-	//> Create instance of FontMetric (struct)
-	//	> Set Character (CharacterId) [FontMetric::character]
-	//	> Retrieve Xposition (store Local)
-	//	> Retrieve Yposition (store Local)
-	//	> Retrieve & Set Width [FontMetric::width]
-	//	> Retrieve & Set Height [FontMetric::height]
-	//	> Retrieve & Set OffsetX [FontMetric::offsetX]
-	//	> Retrieve & Set OffsetY [FontMetric::offsetY]
-	//	> Retrieve & Set AdvanceX [FontMetric::advanceX]
-	//	> Retrieve & Set Page [FontMetric::page]
-	//	> Retrieve Channel (BITFIELD!!!) 
-	//		> See documentation for BitField meaning [FontMetrix::channel]
-	//	> Calculate Texture Coordinates using Xposition, Yposition, fontDesc.TextureWidth & fontDesc.TextureHeight [FontMetric::texCoord]
-	//
-	//> Insert new FontMetric to the metrics [font.metrics] map
-	//	> key = (wchar_t) charId
-	//	> value = new FontMetric
+	for (size_t i = 0; i <= wordCount; i++)
+	{
+		//> Retrieve CharacterId (store Local) and cast to a 'wchar_t'
+		wchar_t characterId =static_cast<wchar_t>(pReader->Read<uint32_t>());
+
+		//> Create instance of FontMetric (struct)
+		FontMetric fontMetric{};
+
+		//	> Set Character (CharacterId) [FontMetric::character]
+		fontMetric.character = characterId;
+
+		//	> Retrieve Xposition (store Local)
+		uint16_t x = pReader->Read<uint16_t>();
+		//	> Retrieve Yposition (store Local)
+		uint16_t y = pReader->Read<uint16_t>();
+
+		//	> Retrieve & Set Width [FontMetric::width]
+		fontMetric.width = pReader->Read<uint16_t>();
+		//	> Retrieve & Set Height [FontMetric::height]
+		fontMetric.height = pReader->Read<uint16_t>();
+		//	> Retrieve & Set OffsetX [FontMetric::offsetX
+		fontMetric.offsetX = pReader->Read<uint16_t>();
+		//	> Retrieve & Set OffsetY [FontMetric::offsetY]
+		fontMetric.offsetY = pReader->Read<uint16_t>();
+		//	> Retrieve & Set AdvanceX [FontMetric::advanceX]
+		fontMetric.advanceX = pReader->Read<uint16_t>();
+		//	> Retrieve & Set Page [FontMetric::page]
+		fontMetric.page = pReader->Read<char>();
+		//	> Retrieve Channel (BITFIELD!!!) 
+		//		> See documentation for BitField meaning [FontMetrix::channel]
+		fontMetric.channel = pReader->Read<char>();
+		fontMetric.channel -= 1;
+		if (fontMetric.channel == 2)
+			fontMetric.channel = 0;
+		else if (fontMetric.channel == 0)
+			fontMetric.channel = 2;
+		else if (fontMetric.channel == 3)
+			fontMetric.channel = 0;
+
+		//fontMetric.channel -= 1;
+		//	> Calculate Texture Coordinates using Xposition, Yposition, fontDesc.TextureWidth & fontDesc.TextureHeight [FontMetric::texCoord]
+		fontMetric.texCoord = XMFLOAT2{ 
+			(static_cast<float>(x) /  fontDesc.textureWidth) ,  (static_cast<float>(y) /  fontDesc.textureHeight)
+		};
+
+		//> Insert new FontMetric to the metrics [font.metrics] map
+		//	> key = (wchar_t) charId
+		//	> value = new FontMetric
+
+		fontDesc.metrics[characterId] = fontMetric;
+	}
 	//(loop restarts till all metrics are parsed)
 
 	//Done!

@@ -63,10 +63,51 @@ void CameraComponent::SetActive(bool active)
 	pScene->SetActiveCamera(active?this:nullptr); //Switch to default camera if active==false
 }
 
-GameObject* CameraComponent::Pick(CollisionGroup /*ignoreGroups*/) const
+GameObject* CameraComponent::Pick(CollisionGroup ignoreGroups) const
 {
+	auto mousePosition = GetScene()->GetSceneContext().pInput->GetMousePosition();
+	XMFLOAT4 nearPointVector
+	(
+		(mousePosition.x - (GetScene()->GetSceneContext().windowWidth / 2.f)) / (GetScene()->GetSceneContext().windowWidth / 2.f),
+		((GetScene()->GetSceneContext().windowHeight / 2.f) - mousePosition.y) / (GetScene()->GetSceneContext().windowHeight / 2.f),
+		0, 0
+	);
+	XMFLOAT4 farPointVector
+	(
+		(mousePosition.x - (GetScene()->GetSceneContext().windowWidth / 2.f)) / (GetScene()->GetSceneContext().windowWidth / 2.f),
+		((GetScene()->GetSceneContext().windowHeight / 2.f) - mousePosition.y) / (GetScene()->GetSceneContext().windowHeight / 2.f),
+		1, 0
+	);
+	XMFLOAT4 direction{};
+
+	auto nearPoint = XMLoadFloat4(&nearPointVector);
+	auto farPoint = XMLoadFloat4(&farPointVector);
+
+	auto directionToFar = XMVector3Normalize(farPoint - nearPoint);
+
+	auto viewProjectInv = XMLoadFloat4x4(&m_ViewProjectionInverse);
+
+	nearPoint = XMVector4Transform(nearPoint, viewProjectInv);
+	farPoint = XMVector4Transform(farPoint, viewProjectInv);
+
+	XMStoreFloat4(&nearPointVector, nearPoint);
+	XMStoreFloat4(&farPointVector, farPoint);
+	XMStoreFloat4(&direction, directionToFar);
+
+	PxVec3 rayStart{ nearPointVector.x, nearPointVector.y, nearPointVector.z };
+	PxVec3 rayDirection{ direction.x, direction.y, direction.z };
+
+	PxQueryFilterData filterData{};
+	filterData.data.word0 = ~UINT(ignoreGroups);
+
+	PxRaycastBuffer hit{};
+	if (GetScene()->GetPhysxProxy()->Raycast(rayStart, rayDirection, PX_MAX_F32, hit, PxHitFlag::eDEFAULT, filterData))
+	{
+	}
+
 	TODO_W5(L"Implement Picking Logic")
 	return nullptr;
+
 
 
 	//GetScene()->GetPhysxProxy()->Raycast()
