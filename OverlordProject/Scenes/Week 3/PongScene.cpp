@@ -135,7 +135,7 @@ void PongScene::VerticalHit(GameObject* pTriggerObject, GameObject* pOtherObject
 
 	if (action == PxTriggerAction::ENTER)
 	{
-		m_pBallVelocity.y *= -1;
+		m_pBallVelocity.y *= -1.f;
 	}
 }
 
@@ -146,7 +146,7 @@ void PongScene::HorizontalHit(GameObject* pTriggerObject, GameObject* pOtherObje
 
 	if (action == PxTriggerAction::ENTER)
 	{
-		m_pBallVelocity.x *= -1;
+		m_pBallVelocity.x = -1.f;
 	}
 }
 

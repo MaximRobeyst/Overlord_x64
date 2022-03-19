@@ -62,9 +62,9 @@ void CreateVertex(inout TriangleStream<GS_DATA> triStream, float3 pos, float4 co
 		//Do rotation calculations
 		float3x3 rotationMatrix = float3x3( float3(rotCosSin,0), float3(-rotCosSin.y, rotCosSin.x,0), float3(0,0,1));
 		
+		pos += float3(pivotOffset,0);
 		pos = mul(pos, rotationMatrix);
 		pos += float3(offset,0);
-		pos += float3(pivotOffset,0);
 		//Transform to origin
 		
 		
@@ -113,19 +113,19 @@ void MainGS(point VS_DATA vertex[1], inout TriangleStream<GS_DATA> triStream)
 
 	//VERTEX 1 [LT]
 	float3 cornerOffset = float3(gTextureSize.x * scale.x, gTextureSize.y * scale.y, 0);
-    CreateVertex(triStream, position + cornerOffset, float4(1, 1, 1, 1), float2(1,1), rotation, rotCosSin, offset, pivot); //Change the color data too!
+    CreateVertex(triStream, position + cornerOffset, vertex[0].Color, float2(1,1), rotation, rotCosSin, offset, pivot); //Change the color data too!
 
 	//VERTEX 2 [RT]
 	cornerOffset = float3(-gTextureSize.x * scale.x, gTextureSize.y * scale.y, 0);
-    CreateVertex(triStream, position + cornerOffset, float4(1, 1, 1, 1), float2(0,1), rotation, rotCosSin, offset, pivot); //Change the color data too!
+    CreateVertex(triStream, position + cornerOffset, vertex[0].Color, float2(0,1), rotation, rotCosSin, offset, pivot); //Change the color data too!
 
 	//VERTEX 3 [LB]
 	cornerOffset = float3(gTextureSize.x * scale.x, -gTextureSize.y * scale.y, 0);
-    CreateVertex(triStream, position + cornerOffset, float4(1, 1, 1, 1), float2(1,0), rotation, rotCosSin, offset, pivot); //Change the color data too!
+    CreateVertex(triStream, position + cornerOffset, vertex[0].Color, float2(1,0), rotation, rotCosSin, offset, pivot); //Change the color data too!
 
 	//VERTEX 4 [RB]
 	cornerOffset = float3(-gTextureSize.x * scale.x, -gTextureSize.y * scale.y, 0);
-    CreateVertex(triStream, position + cornerOffset, float4(1, 1, 1, 1), float2(0,0), rotation, rotCosSin, offset, pivot); //Change the color data too!
+    CreateVertex(triStream, position + cornerOffset, vertex[0].Color, float2(0,0), rotation, rotCosSin, offset, pivot); //Change the color data too!
 }
 
 //PIXEL SHADER

@@ -1,8 +1,8 @@
 #pragma once
-class SpriteTestScene final : public GameScene
+class SpriteTestScene : public GameScene
 {
 public:
-	SpriteTestScene() : GameScene(L"SpriteTestScene") {};
+	SpriteTestScene() :GameScene(L"SpriteTestScene") {}
 	~SpriteTestScene() override = default;
 
 	SpriteTestScene(const SpriteTestScene& other) = delete;
@@ -13,9 +13,11 @@ public:
 protected:
 	void Initialize() override;
 	void Update() override;
-	void Draw() override;
 	void OnGUI() override;
 
 private:
+	GameObject* m_pSprite{};
+	float m_TotalRotation{};
+	bool m_AutoRotate{};
 };
 
