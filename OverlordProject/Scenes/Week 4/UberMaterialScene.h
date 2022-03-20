@@ -20,5 +20,8 @@ protected:
 
 private:
 	UberMaterial* m_pUberMaterial;
+	TransformComponent* m_pTransform;
+	float m_Angle = 0.0f;
+	float m_Speed = 25.f;
 };
 
