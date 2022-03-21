@@ -65,44 +65,38 @@ void CameraComponent::SetActive(bool active)
 
 GameObject* CameraComponent::Pick(CollisionGroup ignoreGroups) const
 {
-	auto mousePosition = GetScene()->GetSceneContext().pInput->GetMousePosition();
-	XMFLOAT4 nearPointVector
-	(
-		(mousePosition.x - (GetScene()->GetSceneContext().windowWidth / 2.f)) / (GetScene()->GetSceneContext().windowWidth / 2.f),
-		((GetScene()->GetSceneContext().windowHeight / 2.f) - mousePosition.y) / (GetScene()->GetSceneContext().windowHeight / 2.f),
-		0, 0
-	);
-	XMFLOAT4 farPointVector
-	(
-		(mousePosition.x - (GetScene()->GetSceneContext().windowWidth / 2.f)) / (GetScene()->GetSceneContext().windowWidth / 2.f),
-		((GetScene()->GetSceneContext().windowHeight / 2.f) - mousePosition.y) / (GetScene()->GetSceneContext().windowHeight / 2.f),
-		1, 0
-	);
-	XMFLOAT4 direction{};
+	auto mousePosition = InputManager::GetMousePosition();
 
-	auto nearPoint = XMLoadFloat4(&nearPointVector);
-	auto farPoint = XMLoadFloat4(&farPointVector);
+	float halfWidth = GetScene()->GetSceneContext().windowWidth / 2.f;
+	float halfHeight = GetScene()->GetSceneContext().windowHeight / 2.f;
+	XMFLOAT2 ndcPosition
+	{
+		(mousePosition.x - halfWidth) / halfWidth,
+		-(mousePosition.y - halfHeight) / halfHeight
+	};
 
-	auto directionToFar = XMVector3Normalize(farPoint - nearPoint);
+	XMMATRIX viewProjInv = XMLoadFloat4x4(&m_ViewProjectionInverse);
 
-	auto viewProjectInv = XMLoadFloat4x4(&m_ViewProjectionInverse);
+	XMVECTOR XMnearPoint = XMVector3TransformCoord(XMVectorSet(ndcPosition.x, ndcPosition.y, 0, 0), viewProjInv);
+	XMVECTOR XMfarPoint = XMVector3TransformCoord(XMVectorSet(ndcPosition.x, ndcPosition.y, 1, 0), viewProjInv);
+	XMVECTOR XMdir = XMVector3Normalize(XMfarPoint - XMnearPoint);
 
-	nearPoint = XMVector4Transform(nearPoint, viewProjectInv);
-	farPoint = XMVector4Transform(farPoint, viewProjectInv);
+	XMFLOAT3 nearPoint;
+	XMFLOAT3 dir;
+	XMStoreFloat3(&nearPoint, XMnearPoint);
+	XMStoreFloat3(&dir, XMdir);
 
-	XMStoreFloat4(&nearPointVector, nearPoint);
-	XMStoreFloat4(&farPointVector, farPoint);
-	XMStoreFloat4(&direction, directionToFar);
-
-	PxVec3 rayStart{ nearPointVector.x, nearPointVector.y, nearPointVector.z };
-	PxVec3 rayDirection{ direction.x, direction.y, direction.z };
+	PxVec3 rayStart{ nearPoint.x, nearPoint.y, nearPoint.z };
+	PxVec3 rayDir{ dir.x, dir.y, dir.z };
 
 	PxQueryFilterData filterData{};
 	filterData.data.word0 = ~UINT(ignoreGroups);
 
 	PxRaycastBuffer hit{};
-	if (GetScene()->GetPhysxProxy()->Raycast(rayStart, rayDirection, PX_MAX_F32, hit, PxHitFlag::eDEFAULT, filterData))
+	if (GetScene()->GetPhysxProxy()->Raycast(rayStart, rayDir, PX_MAX_F32, hit, PxHitFlag::eDEFAULT, filterData))
 	{
+		auto actor = static_cast<RigidBodyComponent*>(hit.block.actor->userData);
+		return actor->GetGameObject();
 	}
 
 	TODO_W5(L"Implement Picking Logic")

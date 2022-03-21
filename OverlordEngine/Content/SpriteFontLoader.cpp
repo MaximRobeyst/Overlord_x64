@@ -122,7 +122,7 @@ SpriteFont* SpriteFontLoader::LoadContent(const ContentLoadInfo& loadInfo)
 
 		//	> Retrieve & Set Width [FontMetric::width]
 		fontMetric.width = pReader->Read<uint16_t>();
-		//	> Retrieve & Set Height [FontMetric::height]
+		//	> Retrieve & Set Height [FontMetric::height]wh
 		fontMetric.height = pReader->Read<uint16_t>();
 		//	> Retrieve & Set OffsetX [FontMetric::offsetX
 		fontMetric.offsetX = pReader->Read<uint16_t>();

@@ -25,7 +25,7 @@ void PickingScene::Initialize()
 
 void PickingScene::Update()
 {
-	if (InputManager::IsMouseButton(InputState::pressed, VK_RBUTTON))
+	if (InputManager::IsMouseButton(InputState::down, VK_RBUTTON))
 	{
 		if (const auto pPickedObject = m_SceneContext.pCamera->Pick())
 		{
