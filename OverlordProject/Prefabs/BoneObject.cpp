@@ -13,6 +13,18 @@ void BoneObject::AddBone(BoneObject* pBone)
 	this->AddChild(pBone);
 }
 
+void BoneObject::CalculateBindPose()
+{
+	auto matrix = XMLoadFloat4x4(&GetTransform()->GetWorld());
+	XMMatrixInverse(nullptr, matrix);
+	XMStoreFloat4x4(&m_BindPose, matrix);
+
+	for (auto p : this->GetChildren<BoneObject>())
+	{
+		p->CalculateBindPose();
+	}
+}
+
 void BoneObject::Initialize(const SceneContext&)
 {
 	GameObject* pEmpty = new GameObject();

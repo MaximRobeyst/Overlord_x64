@@ -29,5 +29,6 @@ private:
 
 
 	float m_Bone0Rotation[3] {0.0f, 0.0f, 0.0f};
+	float m_Bone1Rotation[3]{ 0.0f, 0.0f, 0.0f };
 };
 

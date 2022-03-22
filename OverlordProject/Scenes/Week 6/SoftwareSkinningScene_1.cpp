@@ -38,6 +38,10 @@ void SoftwareSkinningScene_1::OnGUI()
 
 	if (ImGui::DragFloat3("Bone 0 : ROT", m_Bone0Rotation, 1.f, 0.0f, 360.f))
 	{
-		m_pBone0->GetTransform()->Rotate(v[0], v[1], v[2], true);
+		m_pBone0->GetTransform()->Rotate(m_Bone0Rotation[0], m_Bone0Rotation[1], m_Bone0Rotation[2], true);
+	}
+	if (ImGui::DragFloat3("Bone 1 : ROT", m_Bone1Rotation, 1.f, 0.0f, 360.f))
+	{
+		m_pBone1->GetTransform()->Rotate(m_Bone1Rotation[0], m_Bone1Rotation[1], m_Bone1Rotation[2], true);
 	}
 }

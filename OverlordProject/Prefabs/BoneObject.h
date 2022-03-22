@@ -9,10 +9,11 @@ public:
 	BoneObject& operator= (const BoneObject & other) = delete;
 	BoneObject& operator= (BoneObject && other) noexcept = delete;
 
+	void AddBone(BoneObject* pBone);
 
 	//Part_2 [ADDED]
 	const XMFLOAT4X4& GetBindPose() const { return m_BindPose; }
-	void AddBone(BoneObject* pBone);
+	void CalculateBindPose();
 protected:
 	void Initialize(const SceneContext&) override;
 
