@@ -35,25 +35,33 @@ void SoftwareSkinningScene_2::Update()
 	
 	m_pBone0->GetTransform()->Rotate(0.f, 0.f, m_BoneRotation, true);
 	m_pBone1->GetTransform()->Rotate(0.f, 0.f, -m_BoneRotation * 2.f, true);
-
+	
 	m_pBone0->GetBindPose();
-
 
 	m_pMeshDrawer->RemoveTriangles();
 
+	XMVECTOR originalVector{};
+	XMVECTOR transformedVector{};
+	XMMATRIX poseMatrix = XMLoadFloat4x4(&m_pBone0->GetBindPose());
+	XMMATRIX worldMatrix = XMLoadFloat4x4(&m_pBone0->GetTransform()->GetWorld());
+	XMMATRIX boneTransform = XMMatrixMultiply(poseMatrix, worldMatrix);
 	for (int i{}; i < m_SkinnedVertices.size(); i += 4)
 	{
 		QuadPosNormCol quad{};
 
+		if (i == 24)
+		{
+			worldMatrix = XMLoadFloat4x4(&m_pBone1->GetTransform()->GetWorld());
+			poseMatrix = XMMatrixInverse(nullptr, XMLoadFloat4x4(&m_pBone1->GetBindPose()));
+			boneTransform = XMMatrixMultiply(poseMatrix, worldMatrix);
+		}
+
 		for (int j{}; j < 4; ++j)
 		{
-			XMVECTOR originalVector = XMLoadFloat3(&m_SkinnedVertices[i + j].originalVertex.Position);
-			XMMATRIX matrix = XMLoadFloat4x4(&m_pBone0->GetBindPose());
+			originalVector = XMLoadFloat3(&m_SkinnedVertices[i + j].originalVertex.Position);
 			
-			XMVector3TransformCoord(originalVector, matrix);
-
-
-			//XMVector3TransformCoord()
+			transformedVector = XMVector3TransformCoord(originalVector, boneTransform);
+			XMStoreFloat3(&m_SkinnedVertices[i + j].tranformedVertex.Position, transformedVector);
 		}
 
 
