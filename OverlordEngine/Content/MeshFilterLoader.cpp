@@ -154,17 +154,42 @@ MeshFilter* MeshFilterLoader::LoadContent(const ContentLoadInfo& loadInfo)
 			break;
 		case MeshDataType::BLENDINDICES:
 		{
-			TODO_W7(L"Add BLENDINDICES information");
+			//TODO_W7(L"Add BLENDINDICES information");
+			pMesh->SetElement(ILSemantic::BLENDINDICES);
+			for (unsigned int i = 0; i < vertexCount; ++i)
+			{
+				XMFLOAT4 blendIndices{};
+				blendIndices.x = pReader->Read<float>();
+				blendIndices.y = pReader->Read<float>();
+				blendIndices.z = pReader->Read<float>();
+				blendIndices.w = pReader->Read<float>();
+				pMesh->m_BlendIndices.push_back(blendIndices);
+			}
 		}
 		break;
 		case MeshDataType::BLENDWEIGHTS:
 		{
-			TODO_W7(L"Add BLENDWEIGHTS information");
+			//TODO_W7(L"Add BLENDWEIGHTS information");
+			pMesh->SetElement(ILSemantic::BLENDWEIGHTS);
+			for (unsigned int i = 0; i < vertexCount; ++i)
+			{
+				XMFLOAT4 blendWeights{};
+				blendWeights.x = pReader->Read<float>();
+				blendWeights.y = pReader->Read<float>();
+				blendWeights.z = pReader->Read<float>();
+				blendWeights.w = pReader->Read<float>();
+				pMesh->m_BlendIndices.push_back(blendWeights);
+			}
 		}
 		break;
 		case MeshDataType::ANIMATIONCLIPS:
 		{
-			TODO_W7(L"Add ANIMATIONCLIPS information");
+			//TODO_W7(L"Add ANIMATIONCLIPS information");
+			pMesh.m_clip = pReader->Read<int>();
+
+
+			AnimationClip clip{};
+
 		}
 		break;
 		case MeshDataType::SKELETON:

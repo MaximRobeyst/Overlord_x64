@@ -128,7 +128,7 @@ void PongScene::Resart()
 	//Initialize();
 }
 
-void PongScene::VerticalHit(GameObject* pTriggerObject, GameObject* pOtherObject, PxTriggerAction action)
+void PongScene::VerticalHit(GameObject* /*pTriggerObject*/, GameObject* pOtherObject, PxTriggerAction action)
 {
 	if (pOtherObject != m_pBall)
 		return;
@@ -139,7 +139,7 @@ void PongScene::VerticalHit(GameObject* pTriggerObject, GameObject* pOtherObject
 	}
 }
 
-void PongScene::HorizontalHit(GameObject* pTriggerObject, GameObject* pOtherObject, PxTriggerAction action)
+void PongScene::HorizontalHit(GameObject* /*pTriggerObject*/, GameObject* pOtherObject, PxTriggerAction action)
 {
 	if (pOtherObject != m_pBall)
 		return;
@@ -150,7 +150,7 @@ void PongScene::HorizontalHit(GameObject* pTriggerObject, GameObject* pOtherObje
 	}
 }
 
-void PongScene::Score(GameObject* pTriggerObject, GameObject* pOtherObject, PxTriggerAction action)
+void PongScene::Score(GameObject* /*pTriggerObject*/, GameObject* pOtherObject, PxTriggerAction action)
 {
 
 	if (pOtherObject != m_pBall)

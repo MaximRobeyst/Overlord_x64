@@ -104,7 +104,7 @@ SpriteFont* SpriteFontLoader::LoadContent(const ContentLoadInfo& loadInfo)
 	size_t wordCount = blockSize / sizeof(FontMetric);
 	//pReader->MoveBufferPosition(20);
 	//Create loop for Character Count, and:
-	for (size_t i = 0; i <= wordCount; i++)
+	for (size_t i = 0; i <= wordCount; ++i)
 	{
 		//> Retrieve CharacterId (store Local) and cast to a 'wchar_t'
 		wchar_t characterId =static_cast<wchar_t>(pReader->Read<uint32_t>());

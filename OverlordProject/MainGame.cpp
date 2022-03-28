@@ -5,8 +5,8 @@
 //#define W3
 //#define W4
 //#define W5
-#define W6
-//#define W7
+//#define W6
+#define W7
 
 /*MILESTONE Content*/
 //#define MILESTONE_1
@@ -39,7 +39,7 @@
 #endif
 
 #ifdef W7
-//#include "Scenes/Week 7/HardwareSkinningScene.h"
+#include "Scenes/Week 7/HardwareSkinningScene.h"
 #endif
 
 #ifdef MILESTONE_1
@@ -96,7 +96,7 @@ void MainGame::Initialize()
 #endif
 
 #ifdef W7
-	//SceneManager::Get()->AddGameScene(new HardwareSkinningScene());
+	SceneManager::Get()->AddGameScene(new HardwareSkinningScene());
 #endif
 
 
