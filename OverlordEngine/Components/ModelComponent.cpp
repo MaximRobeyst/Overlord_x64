@@ -90,7 +90,6 @@ void ModelComponent::SetMaterial(BaseMaterial* pMaterial)
 
 	if(m_IsInitialized && GetScene())
 	{
-
 		m_pMeshFilter->BuildVertexBuffer(GetScene()->GetSceneContext(), m_pMaterial);
 
 		m_MaterialChanged = false;
