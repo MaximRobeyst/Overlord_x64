@@ -4,13 +4,17 @@
 /*LAB Content*/
 //#define W3
 //#define W4
-//#define W5
+#define W5
 //#define W6
-#define W7
+//#define W7
 
 /*MILESTONE Content*/
 //#define MILESTONE_1
 //#define MILESTONE_2
+
+/*Exam Conent*/
+#define EXAM
+
 
 #pragma region Lab/Milestone Includes
 #ifdef W3
@@ -57,6 +61,10 @@
 #include "Scenes/Week 6/SoftwareSkinningScene_3.h"
 #include "Scenes/Week 7/HardwareSkinningScene.h"
 #endif
+
+#ifdef EXAM
+#include "Scenes/Exam/CrashScene.h"
+#endif // EXAM
 #pragma endregion
 
 //Game is preparing
@@ -115,6 +123,11 @@ void MainGame::Initialize()
 	SceneManager::Get()->AddGameScene(new SoftwareSkinningScene_3());
 	SceneManager::Get()->AddGameScene(new HardwareSkinningScene());
 #endif
+
+#ifdef EXAM
+	SceneManager::Get()->AddGameScene(new CrashScene());
+#endif // EXAM
+
 }
 
 LRESULT MainGame::WindowProcedureHook(HWND /*hWnd*/, UINT message, WPARAM wParam, LPARAM lParam)

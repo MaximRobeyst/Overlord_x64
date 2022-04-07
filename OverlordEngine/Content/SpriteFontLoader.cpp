@@ -135,13 +135,10 @@ SpriteFont* SpriteFontLoader::LoadContent(const ContentLoadInfo& loadInfo)
 		//	> Retrieve Channel (BITFIELD!!!) 
 		//		> See documentation for BitField meaning [FontMetrix::channel]
 		fontMetric.channel = pReader->Read<char>();
-		fontMetric.channel -= 1;
-		if (fontMetric.channel == 2)
-			fontMetric.channel = 0;
-		else if (fontMetric.channel == 0)
-			fontMetric.channel = 2;
-		else if (fontMetric.channel == 3)
-			fontMetric.channel = 0;
+		if (fontMetric.channel & 1) { fontMetric.channel = 2; }
+		else if (fontMetric.channel & 2) { fontMetric.channel = 1; }
+		else if (fontMetric.channel & 4) { fontMetric.channel = 0; }
+		else if (fontMetric.channel & 8) { fontMetric.channel = 3; }
 
 		//fontMetric.channel -= 1;
 		//	> Calculate Texture Coordinates using Xposition, Yposition, fontDesc.TextureWidth & fontDesc.TextureHeight [FontMetric::texCoord]

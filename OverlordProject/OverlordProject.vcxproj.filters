@@ -28,6 +28,10 @@
     <ClCompile Include="Scenes\Week 6\SoftwareSkinningScene_3.cpp" />
     <ClCompile Include="Scenes\Week 7\HardwareSkinningScene.cpp" />
     <ClCompile Include="Materials\DiffuseMaterial_Skinned.cpp" />
+    <ClCompile Include="Scenes\Exam\CrashScene.cpp" />
+    <ClCompile Include="Prefabs\ExamPrefabs\Crash.cpp" />
+    <ClCompile Include="Prefabs\ExamPrefabs\WumpaFruit.cpp" />
+    <ClCompile Include="Prefabs\ExamPrefabs\Crate.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainGame.h" />
@@ -56,5 +60,9 @@
     <ClInclude Include="Scenes\Week 6\SoftwareSkinningScene_3.h" />
     <ClInclude Include="Scenes\Week 7\HardwareSkinningScene.h" />
     <ClInclude Include="Materials\DiffuseMaterial_Skinned.h" />
+    <ClInclude Include="Scenes\Exam\CrashScene.h" />
+    <ClInclude Include="Prefabs\ExamPrefabs\Crash.h" />
+    <ClInclude Include="Prefabs\ExamPrefabs\WumpaFruit.h" />
+    <ClInclude Include="Prefabs\ExamPrefabs\Crate.h" />
   </ItemGroup>
 </Project>

@@ -93,6 +93,9 @@
     <PostBuildEvent />
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Prefabs\ExamPrefabs\Crate.cpp" />
+    <ClCompile Include="Prefabs\ExamPrefabs\Crash.cpp" />
+    <ClCompile Include="Scenes\Exam\CrashScene.cpp" />
     <ClCompile Include="Materials\DiffuseMaterial_Skinned.cpp" />
     <ClCompile Include="Prefabs\BoneObject.cpp" />
     <ClCompile Include="Materials\DiffuseMaterial.cpp" />
@@ -135,6 +138,7 @@
     <ClCompile Include="Scenes\Week 3\TestScene.cpp" />
     <ClCompile Include="Scenes\Week 4\UberMaterialScene.cpp" />
     <ClCompile Include="Materials\UberMaterial.cpp" />
+    <ClCompile Include="Prefabs\ExamPrefabs\WumpaFruit.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OverlordEngine\OverlordEngine.vcxproj">
@@ -142,6 +146,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Prefabs\ExamPrefabs\Crate.h" />
+    <ClInclude Include="Prefabs\ExamPrefabs\Crash.h" />
+    <ClInclude Include="Scenes\Exam\CrashScene.h" />
     <ClInclude Include="Materials\DiffuseMaterial_Skinned.h" />
     <ClInclude Include="Prefabs\BoneObject.h" />
     <ClInclude Include="Materials\DiffuseMaterial.h" />
@@ -168,6 +175,7 @@
     <ClInclude Include="Scenes\Week 3\TestScene.h" />
     <ClInclude Include="Scenes\Week 4\UberMaterialScene.h" />
     <ClInclude Include="Materials\UberMaterial.h" />
+    <ClInclude Include="Prefabs\ExamPrefabs\WumpaFruit.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

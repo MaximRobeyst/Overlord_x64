@@ -1,14 +1,68 @@
 #include "stdafx.h"
-#include "Character.h"
+#include "Crash.h"
 
-Character::Character(const CharacterDesc& characterDesc) :
+#include <Materials/DiffuseMaterial.h>
+
+Crash::Crash(const CharacterDesc& characterDesc) :
 	m_CharacterDesc{ characterDesc },
 	m_MoveAcceleration(characterDesc.maxMoveSpeed / characterDesc.moveAccelerationTime),
 	m_FallAcceleration(characterDesc.maxFallSpeed / characterDesc.fallAccelerationTime)
-{}
-
-void Character::Initialize(const SceneContext& /*sceneContext*/)
 {
+}
+
+void Crash::DrawImGui()
+{
+	if (ImGui::CollapsingHeader("Character"))
+	{
+		ImGui::Text(std::format("Move Speed: {:0.1f} m/s", m_MoveSpeed).c_str());
+		ImGui::Text(std::format("Fall Speed: {:0.1f} m/s", m_TotalVelocity.y).c_str());
+
+		ImGui::Text(std::format("Move Acceleration: {:0.1f} m/s2", m_MoveAcceleration).c_str());
+		ImGui::Text(std::format("Fall Acceleration: {:0.1f} m/s2", m_FallAcceleration).c_str());
+
+		const float jumpMaxTime = m_CharacterDesc.JumpSpeed / m_FallAcceleration;
+		const float jumpMaxHeight = (m_CharacterDesc.JumpSpeed * jumpMaxTime) - (0.5f * (m_FallAcceleration * powf(jumpMaxTime, 2)));
+		ImGui::Text(std::format("Jump Height: {:0.1f} m", jumpMaxHeight).c_str());
+
+		ImGui::Dummy({ 0.f,5.f });
+		if (ImGui::DragFloat("Max Move Speed (m/s)", &m_CharacterDesc.maxMoveSpeed, 0.1f, 0.f, 0.f, "%.1f") ||
+			ImGui::DragFloat("Move Acceleration Time (s)", &m_CharacterDesc.moveAccelerationTime, 0.1f, 0.f, 0.f, "%.1f"))
+		{
+			m_MoveAcceleration = m_CharacterDesc.maxMoveSpeed / m_CharacterDesc.moveAccelerationTime;
+		}
+
+		ImGui::Dummy({ 0.f,5.f });
+		if (ImGui::DragFloat("Max Fall Speed (m/s)", &m_CharacterDesc.maxFallSpeed, 0.1f, 0.f, 0.f, "%.1f") ||
+			ImGui::DragFloat("Fall Acceleration Time (s)", &m_CharacterDesc.fallAccelerationTime, 0.1f, 0.f, 0.f, "%.1f"))
+		{
+			m_FallAcceleration = m_CharacterDesc.maxFallSpeed / m_CharacterDesc.fallAccelerationTime;
+		}
+
+		ImGui::Dummy({ 0.f,5.f });
+		ImGui::DragFloat("Jump Speed", &m_CharacterDesc.JumpSpeed, 0.1f, 0.f, 0.f, "%.1f");
+		ImGui::DragFloat("Rotation Speed (deg/s)", &m_CharacterDesc.rotationSpeed, 0.1f, 0.f, 0.f, "%.1f");
+
+		bool isActive = m_pCameraComponent->IsActive();
+		if (ImGui::Checkbox("Character Camera", &isActive))
+		{
+			m_pCameraComponent->SetActive(isActive);
+		}
+	}
+}
+
+void Crash::AddWumpaFruit()
+{
+	++m_WumpaNumber;
+}
+
+int Crash::GetWumpaFruit() const
+{
+	return m_WumpaNumber;
+}
+
+void Crash::Initialize(const SceneContext& /*sceneContext*/)
+{
+	SetTag(L"Player");
 	//Controller
 	m_pControllerComponent = AddComponent(new ControllerComponent(m_CharacterDesc.controller));
 
@@ -17,10 +71,20 @@ void Character::Initialize(const SceneContext& /*sceneContext*/)
 	m_pCameraComponent = pCamera->GetComponent<CameraComponent>();
 	m_pCameraComponent->SetActive(true); //Uncomment to make this camera the active camera
 
-	pCamera->GetTransform()->Translate(0.f, m_CharacterDesc.controller.height * .5f, 0.f);
+	// Model
+
+	const auto pModelObject = AddChild(new GameObject());
+	auto model = pModelObject->AddComponent(new ModelComponent(L"Models/Crash.ovm"));
+	auto material = MaterialManager::Get()->CreateMaterial<DiffuseMaterial>();
+	material->SetDiffuseTexture(L"Textures/tex_crash.png");
+	model->SetMaterial(material);
+
+	pModelObject->GetTransform()->Rotate(XMFLOAT3{ 0, 180.0f, 0.0f });
+	pModelObject->GetTransform()->Translate(XMFLOAT3{ 0.0f, -m_CharacterDesc.controller.height * .5f, 0.f });
+	pCamera->GetTransform()->Translate(0.f, m_CharacterDesc.controller.height * .5f, -5.f);
 }
 
-void Character::Update(const SceneContext& sceneContext)
+void Crash::Update(const SceneContext& sceneContext)
 {
 	if (m_pCameraComponent->IsActive())
 	{
@@ -37,7 +101,7 @@ void Character::Update(const SceneContext& sceneContext)
 			move.y = 1;
 		if (sceneContext.pInput->IsActionTriggered((int)m_CharacterDesc.actionId_MoveBackward))
 			move.y = -1;
-		
+
 		//move.x should contain a 1 (Right) or -1 (Left) based on the active input (check corresponding actionId in m_CharacterDesc)
 		//Optional: if move.x is near zero (abs(move.x) < epsilon), you could use the Left ThumbStickPosition.x for movement
 		if (sceneContext.pInput->IsActionTriggered((int)m_CharacterDesc.actionId_MoveRight))
@@ -98,15 +162,15 @@ void Character::Update(const SceneContext& sceneContext)
 		//Else (character is not moving, or stopped moving)
 		else
 		{
-				//Decrease the current MoveSpeed with the current Acceleration (m_MoveSpeed)
-				m_MoveSpeed -= m_MoveAcceleration * sceneContext.pGameTime->GetElapsed(); ;
+			//Decrease the current MoveSpeed with the current Acceleration (m_MoveSpeed)
+			m_MoveSpeed -= m_MoveAcceleration * sceneContext.pGameTime->GetElapsed(); ;
 
-				//Make sure the current MoveSpeed doesn't get smaller than zero
-				MathHelper::Clamp(m_MoveSpeed, m_CharacterDesc.maxMoveSpeed, 0.f);
+			//Make sure the current MoveSpeed doesn't get smaller than zero
+			MathHelper::Clamp(m_MoveSpeed, m_CharacterDesc.maxMoveSpeed, 0.f);
 		}
 		//Now we can calculate the Horizontal Velocity which should be stored in m_TotalVelocity.xz
 		//Calculate the horizontal velocity (m_CurrentDirection * MoveSpeed)
-		XMVECTOR newVelocity = XMLoadFloat3( & m_CurrentDirection );
+		XMVECTOR newVelocity = XMLoadFloat3(&m_CurrentDirection);
 		XMFLOAT3 velocity{};
 		XMStoreFloat3(&velocity, newVelocity * m_MoveSpeed * sceneContext.pGameTime->GetElapsed());
 
@@ -117,8 +181,11 @@ void Character::Update(const SceneContext& sceneContext)
 
 		//## Vertical Movement (Jump/Fall)
 		//If the Controller Component is NOT grounded (= freefall)
-		bool Grounded = m_pControllerComponent->GetCollisionFlags() == PxControllerCollisionFlag::eCOLLISION_DOWN;
-		if (!Grounded/* && !sceneContext.pInput->IsActionTriggered((int)m_CharacterDesc.actionId_Jump)*/)
+		if (m_pControllerComponent->GetCollisionFlags() == PxControllerCollisionFlag::eCOLLISION_DOWN)
+			m_Grounded = true;
+		else
+			m_Grounded = false;
+		if (!m_Grounded)
 		{
 
 			//Decrease the y component of m_TotalVelocity with a fraction (ElapsedTime) of the Fall Acceleration (m_FallAcceleration)
@@ -134,6 +201,7 @@ void Character::Update(const SceneContext& sceneContext)
 		{
 			//Set m_TotalVelocity.y equal to CharacterDesc::JumpSpeed
 			m_TotalVelocity.y = m_CharacterDesc.JumpSpeed * sceneContext.pGameTime->GetElapsed();
+			m_Grounded = false;
 		}
 		//Else (=Character is grounded, no input pressed)
 		else
@@ -151,45 +219,5 @@ void Character::Update(const SceneContext& sceneContext)
 
 		//The above is a simple implementation of Movement Dynamics, adjust the code to further improve the movement logic and behaviour.
 		//Also, it can be usefull to use a seperate RayCast to check if the character is grounded (more responsive)
-	}
-}
-
-void Character::DrawImGui()
-{
-	if (ImGui::CollapsingHeader("Character"))
-	{
-		ImGui::Text(std::format("Move Speed: {:0.1f} m/s", m_MoveSpeed).c_str());
-		ImGui::Text(std::format("Fall Speed: {:0.1f} m/s", m_TotalVelocity.y).c_str());
-
-		ImGui::Text(std::format("Move Acceleration: {:0.1f} m/s2", m_MoveAcceleration).c_str());
-		ImGui::Text(std::format("Fall Acceleration: {:0.1f} m/s2", m_FallAcceleration).c_str());
-
-		const float jumpMaxTime = m_CharacterDesc.JumpSpeed / m_FallAcceleration;
-		const float jumpMaxHeight = (m_CharacterDesc.JumpSpeed * jumpMaxTime) - (0.5f * (m_FallAcceleration * powf(jumpMaxTime, 2)));
-		ImGui::Text(std::format("Jump Height: {:0.1f} m", jumpMaxHeight).c_str());
-
-		ImGui::Dummy({ 0.f,5.f });
-		if (ImGui::DragFloat("Max Move Speed (m/s)", &m_CharacterDesc.maxMoveSpeed, 0.1f, 0.f, 0.f, "%.1f") ||
-			ImGui::DragFloat("Move Acceleration Time (s)", &m_CharacterDesc.moveAccelerationTime, 0.1f, 0.f, 0.f, "%.1f"))
-		{
-			m_MoveAcceleration = m_CharacterDesc.maxMoveSpeed / m_CharacterDesc.moveAccelerationTime;
-		}
-
-		ImGui::Dummy({ 0.f,5.f });
-		if (ImGui::DragFloat("Max Fall Speed (m/s)", &m_CharacterDesc.maxFallSpeed, 0.1f, 0.f, 0.f, "%.1f") ||
-			ImGui::DragFloat("Fall Acceleration Time (s)", &m_CharacterDesc.fallAccelerationTime, 0.1f, 0.f, 0.f, "%.1f"))
-		{
-			m_FallAcceleration = m_CharacterDesc.maxFallSpeed / m_CharacterDesc.fallAccelerationTime;
-		}
-
-		ImGui::Dummy({ 0.f,5.f });
-		ImGui::DragFloat("Jump Speed", &m_CharacterDesc.JumpSpeed, 0.1f, 0.f, 0.f, "%.1f");
-		ImGui::DragFloat("Rotation Speed (deg/s)", &m_CharacterDesc.rotationSpeed, 0.1f, 0.f, 0.f, "%.1f");
-
-		bool isActive = m_pCameraComponent->IsActive();
-		if(ImGui::Checkbox("Character Camera", &isActive))
-		{
-			m_pCameraComponent->SetActive(isActive);
-		}
 	}
 }
