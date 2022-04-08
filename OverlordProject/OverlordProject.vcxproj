@@ -93,6 +93,7 @@
     <PostBuildEvent />
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Prefabs\ExamPrefabs\PathCamera.cpp" />
     <ClCompile Include="Prefabs\ExamPrefabs\Crate.cpp" />
     <ClCompile Include="Prefabs\ExamPrefabs\Crash.cpp" />
     <ClCompile Include="Scenes\Exam\CrashScene.cpp" />
@@ -146,6 +147,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Prefabs\ExamPrefabs\PathCamera.h" />
     <ClInclude Include="Prefabs\ExamPrefabs\Crate.h" />
     <ClInclude Include="Prefabs\ExamPrefabs\Crash.h" />
     <ClInclude Include="Scenes\Exam\CrashScene.h" />

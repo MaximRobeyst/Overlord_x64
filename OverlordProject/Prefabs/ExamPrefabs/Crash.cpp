@@ -2,6 +2,7 @@
 #include "Crash.h"
 
 #include <Materials/DiffuseMaterial.h>
+#include <Prefabs/ExamPrefabs/PathCamera.h>
 
 Crash::Crash(const CrashDesc& characterDesc) :
 	m_CharacterDesc{ characterDesc },
@@ -81,7 +82,14 @@ void Crash::Initialize(const SceneContext& /*sceneContext*/)
 	m_pControllerComponent = AddComponent(new ControllerComponent(m_CharacterDesc.controller));
 
 	//Camera
-	const auto pCamera = AddChild(new FixedCamera());
+	const auto pCamera = AddChild(
+		new PathCamera(GetTransform(),
+			std::vector<XMFLOAT3>{
+				XMFLOAT3(0.f, m_CharacterDesc.controller.height * 1.25f, -5.f),
+				XMFLOAT3{ 0.f, m_CharacterDesc.controller.height * 1.25f, 10.f },
+				XMFLOAT3{0.f, m_CharacterDesc.controller.height * 1.25f - 3, 25.f}
+			}
+	));
 	m_pCameraComponent = pCamera->GetComponent<CameraComponent>();
 	m_pCameraComponent->SetActive(true); //Uncomment to make this camera the active camera
 
@@ -151,8 +159,8 @@ void Crash::Update(const SceneContext& sceneContext)
 		//CAMERA ROTATION
 
 		//Adjust the TotalYaw (m_TotalYaw) & TotalPitch (m_TotalPitch) based on the local 'look' variable
-		m_TotalYaw += look.y * sceneContext.pGameTime->GetElapsed() * m_CharacterDesc.rotationSpeed;
-		m_TotalPitch += look.x * sceneContext.pGameTime->GetElapsed() * m_CharacterDesc.rotationSpeed;
+		//m_TotalYaw += look.y * sceneContext.pGameTime->GetElapsed() * m_CharacterDesc.rotationSpeed;
+		//m_TotalPitch += look.x * sceneContext.pGameTime->GetElapsed() * m_CharacterDesc.rotationSpeed;
 		//Make sure this calculated on a framerate independent way and uses CharacterDesc::rotationSpeed.
 		//Rotate this character based on the TotalPitch (X) and TotalYaw (Y)
 		MathHelper::Clamp(m_TotalYaw, 90.f, -90.f);

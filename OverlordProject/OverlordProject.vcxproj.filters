@@ -32,6 +32,7 @@
     <ClCompile Include="Prefabs\ExamPrefabs\Crash.cpp" />
     <ClCompile Include="Prefabs\ExamPrefabs\WumpaFruit.cpp" />
     <ClCompile Include="Prefabs\ExamPrefabs\Crate.cpp" />
+    <ClCompile Include="Prefabs\ExamPrefabs\PathCamera.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainGame.h" />
@@ -64,5 +65,6 @@
     <ClInclude Include="Prefabs\ExamPrefabs\Crash.h" />
     <ClInclude Include="Prefabs\ExamPrefabs\WumpaFruit.h" />
     <ClInclude Include="Prefabs\ExamPrefabs\Crate.h" />
+    <ClInclude Include="Prefabs\ExamPrefabs\PathCamera.h" />
   </ItemGroup>
 </Project>
