@@ -3,11 +3,13 @@
 
 #include <Materials/DiffuseMaterial.h>
 
-Crash::Crash(const CharacterDesc& characterDesc) :
+Crash::Crash(const CrashDesc& characterDesc) :
 	m_CharacterDesc{ characterDesc },
 	m_MoveAcceleration(characterDesc.maxMoveSpeed / characterDesc.moveAccelerationTime),
 	m_FallAcceleration(characterDesc.maxFallSpeed / characterDesc.fallAccelerationTime)
 {
+	m_CharacterDesc.controller.stepOffset = 0.1f;
+	m_pFont = ContentManager::Load<SpriteFont>(L"SpriteFonts/CrashALike_32.fnt");
 }
 
 void Crash::DrawImGui()
@@ -55,9 +57,21 @@ void Crash::AddWumpaFruit()
 	++m_WumpaNumber;
 }
 
-int Crash::GetWumpaFruit() const
+void Crash::PlayerDeath()
 {
-	return m_WumpaNumber;
+	--m_Lives;
+
+	if (m_Lives < 0)
+		Logger::LogInfo(L"Game Over!");
+
+	GetTransform()->Translate(m_RespawnPosition);
+	m_TotalVelocity.y = 0.f;
+}
+
+void Crash::SetCheckpoint(XMFLOAT3 position)
+{
+	m_RespawnPosition = position;
+	m_RespawnPosition.y += 0.5f;
 }
 
 void Crash::Initialize(const SceneContext& /*sceneContext*/)
@@ -81,7 +95,9 @@ void Crash::Initialize(const SceneContext& /*sceneContext*/)
 
 	pModelObject->GetTransform()->Rotate(XMFLOAT3{ 0, 180.0f, 0.0f });
 	pModelObject->GetTransform()->Translate(XMFLOAT3{ 0.0f, -m_CharacterDesc.controller.height * .5f, 0.f });
-	pCamera->GetTransform()->Translate(0.f, m_CharacterDesc.controller.height * .5f, -5.f);
+	pCamera->GetTransform()->Translate(0.f, m_CharacterDesc.controller.height * 1.25f, -5.f);
+
+	SetCheckpoint(GetTransform()->GetPosition());
 }
 
 void Crash::Update(const SceneContext& sceneContext)
@@ -119,6 +135,8 @@ void Crash::Update(const SceneContext& sceneContext)
 			look.x = (float)InputManager::GetMouseMovement().x;
 			look.y = (float)InputManager::GetMouseMovement().y;
 		}
+
+		if (sceneContext.pInput->IsActionTriggered((int)m_CharacterDesc.actionId_Attack)) Attack();
 
 		//************************
 		//GATHERING TRANSFORM INFO
@@ -181,10 +199,7 @@ void Crash::Update(const SceneContext& sceneContext)
 
 		//## Vertical Movement (Jump/Fall)
 		//If the Controller Component is NOT grounded (= freefall)
-		if (m_pControllerComponent->GetCollisionFlags() == PxControllerCollisionFlag::eCOLLISION_DOWN)
-			m_Grounded = true;
-		else
-			m_Grounded = false;
+		m_Grounded = m_pControllerComponent->GetCollisionFlags() == PxControllerCollisionFlag::eCOLLISION_DOWN;
 		if (!m_Grounded)
 		{
 
@@ -195,6 +210,9 @@ void Crash::Update(const SceneContext& sceneContext)
 			{
 				m_TotalVelocity.y = -m_CharacterDesc.maxFallSpeed;
 			}
+
+			if (m_pControllerComponent->GetCollisionFlags() == PxControllerCollisionFlag::eCOLLISION_DOWN)
+				m_Grounded = true;
 		}
 		//Else If the jump action is triggered
 		else if (sceneContext.pInput->IsActionTriggered((int)m_CharacterDesc.actionId_Jump))
@@ -220,4 +238,15 @@ void Crash::Update(const SceneContext& sceneContext)
 		//The above is a simple implementation of Movement Dynamics, adjust the code to further improve the movement logic and behaviour.
 		//Also, it can be usefull to use a seperate RayCast to check if the character is grounded (more responsive)
 	}
+}
+
+void Crash::Draw(const SceneContext& sceneContext)
+{
+	TextRenderer::Get()->DrawText(m_pFont, std::to_wstring(m_WumpaNumber), XMFLOAT2{ 50.f, 50.f }, XMFLOAT4{ Colors::Orange });
+	TextRenderer::Get()->DrawText(m_pFont, std::to_wstring(m_Lives), XMFLOAT2{ sceneContext.windowWidth - 50.f, 50.f }, XMFLOAT4{ Colors::Orange });
+}
+
+void Crash::Attack()
+{
+	Logger::LogInfo(L"Player is attacking");
 }
