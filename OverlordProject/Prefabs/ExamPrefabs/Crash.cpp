@@ -11,6 +11,7 @@ Crash::Crash(const CrashDesc& characterDesc) :
 {
 	m_CharacterDesc.controller.stepOffset = 0.1f;
 	m_pFont = ContentManager::Load<SpriteFont>(L"SpriteFonts/CrashALike_32.fnt");
+
 }
 
 void Crash::DrawImGui()
@@ -45,10 +46,10 @@ void Crash::DrawImGui()
 		ImGui::DragFloat("Jump Speed", &m_CharacterDesc.JumpSpeed, 0.1f, 0.f, 0.f, "%.1f");
 		ImGui::DragFloat("Rotation Speed (deg/s)", &m_CharacterDesc.rotationSpeed, 0.1f, 0.f, 0.f, "%.1f");
 
-		bool isActive = m_pCameraComponent->IsActive();
+		bool isActive = m_Active;
 		if (ImGui::Checkbox("Character Camera", &isActive))
 		{
-			m_pCameraComponent->SetActive(isActive);
+			m_Active = isActive;
 		}
 	}
 }
@@ -75,42 +76,47 @@ void Crash::SetCheckpoint(XMFLOAT3 position)
 	m_RespawnPosition.y += 0.5f;
 }
 
-void Crash::Initialize(const SceneContext& /*sceneContext*/)
+void Crash::Jump(const SceneContext& sceneContext)
+{
+	//Set m_TotalVelocity.y equal to CharacterDesc::JumpSpeed
+
+	m_TotalVelocity.y = m_CharacterDesc.JumpSpeed * sceneContext.pGameTime->GetElapsed();
+	m_Grounded = false;
+}
+
+void Crash::Initialize(const SceneContext& sceneContext)
 {
 	SetTag(L"Player");
 	//Controller
 	m_pControllerComponent = AddComponent(new ControllerComponent(m_CharacterDesc.controller));
 
 	//Camera
-	const auto pCamera = AddChild(
-		new PathCamera(GetTransform(),
-			std::vector<XMFLOAT3>{
-				XMFLOAT3(0.f, m_CharacterDesc.controller.height * 1.25f, -5.f),
-				XMFLOAT3{ 0.f, m_CharacterDesc.controller.height * 1.25f, 10.f },
-				XMFLOAT3{0.f, m_CharacterDesc.controller.height * 1.25f - 3, 25.f}
-			}
-	));
-	m_pCameraComponent = pCamera->GetComponent<CameraComponent>();
-	m_pCameraComponent->SetActive(true); //Uncomment to make this camera the active camera
+	
+	//m_pCameraComponent = pCamera->GetComponent<CameraComponent>();
+	//m_pCameraComponent->SetActive(true); //Uncomment to make this camera the active camera
 
 	// Model
 
-	const auto pModelObject = AddChild(new GameObject());
-	auto model = pModelObject->AddComponent(new ModelComponent(L"Models/Crash.ovm"));
+	m_pModel = AddChild(new GameObject());
+	auto model = m_pModel->AddComponent(new ModelComponent(L"Models/Crash.ovm"));
 	auto material = MaterialManager::Get()->CreateMaterial<DiffuseMaterial>();
 	material->SetDiffuseTexture(L"Textures/tex_crash.png");
 	model->SetMaterial(material);
 
-	pModelObject->GetTransform()->Rotate(XMFLOAT3{ 0, 180.0f, 0.0f });
-	pModelObject->GetTransform()->Translate(XMFLOAT3{ 0.0f, -m_CharacterDesc.controller.height * .5f, 0.f });
-	pCamera->GetTransform()->Translate(0.f, m_CharacterDesc.controller.height * 1.25f, -5.f);
+	m_pModel->GetTransform()->Rotate(XMFLOAT3{ 0, 180.0f, 0.0f });
+	m_pModel->GetTransform()->Translate(XMFLOAT3{ 0.0f, -m_CharacterDesc.controller.height * .5f, 0.f });
+	//pCamera->GetTransform()->Translate(0.f, m_CharacterDesc.controller.height * 1.25f, -5.f);
+
+	m_pSprite = AddChild(new GameObject());
+	m_pSprite->AddComponent(new SpriteComponent(L"Textures/LifeSprite.png", { 0.5, 0.5f }));
+	m_pSprite->GetTransform()->Translate(sceneContext.windowWidth - 150.f, 0.f, 0.f);
 
 	SetCheckpoint(GetTransform()->GetPosition());
 }
 
 void Crash::Update(const SceneContext& sceneContext)
 {
-	if (m_pCameraComponent->IsActive())
+	if (m_Active)
 	{
 		//constexpr float epsilon{ 0.01f }; //Constant that can be used to compare if a float is near zero
 
@@ -144,7 +150,7 @@ void Crash::Update(const SceneContext& sceneContext)
 			look.y = (float)InputManager::GetMouseMovement().y;
 		}
 
-		if (sceneContext.pInput->IsActionTriggered((int)m_CharacterDesc.actionId_Attack)) Attack();
+		if (sceneContext.pInput->IsActionTriggered((int)m_CharacterDesc.actionId_Attack)) Attack(sceneContext);
 
 		//************************
 		//GATHERING TRANSFORM INFO
@@ -178,12 +184,17 @@ void Crash::Update(const SceneContext& sceneContext)
 			//Calculate & Store the current direction (m_CurrentDirection) >> based on the forward/right vectors and the pressed input
 			XMVECTOR newDirection = (forward * move.y) + (right * move.x);
 
+
 			XMStoreFloat3(&m_CurrentDirection, newDirection);
 			//Increase the current MoveSpeed with the current Acceleration (m_MoveSpeed)
 			m_MoveSpeed += m_MoveAcceleration * sceneContext.pGameTime->GetElapsed();
 
 			//Make sure the current MoveSpeed stays below the maximum MoveSpeed (CharacterDesc::maxMoveSpeed) 
 			MathHelper::Clamp(m_MoveSpeed, m_CharacterDesc.maxMoveSpeed, 0.f);
+
+			//float angle{};
+			//XMStoreFloat(&angle, XMVector3AngleBetweenNormals(-XMLoadFloat3(&m_pModel->GetTransform()->GetForward()), XMVector3Normalize(newDirection)));
+			//m_pModel->GetTransform()->Rotate(0, angle, 0, false);
 		}
 		//Else (character is not moving, or stopped moving)
 		else
@@ -193,6 +204,7 @@ void Crash::Update(const SceneContext& sceneContext)
 
 			//Make sure the current MoveSpeed doesn't get smaller than zero
 			MathHelper::Clamp(m_MoveSpeed, m_CharacterDesc.maxMoveSpeed, 0.f);
+			//m_pModel->GetTransform()->Rotate(0, 0.0f, 0);
 		}
 		//Now we can calculate the Horizontal Velocity which should be stored in m_TotalVelocity.xz
 		//Calculate the horizontal velocity (m_CurrentDirection * MoveSpeed)
@@ -208,9 +220,8 @@ void Crash::Update(const SceneContext& sceneContext)
 		//## Vertical Movement (Jump/Fall)
 		//If the Controller Component is NOT grounded (= freefall)
 		m_Grounded = m_pControllerComponent->GetCollisionFlags() == PxControllerCollisionFlag::eCOLLISION_DOWN;
-		if (!m_Grounded)
+		if (!m_Grounded && !sceneContext.pInput->IsActionTriggered((int)m_CharacterDesc.actionId_Jump))
 		{
-
 			//Decrease the y component of m_TotalVelocity with a fraction (ElapsedTime) of the Fall Acceleration (m_FallAcceleration)
 			m_TotalVelocity.y -= m_FallAcceleration * (sceneContext.pGameTime->GetElapsed() * sceneContext.pGameTime->GetElapsed());
 			//Make sure that the minimum speed stays above -CharacterDesc::maxFallSpeed (negative!)
@@ -223,11 +234,13 @@ void Crash::Update(const SceneContext& sceneContext)
 				m_Grounded = true;
 		}
 		//Else If the jump action is triggered
-		else if (sceneContext.pInput->IsActionTriggered((int)m_CharacterDesc.actionId_Jump))
+		else if (sceneContext.pInput->IsActionTriggered((int)m_CharacterDesc.actionId_Jump) && m_Grounded)
 		{
 			//Set m_TotalVelocity.y equal to CharacterDesc::JumpSpeed
-			m_TotalVelocity.y = m_CharacterDesc.JumpSpeed * sceneContext.pGameTime->GetElapsed();
-			m_Grounded = false;
+			//m_TotalVelocity.y = m_CharacterDesc.JumpSpeed * sceneContext.pGameTime->GetElapsed();
+			//m_Grounded = false;
+
+			Jump(sceneContext);
 		}
 		//Else (=Character is grounded, no input pressed)
 		else
@@ -254,7 +267,10 @@ void Crash::Draw(const SceneContext& sceneContext)
 	TextRenderer::Get()->DrawText(m_pFont, std::to_wstring(m_Lives), XMFLOAT2{ sceneContext.windowWidth - 50.f, 50.f }, XMFLOAT4{ Colors::Orange });
 }
 
-void Crash::Attack()
+void Crash::Attack(const SceneContext& /*sceneContext*/)
 {
 	Logger::LogInfo(L"Player is attacking");
+
+
+	//SceneManager::Get()->GetActiveScene()
 }

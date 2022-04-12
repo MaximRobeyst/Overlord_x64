@@ -1,6 +1,7 @@
 #pragma once
 
 class Crash;
+class PathCamera;
 class CrashScene : public GameScene
 {
 public:
@@ -29,6 +30,7 @@ private:
 	};
 
 	Crash* m_pCrash{nullptr};
+	PathCamera* m_pCamera{nullptr};
 	SpriteFont* m_pFont{};
 };
 

@@ -2,7 +2,14 @@
 class Crate : public GameObject
 {
 public:
-	Crate();
+	enum class CrateType
+	{
+		Defaut_Crate,
+		PowerUp_Crate,
+		Jump_Crate
+	};
+
+	Crate(const XMFLOAT3& position, CrateType cratetype = CrateType::Defaut_Crate);
 	~Crate() override = default;
 
 	Crate(const Crate & other) = delete;
@@ -12,5 +19,16 @@ public:
 
 protected:
 	void Initialize(const SceneContext&) override;
+	void Update(const SceneContext&) override;
+
+private:
+	XMFLOAT3 m_Position{};
+
+	CrateType m_CrateType{ CrateType::Defaut_Crate };
+
+	int m_Lives{ 6 };
+	bool m_Hit{ false };
+
+	void OnBoxJump(GameObject* pTriggerObject, GameObject* pOtherObject, PxTriggerAction action);
 };
 

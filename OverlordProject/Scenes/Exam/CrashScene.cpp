@@ -8,6 +8,8 @@
 #include <Prefabs/ExamPrefabs/Crash.h>
 #include <Prefabs/ExamPrefabs/WumpaFruit.h>
 #include <Prefabs/ExamPrefabs/Crate.h>
+#include <Prefabs/ExamPrefabs/PathCamera.h>
+
 #include <Materials/ColorMaterial.h>
 
 CrashScene::~CrashScene()
@@ -22,6 +24,7 @@ void CrashScene::Initialize()
 	const auto pDefaultMaterial = PxGetPhysics().createMaterial(0.5f, 0.5f, 0.5f);
 	//GameSceneExt::CreatePhysXGroundPlane(*this, pDefaultMaterial);
 
+
 	//Character
 	CrashDesc characterDesc{ pDefaultMaterial, 0.25f, 1.0f };
 	characterDesc.actionId_MoveForward = CharacterMoveForward;
@@ -34,15 +37,31 @@ void CrashScene::Initialize()
 	m_pCrash = AddChild(new Crash(characterDesc));
 	m_pCrash->GetTransform()->Translate(0.f, 5.f, 0.f);
 
+
+	m_pCamera = AddChild( 
+		new PathCamera(m_pCrash->GetTransform(),
+			std::vector<XMFLOAT3>{
+			XMFLOAT3(0.f, characterDesc.controller.height * 1.25f, -5.5f),
+			XMFLOAT3{ 0.f, characterDesc.controller.height * 1.25f, 10.f },
+			XMFLOAT3{ 0.f, characterDesc.controller.height * 1.25f - 3, 25.f },
+			XMFLOAT3{ 0.f, characterDesc.controller.height * 1.25f - 3, 50.f },
+			XMFLOAT3{ 0.f, characterDesc.controller.height * 1.25f , 65.f },
+			XMFLOAT3{ 0.f, characterDesc.controller.height * 1.25f , 85.f }
+	}
+	));
+
+	auto cameraComponent = m_pCamera->GetComponent<CameraComponent>();
+	cameraComponent->SetActive(true); //Uncomment to make this camera the active camera
+
 	for (int i = 0; i < 20; ++i)
 	{
 		AddChild(new WumpaFruit(XMFLOAT3{ 0.f, .5f, 1.f + 10.f * i}));
 	}
-	auto pCrate = AddChild(new Crate());
-	pCrate->GetTransform()->Translate(-1.0f, 0.f, 2.0f);
+	auto pCrate = AddChild(new Crate(XMFLOAT3{ -1.0f, 0.f, 2.0f }));
 
-	pCrate = AddChild(new Crate());
-	pCrate->GetTransform()->Translate(-1.0f, 0.f, 5.0f);
+	pCrate = AddChild(new Crate(XMFLOAT3{ -1.0f, 0.f, 5.0f }));
+	
+	pCrate = AddChild(new Crate(XMFLOAT3{ 1.0f, 0.f, 3.5f }, Crate::CrateType::PowerUp_Crate));
 
 	m_pFont = ContentManager::Load<SpriteFont>(L"SpriteFonts/CrashALike_32.fnt");
 
@@ -93,6 +112,7 @@ void CrashScene::Update()
 void CrashScene::OnGUI()
 {
 	m_pCrash->DrawImGui();
+	m_pCamera->DrawImGui();
 }
 
 void CrashScene::Killzone(GameObject*, GameObject* pOtherObject, PxTriggerAction action)

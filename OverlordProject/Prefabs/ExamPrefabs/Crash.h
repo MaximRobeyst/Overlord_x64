@@ -54,16 +54,19 @@ public:
 	void PlayerDeath();
 	void SetCheckpoint(XMFLOAT3 position);
 
+	void Jump(const SceneContext& sceneContext);
+
 protected:
 	void Initialize(const SceneContext&) override;
 	void Update(const SceneContext&) override;
 	void Draw(const SceneContext&) override;
 
 private:
-	void Attack();
+	void Attack(const SceneContext& sceneContext);
 
 	int m_WumpaNumber{};
 	bool m_Grounded{ false };
+	bool m_Active{ true };
 
 	int m_Lives{ 4 };
 	XMFLOAT3 m_RespawnPosition;
@@ -72,6 +75,8 @@ private:
 	ControllerComponent* m_pControllerComponent{};
 
 	SpriteFont* m_pFont{};
+	GameObject* m_pSprite{};
+	GameObject* m_pModel{};
 
 	CrashDesc m_CharacterDesc;
 	float m_TotalPitch{}, m_TotalYaw{}; //Total camera Pitch(X) and Yaw(Y) rotation

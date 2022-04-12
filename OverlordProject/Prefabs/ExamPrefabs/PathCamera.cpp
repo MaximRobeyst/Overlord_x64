@@ -1,9 +1,10 @@
 #include "stdafx.h"
 #include "PathCamera.h"
 
-PathCamera::PathCamera(TransformComponent* pFollowTarget, const std::vector<XMFLOAT3>& path)
+PathCamera::PathCamera(TransformComponent* pFollowTarget, const std::vector<XMFLOAT3>& path, const XMFLOAT3& offset)
 	: m_pFollowTarget{pFollowTarget}
 	, m_Path{path}
+	, m_Offset{offset}
 {
 	m_pCamera = new CameraComponent();
 	AddComponent(m_pCamera);
@@ -11,26 +12,49 @@ PathCamera::PathCamera(TransformComponent* pFollowTarget, const std::vector<XMFL
 	GetTransform()->Translate(path[0]);
 }
 
+void PathCamera::DrawImGui()
+{
+	bool active = m_pCamera->IsActive();
+	if (ImGui::Checkbox("Camera Active", &active))
+	{
+		m_pCamera->SetActive(active);
+	}
+
+}
+
 void PathCamera::Initialize(const SceneContext& /*sceneContext*/)
 {
 }
 
-void PathCamera::Update(const SceneContext& sceneContext)
+void PathCamera::Update(const SceneContext& /*sceneContext*/)
 {
-	XMVECTOR v1 = XMLoadFloat3(&GetTransform()->GetPosition());
+	XMVECTOR targetPosition = XMLoadFloat3(&m_pFollowTarget->GetPosition());
+	XMVECTOR offset = XMLoadFloat3(&m_Offset);
+	XMVECTOR v1 = XMLoadFloat3(&m_Path[m_CurrentIndex - 1]);
 	XMVECTOR v2 = XMLoadFloat3(&m_Path[m_CurrentIndex]);
+	
+	targetPosition = targetPosition + offset;
+	
+	float length{};
+	float distancePlayer{};
+	float percentage{};
+	XMStoreFloat(&length, XMVector3LengthSq(v2 - v1));
+	XMStoreFloat(&distancePlayer, XMVector3LengthSq(v1 - targetPosition));
 
-	auto target = XMVectorLerp(v1, v2, sceneContext.pGameTime->GetElapsed());
+	percentage = distancePlayer / length;
+	auto newPosition = XMVectorLerp(v1, v2, percentage);
 
-	float length;
-	XMStoreFloat(&length, XMVector2LengthSq(v2 - target));
+	if (percentage >= 1.0f)
+		++m_CurrentIndex %= m_Path.size();
+	else if (percentage <= 0.0001f)
+		--m_CurrentIndex;
+	
+	GetTransform()->Translate(newPosition);
+	
+	
+	MathHelper::Clamp<int>(m_CurrentIndex, (int)m_Path.size() - 1, 1);
 
-	GetTransform()->Translate(target);
-
-	if (length < 0.2f * 0.2f)
-		++m_CurrentIndex;
-
-	MathHelper::Clamp<int>(m_CurrentIndex, (int)m_Path.size() - 1, 0);
+	auto target = XMVectorLerp(v1, v2, m_Percentage);
 }
 
 void PathCamera::Draw(const SceneContext& /*sceneContext*/)
