@@ -6,7 +6,7 @@ public:
 	WumpaFruit(XMFLOAT3 position);
 	~WumpaFruit() override = default;
 
-	WumpaFruit(const WumpaFruit & other) = delete;
+	WumpaFruit(const WumpaFruit& other) = delete;
 	WumpaFruit(WumpaFruit && other) noexcept = delete;
 	WumpaFruit& operator=(const WumpaFruit & other) = delete;
 	WumpaFruit& operator=(WumpaFruit && other) noexcept = delete;

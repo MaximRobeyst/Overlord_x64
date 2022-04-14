@@ -41,27 +41,28 @@ void CrashScene::Initialize()
 	m_pCamera = AddChild( 
 		new PathCamera(m_pCrash->GetTransform(),
 			std::vector<XMFLOAT3>{
-			XMFLOAT3(0.f, characterDesc.controller.height * 1.25f, -5.5f),
-			XMFLOAT3{ 0.f, characterDesc.controller.height * 1.25f, 10.f },
-			XMFLOAT3{ 0.f, characterDesc.controller.height * 1.25f - 3, 25.f },
-			XMFLOAT3{ 0.f, characterDesc.controller.height * 1.25f - 3, 50.f },
-			XMFLOAT3{ 0.f, characterDesc.controller.height * 1.25f , 65.f },
-			XMFLOAT3{ 0.f, characterDesc.controller.height * 1.25f , 85.f }
-	}
+			XMFLOAT3(0.f,  1.25f, -5.5f),
+			XMFLOAT3{ 0.f, 1.25f, 10.f },
+			XMFLOAT3{ 0.f, -2.5f, 25.f },
+			XMFLOAT3{ 0.f, -1.75f, 37.5f },
+			XMFLOAT3{ 0.f, -1.75f, 50.f },
+			XMFLOAT3{ 0.f, 2.f , 65.f },
+			XMFLOAT3{ 0.f, 1.25f , 100.f }
+		}, XMFLOAT3{0.f, 1.f, -2.5f}
 	));
 
 	auto cameraComponent = m_pCamera->GetComponent<CameraComponent>();
 	cameraComponent->SetActive(true); //Uncomment to make this camera the active camera
 
-	for (int i = 0; i < 20; ++i)
-	{
-		AddChild(new WumpaFruit(XMFLOAT3{ 0.f, .5f, 1.f + 10.f * i}));
-	}
+	//for (int i = 0; i < 20; ++i)
+	//{
+	//	AddChild(new WumpaFruit(XMFLOAT3{ 0.f, .5f, 1.f + 10.f * i}));
+	//}
 	auto pCrate = AddChild(new Crate(XMFLOAT3{ -1.0f, 0.f, 2.0f }));
 
 	pCrate = AddChild(new Crate(XMFLOAT3{ -1.0f, 0.f, 5.0f }));
 	
-	pCrate = AddChild(new Crate(XMFLOAT3{ 1.0f, 0.f, 3.5f }, Crate::CrateType::PowerUp_Crate));
+	pCrate = AddChild(new Crate(XMFLOAT3{ 1.0f, 0.f, 3.5f }, Crate::CrateType::PowerUp_Crate, 1));
 
 	m_pFont = ContentManager::Load<SpriteFont>(L"SpriteFonts/CrashALike_32.fnt");
 

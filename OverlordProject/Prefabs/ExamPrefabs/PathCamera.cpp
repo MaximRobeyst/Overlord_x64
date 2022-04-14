@@ -14,11 +14,33 @@ PathCamera::PathCamera(TransformComponent* pFollowTarget, const std::vector<XMFL
 
 void PathCamera::DrawImGui()
 {
-	bool active = m_pCamera->IsActive();
-	if (ImGui::Checkbox("Camera Active", &active))
+	if (ImGui::CollapsingHeader("Path Camera"))
 	{
-		m_pCamera->SetActive(active);
+		bool active = m_pCamera->IsActive();
+		if (ImGui::Checkbox("Camera Active", &active))
+		{
+			m_pCamera->SetActive(active);
+		}
+		float offset[3]{ m_Offset.x, m_Offset.y, m_Offset.z };
+		if (ImGui::DragFloat3("offset", offset))
+		{
+			m_Offset.x = offset[0];
+			m_Offset.y = offset[1];
+			m_Offset.z = offset[2];
+		}
+
+		ImGui::Text("Path");
+		ImGui::Text( ("Current point " + std::to_string(m_CurrentIndex)).c_str() );
+		for (int i = 0; i < m_Path.size(); ++i)
+		{
+			float point[3] = { m_Path[i].x, m_Path[i].y, m_Path[i].z };
+			if (ImGui::InputFloat3(("Path " + std::to_string(i)).c_str(), point))
+			{
+				m_Path[i] = XMFLOAT3{ point[0], point[1] , point[2] };
+			}
+		}
 	}
+
 
 }
 

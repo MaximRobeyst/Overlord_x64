@@ -50,6 +50,7 @@ public:
 	void DrawImGui();
 
 	void AddWumpaFruit();
+	void AddLife();
 
 	void PlayerDeath();
 	void SetCheckpoint(XMFLOAT3 position);
@@ -63,6 +64,8 @@ protected:
 
 private:
 	void Attack(const SceneContext& sceneContext);
+
+	bool IsGrounded();
 
 	int m_WumpaNumber{};
 	bool m_Grounded{ false };

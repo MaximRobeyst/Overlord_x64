@@ -6,11 +6,14 @@ public:
 	{
 		Defaut_Crate,
 		PowerUp_Crate,
-		Jump_Crate
+		Jump_Crate,
+		CheckPoint_Crate,
+		UkaUka_Crate,
+		TNT_Crate
 	};
 
-	Crate(const XMFLOAT3& position, CrateType cratetype = CrateType::Defaut_Crate);
-	~Crate() override = default;
+	Crate(const XMFLOAT3& position, CrateType cratetype = CrateType::Defaut_Crate, int lives = 3);
+	~Crate() override;
 
 	Crate(const Crate & other) = delete;
 	Crate(Crate && other) noexcept = delete;

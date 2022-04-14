@@ -10,7 +10,7 @@ Crash::Crash(const CrashDesc& characterDesc) :
 	m_FallAcceleration(characterDesc.maxFallSpeed / characterDesc.fallAccelerationTime)
 {
 	m_CharacterDesc.controller.stepOffset = 0.1f;
-	m_pFont = ContentManager::Load<SpriteFont>(L"SpriteFonts/CrashALike_32.fnt");
+	m_pFont = ContentManager::Load<SpriteFont>(L"SpriteFonts/CrashALike_64.fnt");
 
 }
 
@@ -20,6 +20,7 @@ void Crash::DrawImGui()
 	{
 		ImGui::Text(std::format("Move Speed: {:0.1f} m/s", m_MoveSpeed).c_str());
 		ImGui::Text(std::format("Fall Speed: {:0.1f} m/s", m_TotalVelocity.y).c_str());
+		ImGui::Text(("Grounded: " + std::to_string(m_Grounded)).c_str() );
 
 		ImGui::Text(std::format("Move Acceleration: {:0.1f} m/s2", m_MoveAcceleration).c_str());
 		ImGui::Text(std::format("Fall Acceleration: {:0.1f} m/s2", m_FallAcceleration).c_str());
@@ -57,6 +58,11 @@ void Crash::DrawImGui()
 void Crash::AddWumpaFruit()
 {
 	++m_WumpaNumber;
+}
+
+void Crash::AddLife()
+{
+	++m_Lives;
 }
 
 void Crash::PlayerDeath()
@@ -109,7 +115,7 @@ void Crash::Initialize(const SceneContext& sceneContext)
 
 	m_pSprite = AddChild(new GameObject());
 	m_pSprite->AddComponent(new SpriteComponent(L"Textures/LifeSprite.png", { 0.5, 0.5f }));
-	m_pSprite->GetTransform()->Translate(sceneContext.windowWidth - 150.f, 0.f, 0.f);
+	m_pSprite->GetTransform()->Translate(sceneContext.windowWidth - 175.f, 10.f, 0.f);
 
 	SetCheckpoint(GetTransform()->GetPosition());
 }
@@ -219,8 +225,8 @@ void Crash::Update(const SceneContext& sceneContext)
 
 		//## Vertical Movement (Jump/Fall)
 		//If the Controller Component is NOT grounded (= freefall)
-		m_Grounded = m_pControllerComponent->GetCollisionFlags() == PxControllerCollisionFlag::eCOLLISION_DOWN;
-		if (!m_Grounded && !sceneContext.pInput->IsActionTriggered((int)m_CharacterDesc.actionId_Jump))
+		m_Grounded = IsGrounded(); //m_pControllerComponent->GetCollisionFlags() == PxControllerCollisionFlag::eCOLLISION_DOWN;
+		if (!m_Grounded)
 		{
 			//Decrease the y component of m_TotalVelocity with a fraction (ElapsedTime) of the Fall Acceleration (m_FallAcceleration)
 			m_TotalVelocity.y -= m_FallAcceleration * (sceneContext.pGameTime->GetElapsed() * sceneContext.pGameTime->GetElapsed());
@@ -230,11 +236,11 @@ void Crash::Update(const SceneContext& sceneContext)
 				m_TotalVelocity.y = -m_CharacterDesc.maxFallSpeed;
 			}
 
-			if (m_pControllerComponent->GetCollisionFlags() == PxControllerCollisionFlag::eCOLLISION_DOWN)
-				m_Grounded = true;
+			//if (m_pControllerComponent->GetCollisionFlags() == PxControllerCollisionFlag::eCOLLISION_DOWN)
+			//	m_Grounded = true;
 		}
 		//Else If the jump action is triggered
-		else if (sceneContext.pInput->IsActionTriggered((int)m_CharacterDesc.actionId_Jump) && m_Grounded)
+		else if (sceneContext.pInput->IsActionTriggered((int)m_CharacterDesc.actionId_Jump))
 		{
 			//Set m_TotalVelocity.y equal to CharacterDesc::JumpSpeed
 			//m_TotalVelocity.y = m_CharacterDesc.JumpSpeed * sceneContext.pGameTime->GetElapsed();
@@ -246,7 +252,7 @@ void Crash::Update(const SceneContext& sceneContext)
 		else
 		{
 			//m_TotalVelocity.y is zero
-			m_TotalVelocity.y = 0;
+			//m_TotalVelocity.y = 0;
 		}
 
 		//************
@@ -263,8 +269,8 @@ void Crash::Update(const SceneContext& sceneContext)
 
 void Crash::Draw(const SceneContext& sceneContext)
 {
-	TextRenderer::Get()->DrawText(m_pFont, std::to_wstring(m_WumpaNumber), XMFLOAT2{ 50.f, 50.f }, XMFLOAT4{ Colors::Orange });
-	TextRenderer::Get()->DrawText(m_pFont, std::to_wstring(m_Lives), XMFLOAT2{ sceneContext.windowWidth - 50.f, 50.f }, XMFLOAT4{ Colors::Orange });
+	TextRenderer::Get()->DrawText(m_pFont, std::to_wstring(m_WumpaNumber), XMFLOAT2{ 50.f, 10.f }, XMFLOAT4{ Colors::Orange });
+	TextRenderer::Get()->DrawText(m_pFont, std::to_wstring(m_Lives), XMFLOAT2{ sceneContext.windowWidth - 100.f, 10.f }, XMFLOAT4{ Colors::Orange });
 }
 
 void Crash::Attack(const SceneContext& /*sceneContext*/)
@@ -273,4 +279,18 @@ void Crash::Attack(const SceneContext& /*sceneContext*/)
 
 
 	//SceneManager::Get()->GetActiveScene()
+}
+
+bool Crash::IsGrounded()
+{
+	PxVec3 rayStart = PxVec3{ m_pControllerComponent->GetFootPosition().x, m_pControllerComponent->GetFootPosition().y + .1f ,m_pControllerComponent->GetFootPosition().z };
+	PxVec3 rayDir{ 0, -1, 0 };
+	float distance{ m_CharacterDesc.controller.stepOffset + m_CharacterDesc.controller.stepOffset };
+
+	PxQueryFilterData filterData{};
+	filterData.data.word0 = ~UINT(CollisionGroup::None);
+	PxRaycastBuffer hit{};
+
+	DebugRenderer::DrawLine(m_pControllerComponent->GetFootPosition(), XMFLOAT3{ rayStart.x + 0, rayStart.y -1 * distance, rayStart.z + 0 }, XMFLOAT4{ Colors::Red });
+	return GetScene()->GetPhysxProxy()->Raycast(rayStart, rayDir, distance, hit);
 }
