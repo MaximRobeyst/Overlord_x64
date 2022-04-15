@@ -63,6 +63,7 @@ void CrashScene::Initialize()
 	pCrate = AddChild(new Crate(XMFLOAT3{ -1.0f, 0.f, 5.0f }));
 	
 	pCrate = AddChild(new Crate(XMFLOAT3{ 1.0f, 0.f, 3.5f }, Crate::CrateType::PowerUp_Crate, 1));
+	pCrate = AddChild(new Crate(XMFLOAT3{ 1.0f, -4.f, 37.5f }, Crate::CrateType::CheckPoint_Crate, 1));
 
 	m_pFont = ContentManager::Load<SpriteFont>(L"SpriteFonts/CrashALike_32.fnt");
 

@@ -198,9 +198,15 @@ void Crash::Update(const SceneContext& sceneContext)
 			//Make sure the current MoveSpeed stays below the maximum MoveSpeed (CharacterDesc::maxMoveSpeed) 
 			MathHelper::Clamp(m_MoveSpeed, m_CharacterDesc.maxMoveSpeed, 0.f);
 
-			//float angle{};
-			//XMStoreFloat(&angle, XMVector3AngleBetweenNormals(-XMLoadFloat3(&m_pModel->GetTransform()->GetForward()), XMVector3Normalize(newDirection)));
-			//m_pModel->GetTransform()->Rotate(0, angle, 0, false);
+			auto angle =  XMVector3AngleBetweenVectors(-XMLoadFloat3(&GetTransform()->GetForward()), XMVector3Normalize(newDirection));
+
+			if (move.x > 0)
+				angle *= -1;
+
+			// A lerp function
+			XMStoreFloat(&m_CurrentAngle, XMVectorLerp(XMLoadFloat(&m_CurrentAngle), angle, sceneContext.pGameTime->GetElapsed() * 25));
+
+			m_pModel->GetTransform()->Rotate(0, m_CurrentAngle, 0, false);
 		}
 		//Else (character is not moving, or stopped moving)
 		else

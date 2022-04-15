@@ -6,7 +6,7 @@
 OneUpPickup::OneUpPickup(XMFLOAT3 position)
 	: m_Position{position}
 {
-	SoundManager::Get()->GetSystem()->createStream("Resources/Audio/Wumpa_Fruit.wav", FMOD_DEFAULT, nullptr, &m_pSound);
+	SoundManager::Get()->GetSystem()->createStream("Resources/Audio/Extra_Life.wav", FMOD_DEFAULT, nullptr, &m_pSound);
 }
 
 void OneUpPickup::Initialize(const SceneContext&)

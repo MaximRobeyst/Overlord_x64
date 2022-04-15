@@ -71,6 +71,8 @@ private:
 	bool m_Grounded{ false };
 	bool m_Active{ true };
 
+	float m_CurrentAngle{ 0.0f };
+
 	int m_Lives{ 4 };
 	XMFLOAT3 m_RespawnPosition;
 

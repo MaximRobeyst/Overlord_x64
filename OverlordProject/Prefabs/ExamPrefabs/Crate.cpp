@@ -42,7 +42,7 @@ void Crate::Initialize(const SceneContext&)
 
 	auto rigidbody = AddComponent(new RigidBodyComponent(true));
 	auto pDefaultMaterial = PxGetPhysics().createMaterial(.5f, .5f, 1.f);
-	rigidbody->AddCollider(PxBoxGeometry{ 0.25f, 0.25f, 0.25f }, *pDefaultMaterial, false, PxTransform{PxVec3{0.f, 0.25f, 0.f}});
+	rigidbody->AddCollider(PxBoxGeometry{ 0.35f, 0.35f, 0.35f }, *pDefaultMaterial, false, PxTransform{PxVec3{0.f, 0.25f, 0.f}});
 
 	rigidbody = bounceObject->AddComponent(new RigidBodyComponent(true));
 	rigidbody->AddCollider(PxBoxGeometry{ 0.35f, 0.125f , 0.35f }, *pDefaultMaterial, true);
@@ -75,12 +75,16 @@ void Crate::Update(const SceneContext& /*sceneContext*/)
 	}
 }
 
-void Crate::OnBoxJump(GameObject* /*pThisObject*/, GameObject* pOtherObject, PxTriggerAction action)
+void Crate::OnBoxJump(GameObject* pThisObject, GameObject* pOtherObject, PxTriggerAction action)
 {
 	if (pOtherObject->GetTag() == L"Player" && action == PxTriggerAction::ENTER)
 	{
 		auto pCrash = static_cast<Crash*>(pOtherObject);
 		pCrash->Jump(pOtherObject->GetScene()->GetSceneContext());
+
+		if (m_CrateType == CrateType::CheckPoint_Crate)
+			pCrash->SetCheckpoint(pThisObject->GetTransform()->GetPosition());
+
 		--m_Lives;
 		m_Hit = true;
 	}
