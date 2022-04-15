@@ -12,7 +12,7 @@ public:
 		TNT_Crate
 	};
 
-	Crate(const XMFLOAT3& position, CrateType cratetype = CrateType::Defaut_Crate, int lives = 3);
+	Crate(const XMFLOAT3& position, CrateType cratetype = CrateType::Defaut_Crate, int lives = 9);
 	~Crate() override;
 
 	Crate(const Crate & other) = delete;
@@ -29,7 +29,7 @@ private:
 
 	CrateType m_CrateType{ CrateType::Defaut_Crate };
 
-	int m_Lives{ 6 };
+	int m_Lives{ 9 };
 	bool m_Hit{ false };
 
 	void OnBoxJump(GameObject* pTriggerObject, GameObject* pOtherObject, PxTriggerAction action);
