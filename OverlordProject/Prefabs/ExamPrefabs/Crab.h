@@ -15,11 +15,13 @@ protected:
 	void Draw(const SceneContext&) override;
 
 private:
+	void KillPlayer(GameObject* pTriggerObject, GameObject* pOtherObject, PxTriggerAction action);
+
 	std::vector<XMFLOAT3> m_Targets{};
 	int m_CurrentIndex{ 0 };
 
 
-	float m_Speed{ 0.1f };
+	float m_Speed{ 1.f };
 
 	bool m_Hit{ false };
 	
