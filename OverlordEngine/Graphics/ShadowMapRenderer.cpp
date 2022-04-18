@@ -9,37 +9,53 @@ ShadowMapRenderer::~ShadowMapRenderer()
 
 void ShadowMapRenderer::Initialize()
 {
-	TODO_W8(L"Implement Initialize")
 	//1. Create a separate RenderTarget (see RenderTarget class), store in m_pShadowRenderTarget
 	//	- RenderTargets are initialized with the RenderTarget::Create function, requiring a RENDERTARGET_DESC
 	//	- Initialize the relevant fields of the RENDERTARGET_DESC (enableColorBuffer:false, enableDepthSRV:true, width & height)
+	RENDERTARGET_DESC desc {};
+	desc.enableColorBuffer = false;
+	desc.enableDepthSRV = true;
+	desc.width = 1280;
+	desc.height = 720;
+	m_pShadowRenderTarget = new RenderTarget(m_GameContext.d3dContext);
+	m_pShadowRenderTarget->Create(desc);
+
 
 	//2. Create a new ShadowMapMaterial, this will be the material that 'generated' the ShadowMap, store in m_pShadowMapGenerator
 	//	- The effect has two techniques, one for static meshes, and another for skinned meshes (both very similar, the skinned version also transforms the vertices based on a given set of boneTransforms)
 	//	- We want to store the TechniqueContext (struct that contains information about the Technique & InputLayout required for rendering) for both techniques in the m_GeneratorTechniqueContexts array.
 	//	- Use the ShadowGeneratorType enum to retrieve the correct TechniqueContext by ID, and also use that ID to store it inside the array (see BaseMaterial::GetTechniqueContext)
+	ShadowMapMaterial* pShadowMapMaterial = new ShadowMapMaterial();
+	m_GeneratorTechniqueContexts[(int)ShadowGeneratorType::Static] = pShadowMapMaterial->GetTechniqueContext((int)ShadowGeneratorType::Static);
+	m_GeneratorTechniqueContexts[(int)ShadowGeneratorType::Skinned] = pShadowMapMaterial->GetTechniqueContext((int)ShadowGeneratorType::Skinned);
 }
 
-void ShadowMapRenderer::UpdateMeshFilter(const SceneContext& /*sceneContext*/, MeshFilter* /*pMeshFilter*/) const
+void ShadowMapRenderer::UpdateMeshFilter(const SceneContext& sceneContext, MeshFilter* pMeshFilter) const
 {
-	TODO_W8(L"Implement UpdateMeshFilter")
 	//Here we want to Update the MeshFilter of ModelComponents that need to be rendered to the ShadowMap
 	//Updating the MeshFilter means that we want to create a corresponding VertexBuffer for our ShadowGenerator material
 
 	//1. Figure out the correct ShadowGeneratorType (either Static, or Skinned) with information from the incoming MeshFilter
 	//2. Retrieve the corresponding TechniqueContext from m_GeneratorTechniqueContexts array (Static/Skinned)
+	auto techniqueContext = m_GeneratorTechniqueContexts[pMeshFilter->HasAnimations() ? (int)ShadowGeneratorType::Skinned : (int)ShadowGeneratorType::Static];
 	//3. Build a corresponding VertexBuffer with data from the relevant TechniqueContext you retrieved in Step2 (MeshFilter::BuildVertexBuffer)
+	pMeshFilter->BuildVertexBuffer(sceneContext, techniqueContext.inputLayoutID, techniqueContext.inputLayoutSize, techniqueContext.pInputLayoutDescriptions);
 }
 
-void ShadowMapRenderer::Begin(const SceneContext& /*sceneContext*/)
+void ShadowMapRenderer::Begin(const SceneContext& sceneContext)
 {
-	TODO_W8(L"Implement Begin")
 	//This function is called once right before we start the Shadow Pass (= generating the ShadowMap)
 	//This function is responsible for setting the pipeline into the correct state, meaning
 	//	- Making sure the ShadowMap is unbound from the pipeline as a ShaderResource (SRV), so we can bind it as a RenderTarget (RTV)
 	//	- Calculating the Light ViewProjection, and updating the relevant Shader variables
 	//	- Binding the ShadowMap RenderTarget as Main Game RenderTarget (= Everything we render is rendered to this rendertarget)
 	//	- Clear the current (which should be the ShadowMap RT) rendertarget
+
+
+	m_pShadowMapGenerator->SetVariable_Matrix(L"gWorldViewProj_Light", m_LightVP);
+	m_pShadowMapGenerator->UpdateEffectVariables(sceneContext, m_pShadowRenderTarget);
+	m_pShadowRenderTarget->Clear();
+
 
 	//1. Making sure that the ShadowMap is unbound from the pipeline as ShaderResourceView (SRV) is important, because we cannot use the same resource as a ShaderResourceView (texture resource inside a shader) and a RenderTargetView (target everything is rendered too) at the same time. In case this happens, you'll see an error in the output of visual studio - warning you that a resource is still bound as a SRV and cannot be used as an RTV.
 	//	-> Unbinding an SRV can be achieved using DeviceContext::PSSetShaderResource [I'll give you the implementation for free] - double check your output because depending on your usage of ShaderResources, the actual slot the ShadowMap is using can be different, but you'll see a warning pop-up with the correct slot ID in that case.

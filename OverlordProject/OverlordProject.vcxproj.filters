@@ -35,6 +35,9 @@
     <ClCompile Include="Prefabs\ExamPrefabs\PathCamera.cpp" />
     <ClCompile Include="Prefabs\ExamPrefabs\OneUpPickup.cpp" />
     <ClCompile Include="Prefabs\ExamPrefabs\Crab.cpp" />
+    <ClCompile Include="Scenes\Week 8\ShadowMappingScene.cpp" />
+    <ClCompile Include="Materials\Shadow\DiffuseMaterial_Shadow.cpp" />
+    <ClCompile Include="Materials\Shadow\DiffuseMaterial_Shadow_Skinned.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainGame.h" />
@@ -70,5 +73,8 @@
     <ClInclude Include="Prefabs\ExamPrefabs\PathCamera.h" />
     <ClInclude Include="Prefabs\ExamPrefabs\OneUpPickup.h" />
     <ClInclude Include="Prefabs\ExamPrefabs\Crab.h" />
+    <ClInclude Include="Scenes\Week 8\ShadowMappingScene.h" />
+    <ClInclude Include="Materials\Shadow\DiffuseMaterial_Shadow.h" />
+    <ClInclude Include="Materials\Shadow\DiffuseMaterial_Shadow_Skinned.h" />
   </ItemGroup>
 </Project>
