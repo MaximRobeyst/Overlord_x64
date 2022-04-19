@@ -154,7 +154,6 @@ void GameScene::RootDraw()
 #pragma region SHADOW PASS
 	//SHADOW_PASS
 	//+++++++++++
-	TODO_W8(L"Implement Shadow Pass")
 	//1. BEGIN > ShadowMapRenderer::Begin (Initiate the ShadowPass)
 	ShadowMapRenderer::Get()->Begin(m_SceneContext);
 	//2. DRAW_LOOP > For every GameObject (m_pChildren), call GameObject::RootShadowMapDraw

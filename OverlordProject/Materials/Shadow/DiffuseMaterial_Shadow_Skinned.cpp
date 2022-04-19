@@ -15,7 +15,7 @@ void DiffuseMaterial_Shadow_Skinned::InitializeEffectVariables()
 {
 }
 
-void DiffuseMaterial_Shadow_Skinned::OnUpdateModelVariables(const SceneContext& /*sceneContext*/, const ModelComponent* /*pModel*/) const
+void DiffuseMaterial_Shadow_Skinned::OnUpdateModelVariables(const SceneContext& sceneContext, const ModelComponent* pModel) const
 {
 	/*
 	 * TODO_W8
@@ -30,8 +30,20 @@ void DiffuseMaterial_Shadow_Skinned::OnUpdateModelVariables(const SceneContext& 
 	 * 
 	 * 4. Update Bones
 	*/
+	auto model_World = XMLoadFloat4x4(&pModel->GetTransform()->GetWorld());
+	auto light_viewProjection = XMLoadFloat4x4(&ShadowMapRenderer::Get()->GetLightVP());
+	auto lightWVP = model_World * light_viewProjection;
+	XMFLOAT4X4 lightWVPloaded{};
+	XMStoreFloat4x4(&lightWVPloaded, lightWVP);
+
+	SetVariable_Matrix(L"gWorldViewProj_Light", lightWVPloaded);
+	SetVariable_Texture(L"gShadowMap", ShadowMapRenderer::Get()->GetShadowMap());
+	SetVariable_Vector(L"gLightDirection", sceneContext.pLights->GetDirectionalLight().direction);
+	SetVariable_MatrixArray(L"gBones", &pModel->GetAnimator()->GetBoneTransforms()[0].m[0][0], (UINT)pModel->GetAnimator()->GetBoneTransforms().size());
+
 
 	//Update Shadow Variables
 	//const auto pShadowMapRenderer = ShadowMapRenderer::Get();
 	//...
+
 }

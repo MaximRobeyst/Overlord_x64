@@ -487,6 +487,7 @@ void OverlordGame::SetRenderTarget(RenderTarget* renderTarget)
 	if(renderTarget == nullptr)
 		renderTarget = m_pDefaultRenderTarget;
 
+
 	const auto pRTV = renderTarget->GetRenderTargetView();
 	m_GameContext.d3dContext.pDeviceContext->OMSetRenderTargets(1, &pRTV, renderTarget->GetDepthStencilView());
 
