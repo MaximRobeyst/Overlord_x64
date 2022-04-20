@@ -39,5 +39,5 @@ void DiffuseMaterial_Shadow::OnUpdateModelVariables(const SceneContext& sceneCon
 
 	SetVariable_Matrix(L"gWorldViewProj_Light", lightWVPloaded);
 	SetVariable_Texture(L"gShadowMap", pShadowMapRenderer->GetShadowMap());
-	SetVariable_Vector(L"gLightDirection", sceneContext.pLights->GetDirectionalLight().direction);
+	SetVariable_Vector(L"gLightDirection", XMFLOAT3{ &sceneContext.pLights->GetDirectionalLight().direction.x });
 }

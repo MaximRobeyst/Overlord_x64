@@ -89,7 +89,7 @@ void ShadowMapRenderer::Begin(const SceneContext& sceneContext)
 	m_GameContext.pGame->SetRenderTarget(m_pShadowRenderTarget);
 
 	//5. Clear the ShadowMap rendertarget (RenderTarget::Clear)
-	m_pShadowRenderTarget->Clear();
+	m_GameContext.pGame->GetRenderTarget()->Clear();
 }
 
 void ShadowMapRenderer::DrawMesh(const SceneContext& sceneContext, MeshFilter* pMeshFilter, const XMFLOAT4X4& meshWorld, const std::vector<XMFLOAT4X4>& meshBones)
@@ -128,7 +128,12 @@ void ShadowMapRenderer::DrawMesh(const SceneContext& sceneContext, MeshFilter* p
 	{
 		//Set Vertex Buffer
 		const UINT offset = 0;
-		const auto& vertexBufferData = pMeshFilter->GetVertexBufferData(sceneContext, m_pShadowMapGenerator, subMesh.id);
+
+		auto bufferId = pMeshFilter->GetVertexBufferId(techniqueContext.inputLayoutID, subMesh.id);
+		//const auto& vertexBufferData = pMeshFilter->GetVertexBufferData(sceneContext, m_pShadowMapGenerator, subMesh.id);
+		const auto& vertexBufferData =
+			subMesh.buffers.vertexbuffers[bufferId];
+
 		pDeviceContext->IASetVertexBuffers(0, 1, &vertexBufferData.pVertexBuffer, &vertexBufferData.VertexStride,
 			&offset);
 
