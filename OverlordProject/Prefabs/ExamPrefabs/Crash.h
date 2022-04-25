@@ -15,9 +15,9 @@ struct CrashDesc
 	}
 
 	float maxMoveSpeed{ 15.f }; //Maximum Move
-	float maxFallSpeed{ 15.f };
+	float maxFallSpeed{ 10.f };
 
-	float JumpSpeed{ 15.f };
+	float JumpSpeed{ 10.f };
 
 	float moveAccelerationTime{ .3f };
 	float fallAccelerationTime{ .3f };
@@ -92,5 +92,8 @@ private:
 
 	XMFLOAT3 m_TotalVelocity{}; //TotalVelocity with X/Z for Horizontal Movement AND Y for Vertical Movement (fall/jump)
 	XMFLOAT3 m_CurrentDirection{}; //Current/Last Direction based on Camera forward/right (Stored for deacceleration)
+
+	float m_HitAngleOffset{ 11.25f / 2.0f };
+	float m_HitRange{ 0.5f };
 };
 

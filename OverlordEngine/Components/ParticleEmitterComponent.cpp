@@ -105,8 +105,9 @@ void ParticleEmitterComponent::SpawnParticle(Particle& p)
 
 	auto randomRotation{ XMVector3TransformNormal(XMLoadFloat3(&randomDirection), rotationMatrix) };
 	float randomDisttance = MathHelper::randF(m_EmitterSettings.minEmitterRadius, m_EmitterSettings.maxEmitterRadius);
+	auto position = XMLoadFloat3(&GetTransform()->GetPosition());
 
-	XMStoreFloat3(&p.vertexInfo.Position, randomRotation * randomDisttance);
+	XMStoreFloat3(&p.vertexInfo.Position, position + randomRotation * randomDisttance);
 
 	auto randomSize = MathHelper::randF(m_EmitterSettings.minScale, m_EmitterSettings.maxScale);
 	p.vertexInfo.Size = randomSize;

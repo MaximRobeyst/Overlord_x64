@@ -9,6 +9,8 @@ public:
 	Crab& operator=(const Crab& other) = delete;
 	Crab& operator=(Crab&& other) noexcept = delete;
 
+	void Destroy();
+
 protected:
 	void Initialize(const SceneContext&) override;
 	void Update(const SceneContext&) override;
@@ -21,7 +23,7 @@ private:
 	int m_CurrentIndex{ 0 };
 
 
-	float m_Speed{ 1.f };
+	float m_Speed{ 0.5f };
 
 	bool m_Hit{ false };
 	

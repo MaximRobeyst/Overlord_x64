@@ -5,6 +5,8 @@
 #include <Prefabs/ExamPrefabs/Crash.h>
 #include <Prefabs/ExamPrefabs/WumpaFruit.h>
 #include <Prefabs/ExamPrefabs/OneUpPickup.h>
+#include <Materials/Shadow/DiffuseMaterial_Shadow.h>
+#include <Prefabs/ExamPrefabs/ParticleLifetime.h>
 
 Crate::Crate(const XMFLOAT3& position, CrateType cratetype, int lives)
 	: m_Position{position}
@@ -17,12 +19,23 @@ Crate::~Crate()
 {
 }
 
+void Crate::Destoy(Crash* pCrash)
+{
+	if (m_CrateType == CrateType::CheckPoint_Crate)
+		pCrash->SetCheckpoint(GetTransform()->GetPosition());
+
+	m_Hit = true;
+	m_Lives = 0;
+}
+
 void Crate::Initialize(const SceneContext&)
 {
 	GetTransform()->Translate(m_Position);
+	SetTag(L"Crate");
 
 	auto bounceObject = AddChild(new GameObject());
 	bounceObject->GetTransform()->Translate(m_Position.x, m_Position.y + 0.75f, m_Position.z);
+	bounceObject->SetTag(L"Crate");
 
 	ModelComponent* pModel;
 	switch (m_CrateType)
@@ -35,7 +48,7 @@ void Crate::Initialize(const SceneContext&)
 		break;
 	}
 
-	auto material = MaterialManager::Get()->CreateMaterial<DiffuseMaterial>();
+	auto material = MaterialManager::Get()->CreateMaterial<DiffuseMaterial_Shadow>();
 	pModel->SetMaterial(material);
 	
 	material->SetDiffuseTexture(L"Textures/tex_crate.png");
@@ -48,7 +61,6 @@ void Crate::Initialize(const SceneContext&)
 	rigidbody->AddCollider(PxBoxGeometry{ 0.35f, 0.125f , 0.35f }, *pDefaultMaterial, true);
 
 	bounceObject->SetOnTriggerCallBack(std::bind(&Crate::OnBoxJump, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
-
 }
 
 void Crate::Update(const SceneContext& /*sceneContext*/)
@@ -59,7 +71,7 @@ void Crate::Update(const SceneContext& /*sceneContext*/)
 
 		switch (m_CrateType)
 		{
-		default:
+		case CrateType::Defaut_Crate:
 			GetScene()->AddChild((new WumpaFruit(position)));
 			break;
 		case CrateType::PowerUp_Crate:
@@ -71,6 +83,7 @@ void Crate::Update(const SceneContext& /*sceneContext*/)
 
 	if (m_Lives <= 0)
 	{
+		GetScene()->AddChild(new ParticleLifetime(GetTransform()->GetPosition(), 1.0f));
 		GetScene()->RemoveChild(this, true);
 	}
 }

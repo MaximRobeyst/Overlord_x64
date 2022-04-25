@@ -8,6 +8,11 @@ Crab::Crab(const XMFLOAT3& position1, const XMFLOAT3& position2)
 {
 }
 
+void Crab::Destroy()
+{
+	m_Hit = true;
+}
+
 void Crab::Initialize(const SceneContext& /*sceneContext*/)
 {
 	SetTag(L"Enemy");
@@ -23,9 +28,12 @@ void Crab::Initialize(const SceneContext& /*sceneContext*/)
 	auto rigidbody = AddComponent(new RigidBodyComponent());
 	rigidbody->SetKinematic(true);
 	auto pDefaultMaterial = PxGetPhysics().createMaterial(.5f, .5f, 1.f);
-	rigidbody->AddCollider(PxSphereGeometry{0.5f}, *pDefaultMaterial, true, PxTransform{ PxVec3{0.f, 0.25f, 0.f} });
+	rigidbody->AddCollider(PxSphereGeometry{0.4f}, *pDefaultMaterial, true, PxTransform{ PxVec3{0.f, 0.25f, 0.f} });
 
 	SetOnTriggerCallBack(std::bind(&Crab::KillPlayer, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+
+	if(m_Hit)
+		GetScene()->RemoveChild(this, true);
 
 }
 

@@ -1,4 +1,5 @@
 #pragma once
+class Crash;
 class Crate : public GameObject
 {
 public:
@@ -20,18 +21,21 @@ public:
 	Crate& operator=(const Crate & other) = delete;
 	Crate& operator=(Crate && other) noexcept = delete;
 
+	void Destoy(Crash* pCrash);
+
 protected:
 	void Initialize(const SceneContext&) override;
 	void Update(const SceneContext&) override;
 
 private:
+	void OnBoxJump(GameObject* pTriggerObject, GameObject* pOtherObject, PxTriggerAction action);
+
 	XMFLOAT3 m_Position{};
 
 	CrateType m_CrateType{ CrateType::Defaut_Crate };
+	ParticleEmitterComponent* m_pEmmiter;
 
 	int m_Lives{ 9 };
 	bool m_Hit{ false };
-
-	void OnBoxJump(GameObject* pTriggerObject, GameObject* pOtherObject, PxTriggerAction action);
 };
 

@@ -7,9 +7,11 @@
 //#define W5
 //#define W6
 //#define W7
-#define W8
-#define W9
+//#define W8
+//#define W9
 //#define W10
+
+#define Exam
 
 /*MILESTONE Content*/
 //#define MILESTONE_1
@@ -56,6 +58,10 @@
 
 #ifdef W10
 #include "Scenes/Week 10/PostProcessingScene.h"
+#endif
+
+#ifdef Exam
+#include"Scenes/Exam/CrashScene.h"
 #endif
 
 #ifdef MILESTONE_1
@@ -136,6 +142,11 @@ void MainGame::Initialize()
 #ifdef W10
 	SceneManager::Get()->AddGameScene(new PostProcessingScene());
 #endif
+
+#ifdef Exam
+	SceneManager::Get()->AddGameScene(new CrashScene());
+#endif // Exam
+
 
 #ifdef MILESTONE_1
 	SceneManager::Get()->AddGameScene(new PongScene());

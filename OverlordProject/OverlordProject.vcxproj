@@ -93,8 +93,10 @@
     <PostBuildEvent />
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Prefabs\ExamPrefabs\LevelEnd.cpp" />
     <ClCompile Include="Materials\Shadow\DiffuseMaterial_Shadow.cpp" />
     <ClCompile Include="Materials\Shadow\DiffuseMaterial_Shadow_Skinned.cpp" />
+    <ClCompile Include="Prefabs\ExamPrefabs\ParticleLifetime.cpp" />
     <ClCompile Include="Prefabs\ExamPrefabs\Crab.cpp" />
     <ClCompile Include="Prefabs\ExamPrefabs\OneUpPickup.cpp" />
     <ClCompile Include="Prefabs\ExamPrefabs\PathCamera.cpp" />
@@ -153,8 +155,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Prefabs\ExamPrefabs\LevelEnd.h" />
     <ClInclude Include="Materials\Shadow\DiffuseMaterial_Shadow.h" />
     <ClInclude Include="Materials\Shadow\DiffuseMaterial_Shadow_Skinned.h" />
+    <ClInclude Include="Prefabs\ExamPrefabs\ParticleLifetime.h" />
     <ClInclude Include="Prefabs\ExamPrefabs\Crab.h" />
     <ClInclude Include="Prefabs\ExamPrefabs\OneUpPickup.h" />
     <ClInclude Include="Prefabs\ExamPrefabs\PathCamera.h" />

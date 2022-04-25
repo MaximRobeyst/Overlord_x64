@@ -3,6 +3,9 @@
 
 #include <Materials/DiffuseMaterial.h>
 #include <Prefabs/ExamPrefabs/PathCamera.h>
+#include <Materials/Shadow/DiffuseMaterial_Shadow.h>
+#include <Prefabs/ExamPrefabs/Crate.h>
+#include <Prefabs/ExamPrefabs/Crab.h>
 
 Crash::Crash(const CrashDesc& characterDesc) :
 	m_CharacterDesc{ characterDesc },
@@ -105,7 +108,7 @@ void Crash::Initialize(const SceneContext& sceneContext)
 
 	m_pModel = AddChild(new GameObject());
 	auto model = m_pModel->AddComponent(new ModelComponent(L"Models/Crash.ovm"));
-	auto material = MaterialManager::Get()->CreateMaterial<DiffuseMaterial>();
+	auto material = MaterialManager::Get()->CreateMaterial<DiffuseMaterial_Shadow>();
 	material->SetDiffuseTexture(L"Textures/tex_crash.png");
 	model->SetMaterial(material);
 
@@ -204,7 +207,7 @@ void Crash::Update(const SceneContext& sceneContext)
 				angle *= -1;
 
 			// A lerp function
-			XMStoreFloat(&m_CurrentAngle, XMVectorLerp(XMLoadFloat(&m_CurrentAngle), angle, sceneContext.pGameTime->GetElapsed() * 25));
+			XMStoreFloat(&m_CurrentAngle, XMVectorLerp(XMLoadFloat(&m_CurrentAngle), angle, sceneContext.pGameTime->GetElapsed() * m_CharacterDesc.rotationSpeed));
 
 			m_pModel->GetTransform()->Rotate(0, m_CurrentAngle, 0, false);
 		}
@@ -284,7 +287,69 @@ void Crash::Attack(const SceneContext& /*sceneContext*/)
 	Logger::LogInfo(L"Player is attacking");
 
 
-	//SceneManager::Get()->GetActiveScene()
+	int rays = (int)(360 / m_HitAngleOffset);
+
+	XMVECTOR forward = XMLoadFloat3(&GetTransform()->GetForward());
+	XMMATRIX rotationMatrix{};
+	XMVECTOR rayPosition{};
+	XMVECTOR rayDirection{};
+
+	XMVECTOR position = XMLoadFloat3(&GetTransform()->GetPosition());
+	rayPosition = position + forward * m_CharacterDesc.controller.radius;
+
+	PxVec3 rayStart(rayPosition.m128_f32[0], rayPosition.m128_f32[1], rayPosition.m128_f32[2]);
+	PxVec3 raydir(forward.m128_f32[0], forward.m128_f32[1], forward.m128_f32[2]);
+
+	PxRaycastBuffer hit{};
+	PxQueryFilterData filterData{};
+
+	XMFLOAT3 debugPosition{};
+	XMFLOAT3 debugDirection{};
+
+	for (int i = 0; i < rays; ++i)
+	{
+		rotationMatrix = XMMatrixRotationY(i * m_HitAngleOffset);
+
+		rayDirection = XMVector3TransformNormal(forward, rotationMatrix);
+		rayPosition = position + rayDirection * m_CharacterDesc.controller.radius;
+
+		if (i % 2 == 0)
+		{
+			XMVECTOR up = XMLoadFloat3(&GetTransform()->GetUp());
+
+			rayPosition += -up * 0.5f;
+;		}
+
+		rayStart = PxVec3( rayPosition.m128_f32[0], rayPosition.m128_f32[1], rayPosition.m128_f32[2] );
+		raydir = PxVec3{ rayDirection.m128_f32[0],rayDirection.m128_f32[1] ,rayDirection.m128_f32[2] };
+
+
+		if (GetScene()->GetPhysxProxy()->Raycast(rayStart, raydir, m_HitRange, hit, PxHitFlag::eDEFAULT, filterData))
+		{
+			XMStoreFloat3(&debugPosition, rayPosition);
+			XMStoreFloat3(&debugDirection, rayDirection);
+			DebugRenderer::DrawLine(debugPosition, debugDirection, XMFLOAT4{ Colors::Blue });
+
+			auto actor = static_cast<RigidBodyComponent*>(hit.block.actor->userData);
+			Logger::LogDebug(L"Hit object {}", actor->GetGameObject()->GetTag());
+
+			GameObject* pGameobject = actor->GetGameObject();
+			if (pGameobject->GetTag() == L"Crate")
+			{
+				if (pGameobject->GetParent() != nullptr)
+					pGameobject = pGameobject->GetParent();
+
+				Crate* pCrate = static_cast<Crate*>(pGameobject);
+				pCrate->Destoy(this);
+			}
+
+			if (pGameobject->GetTag() == L"Enemy")
+			{
+				Crab* pCrab = static_cast<Crab*>(pGameobject);
+				pCrab->Destroy();
+			}
+		}
+	}
 }
 
 bool Crash::IsGrounded()

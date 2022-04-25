@@ -12,6 +12,7 @@
 #include <Prefabs/ExamPrefabs/Crab.h>
 
 #include <Materials/ColorMaterial.h>
+#include <Materials/Shadow/DiffuseMaterial_Shadow.h>
 
 CrashScene::~CrashScene()
 {
@@ -20,6 +21,9 @@ CrashScene::~CrashScene()
 void CrashScene::Initialize()
 {
 	m_SceneContext.settings.enableOnGUI = true;
+
+
+	m_SceneContext.pLights->SetDirectionalLight({ -95.6139526f,66.1346436f,-41.1850471f }, { 0.740129888f, -0.597205281f, 0.309117377f });
 
 	//Ground Plane
 	const auto pDefaultMaterial = PxGetPhysics().createMaterial(0.5f, 0.5f, 0.5f);
@@ -64,7 +68,7 @@ void CrashScene::Initialize()
 	pCrate = AddChild(new Crate(XMFLOAT3{ -1.0f, 0.f, 5.0f }));
 	
 	pCrate = AddChild(new Crate(XMFLOAT3{ 1.0f, 0.f, 3.5f }, Crate::CrateType::PowerUp_Crate, 1));
-	pCrate = AddChild(new Crate(XMFLOAT3{ 1.0f, -4.f, 37.f }, Crate::CrateType::CheckPoint_Crate, 1));
+	pCrate = AddChild(new Crate(XMFLOAT3{ 1.0f, -3.75f, 37.f }, Crate::CrateType::CheckPoint_Crate, 1));
 
 	AddChild(new Crab(XMFLOAT3{ 4.0f, -4.f, 27.5f }, XMFLOAT3{ -1.0f, -4.f, 27.5f }));
 
@@ -72,7 +76,8 @@ void CrashScene::Initialize()
 
 	GameObject* pLevel = AddChild(new GameObject());
 	auto pModel = pLevel->AddComponent(new ModelComponent(L"Models/Level.ovm"));
-	auto material = MaterialManager::Get()->CreateMaterial<ColorMaterial>();
+	auto material = MaterialManager::Get()->CreateMaterial<DiffuseMaterial_Shadow>();
+	material->SetDiffuseTexture(L"Textures/Cobblestone Textures/CobbleStone_DiffuseMap.dds");
 	pModel->SetMaterial(material);
 
 	auto pRigidbody = new RigidBodyComponent(true);
