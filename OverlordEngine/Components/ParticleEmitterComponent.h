@@ -62,6 +62,7 @@ private:
 	ID3D11Buffer* m_pVertexBuffer{}; //The vertex buffer, containing ParticleVertex information for each Particle
 
 	Particle* m_ParticlesArray; //Array of particle objects
+	VertexParticle* m_pParticleBuffer;
 	UINT m_ParticleCount{}; //The total amount of particles
 	UINT m_MaxParticles{};
 	UINT m_ActiveParticles{}; //The active particles for the current frame
