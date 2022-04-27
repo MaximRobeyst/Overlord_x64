@@ -8,7 +8,7 @@
 //#define W6
 //#define W7
 //#define W8
-//#define W9
+#define W9
 //#define W10
 
 #define Exam
@@ -62,6 +62,7 @@
 
 #ifdef Exam
 #include"Scenes/Exam/CrashScene.h"
+#include "Scenes/Exam/VertexAnimationScene.h"
 #endif
 
 #ifdef MILESTONE_1
@@ -144,6 +145,7 @@ void MainGame::Initialize()
 #endif
 
 #ifdef Exam
+	SceneManager::Get()->AddGameScene(new VertexAnimationScene());
 	SceneManager::Get()->AddGameScene(new CrashScene());
 #endif // Exam
 

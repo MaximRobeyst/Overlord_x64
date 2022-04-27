@@ -13,6 +13,8 @@ Crate::Crate(const XMFLOAT3& position, CrateType cratetype, int lives)
 	, m_CrateType{cratetype}
 	, m_Lives{lives}
 {
+	SoundManager::Get()->GetSystem()->createStream("Resources/Audio/Bounce_Crate.wav", FMOD_DEFAULT, nullptr, &m_pBounceSound);
+	SoundManager::Get()->GetSystem()->createStream("Resources/Audio/Crate_Break.wav", FMOD_DEFAULT, nullptr, &m_pCrateBreakSound);
 }
 
 Crate::~Crate()
@@ -83,8 +85,11 @@ void Crate::Update(const SceneContext& /*sceneContext*/)
 
 	if (m_Lives <= 0)
 	{
+		SoundManager::Get()->GetSystem()->playSound(m_pCrateBreakSound, nullptr, false, nullptr);
 		GetScene()->AddChild(new ParticleLifetime(GetTransform()->GetPosition(), 1.0f));
+
 		GetScene()->RemoveChild(this, true);
+
 	}
 }
 
@@ -100,5 +105,7 @@ void Crate::OnBoxJump(GameObject* pThisObject, GameObject* pOtherObject, PxTrigg
 
 		--m_Lives;
 		m_Hit = true;
+
+		SoundManager::Get()->GetSystem()->playSound(m_pBounceSound, nullptr, false, nullptr);
 	}
 }

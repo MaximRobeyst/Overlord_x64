@@ -83,6 +83,8 @@ private:
 	GameObject* m_pSprite{};
 	GameObject* m_pModel{};
 
+	FMOD::Sound* m_pAttackSound{};
+
 	CrashDesc m_CharacterDesc;
 	float m_TotalPitch{}, m_TotalYaw{}; //Total camera Pitch(X) and Yaw(Y) rotation
 	float m_MoveAcceleration{}, //Acceleration required to reach maxMoveVelocity after 1 second (maxMoveVelocity / moveAccelerationTime)

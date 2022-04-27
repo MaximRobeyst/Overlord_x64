@@ -60,15 +60,17 @@ void PathCamera::Update(const SceneContext& /*sceneContext*/)
 	float length{};
 	float distancePlayer{};
 	float percentage{};
+	float dot{};
 	XMStoreFloat(&length, XMVector3LengthSq(v2 - v1));
 	XMStoreFloat(&distancePlayer, XMVector3LengthSq(v1 - targetPosition));
+	XMStoreFloat(&dot, XMVector3Dot(targetPosition - v1, v2 - v1));
 
 	percentage = distancePlayer / length;
 	auto newPosition = XMVectorLerp(v1, v2, percentage);
 
 	if (percentage >= 1.0f)
 		++m_CurrentIndex %= m_Path.size();
-	else if (percentage <= 0.0001f)
+	else if (dot <= -1.f)
 		--m_CurrentIndex;
 	
 	GetTransform()->Translate(newPosition);

@@ -11,11 +11,11 @@ OneUpPickup::OneUpPickup(XMFLOAT3 position)
 
 void OneUpPickup::Initialize(const SceneContext&)
 {
-	auto model = AddComponent(new ModelComponent(L"Models/wumpaFruit.ovm"));
+	auto model = AddComponent(new ModelComponent(L"Models/One_Up.ovm"));
 	auto material = MaterialManager::Get()->CreateMaterial<DiffuseMaterial>();
 	model->SetMaterial(material);
 
-	material->SetDiffuseTexture(L"Textures/tex_wumpafruit.png");
+	material->SetDiffuseTexture(L"Textures/LifeSprite.png");
 	GetTransform()->Scale(2.f);
 	GetTransform()->Translate(m_Position);
 

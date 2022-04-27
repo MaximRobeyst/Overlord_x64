@@ -34,6 +34,8 @@ private:
 
 	CrateType m_CrateType{ CrateType::Defaut_Crate };
 	ParticleEmitterComponent* m_pEmmiter;
+	FMOD::Sound* m_pBounceSound{};
+	FMOD::Sound* m_pCrateBreakSound{};
 
 	int m_Lives{ 9 };
 	bool m_Hit{ false };

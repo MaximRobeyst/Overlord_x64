@@ -15,6 +15,7 @@ Crash::Crash(const CrashDesc& characterDesc) :
 	m_CharacterDesc.controller.stepOffset = 0.1f;
 	m_pFont = ContentManager::Load<SpriteFont>(L"SpriteFonts/CrashALike_64.fnt");
 
+	SoundManager::Get()->GetSystem()->createStream("Resources/Audio/Attack.wav", FMOD_DEFAULT, nullptr, &m_pAttackSound);
 }
 
 void Crash::DrawImGui()
@@ -284,8 +285,9 @@ void Crash::Draw(const SceneContext& sceneContext)
 
 void Crash::Attack(const SceneContext& /*sceneContext*/)
 {
-	Logger::LogInfo(L"Player is attacking");
+	//Logger::LogInfo(L"Player is attacking");
 
+	SoundManager::Get()->GetSystem()->playSound(m_pAttackSound, nullptr, false, nullptr);
 
 	int rays = (int)(360 / m_HitAngleOffset);
 

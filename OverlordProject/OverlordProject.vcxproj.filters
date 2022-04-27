@@ -41,6 +41,8 @@
     <ClCompile Include="Scenes\Week 9\ParticleScene.cpp" />
     <ClCompile Include="Prefabs\ExamPrefabs\ParticleLifetime.cpp" />
     <ClCompile Include="Prefabs\ExamPrefabs\LevelEnd.cpp" />
+    <ClCompile Include="Scenes\Exam\VertexAnimationScene.cpp" />
+    <ClCompile Include="Materials\VertexAnimationMaterial.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainGame.h" />
@@ -82,5 +84,7 @@
     <ClInclude Include="Scenes\Week 9\ParticleScene.h" />
     <ClInclude Include="Prefabs\ExamPrefabs\ParticleLifetime.h" />
     <ClInclude Include="Prefabs\ExamPrefabs\LevelEnd.h" />
+    <ClInclude Include="Scenes\Exam\VertexAnimationScene.h" />
+    <ClInclude Include="Materials\VertexAnimationMaterial.h" />
   </ItemGroup>
 </Project>
