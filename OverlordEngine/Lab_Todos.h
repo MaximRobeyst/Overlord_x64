@@ -52,6 +52,6 @@
 #define TODO_W10(msg) Logger::LogTodo(L"[LAB W10] " msg);
 #define TODO_W10_() Logger::LogTodo(L"[LAB W10]");
 #else
-#define TODO_W10(msg)
-#define TODO_W10_()
+//#define TODO_W10(msg)
+//#define TODO_W10_()
 #endif

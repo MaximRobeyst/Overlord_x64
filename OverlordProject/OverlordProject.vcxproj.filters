@@ -43,6 +43,9 @@
     <ClCompile Include="Prefabs\ExamPrefabs\LevelEnd.cpp" />
     <ClCompile Include="Scenes\Exam\VertexAnimationScene.cpp" />
     <ClCompile Include="Materials\VertexAnimationMaterial.cpp" />
+    <ClCompile Include="Materials\Post\PostGrayscale.cpp" />
+    <ClCompile Include="Scenes\Week 10\PostProcessingScene.cpp" />
+    <ClCompile Include="Materials\Post\PostBlur.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainGame.h" />
@@ -86,5 +89,8 @@
     <ClInclude Include="Prefabs\ExamPrefabs\LevelEnd.h" />
     <ClInclude Include="Scenes\Exam\VertexAnimationScene.h" />
     <ClInclude Include="Materials\VertexAnimationMaterial.h" />
+    <ClInclude Include="Materials\Post\PostGrayscale.h" />
+    <ClInclude Include="Scenes\Week 10\PostProcessingScene.h" />
+    <ClInclude Include="Materials\Post\PostBlur.h" />
   </ItemGroup>
 </Project>
