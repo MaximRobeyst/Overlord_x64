@@ -78,10 +78,11 @@ private:
 
 	CameraComponent* m_pCameraComponent{};
 	ControllerComponent* m_pControllerComponent{};
+	ModelAnimator* m_pAnimator{};
 
 	SpriteFont* m_pFont{};
 	GameObject* m_pSprite{};
-	GameObject* m_pModel{};
+	GameObject* m_pModelObject{};
 
 	FMOD::Sound* m_pAttackSound{};
 

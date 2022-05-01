@@ -40,7 +40,7 @@ void CrashScene::Initialize()
 	characterDesc.actionId_Attack = CharacterAttack;
 
 	m_pCrash = AddChild(new Crash(characterDesc));
-	m_pCrash->GetTransform()->Translate(0.f, 5.f, 0.f);
+	m_pCrash->GetTransform()->Translate(0.f, 6.f, 0.f);
 
 
 	m_pCamera = AddChild( 
@@ -75,13 +75,13 @@ void CrashScene::Initialize()
 	m_pFont = ContentManager::Load<SpriteFont>(L"SpriteFonts/CrashALike_32.fnt");
 
 	GameObject* pLevel = AddChild(new GameObject());
-	auto pModel = pLevel->AddComponent(new ModelComponent(L"Models/Level.ovm"));
+	auto pModel = pLevel->AddComponent(new ModelComponent(L"Models/Level/Level_Detail.ovm"));
 	auto material = MaterialManager::Get()->CreateMaterial<DiffuseMaterial_Shadow>();
-	material->SetDiffuseTexture(L"Textures/Cobblestone Textures/CobbleStone_DiffuseMap.dds");
+	material->SetDiffuseTexture(L"Textures/Level_Textures/Sand.png");
 	pModel->SetMaterial(material);
 
 	auto pRigidbody = new RigidBodyComponent(true);
-	auto triangleMesh = ContentManager::Load<PxTriangleMesh>(L"Models/Level.ovpt");
+	auto triangleMesh = ContentManager::Load<PxTriangleMesh>(L"Models/Level/Level_Collision.ovpt");
 	pRigidbody->AddCollider(PxTriangleMeshGeometry{ triangleMesh }, *pDefaultMaterial, false);
 	pLevel->AddComponent(pRigidbody);
 

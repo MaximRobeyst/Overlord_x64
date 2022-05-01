@@ -9,7 +9,6 @@ ModelAnimator::ModelAnimator(MeshFilter* pMeshFilter):
 
 void ModelAnimator::Update(const SceneContext& sceneContext)
 {
-	TODO_W7_();
 
 	//We only update the transforms if the animation is running and the clip is set
 	if (m_IsPlaying && m_ClipSet)

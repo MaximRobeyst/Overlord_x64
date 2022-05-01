@@ -6,6 +6,8 @@
 #include <Materials/Shadow/DiffuseMaterial_Shadow.h>
 #include <Prefabs/ExamPrefabs/Crate.h>
 #include <Prefabs/ExamPrefabs/Crab.h>
+#include <Materials\Shadow\DiffuseMaterial_Shadow_Skinned.h>
+#include <Materials\DiffuseMaterial_Skinned.h>
 
 Crash::Crash(const CrashDesc& characterDesc) :
 	m_CharacterDesc{ characterDesc },
@@ -90,6 +92,7 @@ void Crash::Jump(const SceneContext& sceneContext)
 {
 	//Set m_TotalVelocity.y equal to CharacterDesc::JumpSpeed
 
+	m_pAnimator->SetAnimation(L"Jump");
 	m_TotalVelocity.y = m_CharacterDesc.JumpSpeed * sceneContext.pGameTime->GetElapsed();
 	m_Grounded = false;
 }
@@ -107,14 +110,21 @@ void Crash::Initialize(const SceneContext& sceneContext)
 
 	// Model
 
-	m_pModel = AddChild(new GameObject());
-	auto model = m_pModel->AddComponent(new ModelComponent(L"Models/Crash.ovm"));
-	auto material = MaterialManager::Get()->CreateMaterial<DiffuseMaterial_Shadow>();
+	auto material = MaterialManager::Get()->CreateMaterial<DiffuseMaterial_Shadow_Skinned>();
 	material->SetDiffuseTexture(L"Textures/tex_crash.png");
+
+	m_pModelObject = AddChild(new GameObject());
+	auto model = m_pModelObject->AddComponent(new ModelComponent(L"Models/Character/Test_Character.ovm"));
 	model->SetMaterial(material);
 
-	m_pModel->GetTransform()->Rotate(XMFLOAT3{ 0, 180.0f, 0.0f });
-	m_pModel->GetTransform()->Translate(XMFLOAT3{ 0.0f, -m_CharacterDesc.controller.height * .5f, 0.f });
+	m_pModelObject->GetTransform()->Scale(0.005f);
+	m_pModelObject->GetTransform()->Rotate(XMFLOAT3{ 0, 180.0f, 0.0f });
+	m_pModelObject->GetTransform()->Translate(XMFLOAT3{ 0.0f, -m_CharacterDesc.controller.height * .5f, 0.f });
+
+	m_pAnimator = model->GetAnimator();
+	m_pAnimator->SetAnimation(L"Idle");
+	m_pAnimator->Play();
+
 	//pCamera->GetTransform()->Translate(0.f, m_CharacterDesc.controller.height * 1.25f, -5.f);
 
 	m_pSprite = AddChild(new GameObject());
@@ -191,6 +201,7 @@ void Crash::Update(const SceneContext& sceneContext)
 		//If the character is moving (= input is pressed)
 		if (move.x != 0 || move.y != 0)
 		{
+			m_pAnimator->SetAnimation(L"Walk");
 			//Calculate & Store the current direction (m_CurrentDirection) >> based on the forward/right vectors and the pressed input
 			XMVECTOR newDirection = (forward * move.y) + (right * move.x);
 
@@ -210,13 +221,14 @@ void Crash::Update(const SceneContext& sceneContext)
 			// A lerp function
 			XMStoreFloat(&m_CurrentAngle, XMVectorLerp(XMLoadFloat(&m_CurrentAngle), angle, sceneContext.pGameTime->GetElapsed() * m_CharacterDesc.rotationSpeed));
 
-			m_pModel->GetTransform()->Rotate(0, m_CurrentAngle, 0, false);
+			m_pModelObject->GetTransform()->Rotate(0, m_CurrentAngle, 0, false);
 		}
 		//Else (character is not moving, or stopped moving)
 		else
 		{
+			m_pAnimator->SetAnimation(L"Idle");
 			//Decrease the current MoveSpeed with the current Acceleration (m_MoveSpeed)
-			m_MoveSpeed -= m_MoveAcceleration * sceneContext.pGameTime->GetElapsed(); ;
+			m_MoveSpeed -= m_MoveAcceleration * sceneContext.pGameTime->GetElapsed();
 
 			//Make sure the current MoveSpeed doesn't get smaller than zero
 			MathHelper::Clamp(m_MoveSpeed, m_CharacterDesc.maxMoveSpeed, 0.f);
