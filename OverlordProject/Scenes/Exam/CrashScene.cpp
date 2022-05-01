@@ -76,9 +76,31 @@ void CrashScene::Initialize()
 
 	GameObject* pLevel = AddChild(new GameObject());
 	auto pModel = pLevel->AddComponent(new ModelComponent(L"Models/Level/Level_Detail.ovm"));
-	auto material = MaterialManager::Get()->CreateMaterial<DiffuseMaterial_Shadow>();
-	material->SetDiffuseTexture(L"Textures/Level_Textures/Sand.png");
-	pModel->SetMaterial(material);
+
+
+	auto pSandMaterial = MaterialManager::Get()->CreateMaterial<DiffuseMaterial_Shadow>();
+	pSandMaterial->SetDiffuseTexture(L"Textures/Level_Textures/Sand.png");
+
+	auto pBrickMaterial = MaterialManager::Get()->CreateMaterial<DiffuseMaterial_Shadow>();
+	pBrickMaterial->SetDiffuseTexture(L"Textures/Level_Textures/Brick.png");
+
+	auto pShipMaterial = MaterialManager::Get()->CreateMaterial<ColorMaterial>();
+
+	auto pRockMaterial = MaterialManager::Get()->CreateMaterial<DiffuseMaterial_Shadow>();
+	pRockMaterial->SetDiffuseTexture(L"Textures/Level_Textures/Rocks.jpeg");
+
+	auto pTreeMaterial = MaterialManager::Get()->CreateMaterial<DiffuseMaterial_Shadow>();
+	pTreeMaterial->SetDiffuseTexture(L"Textures/Level_Textures/palmTr.png");
+
+	auto pLeaveMaterial = MaterialManager::Get()->CreateMaterial<DiffuseMaterial_Shadow>();
+	pLeaveMaterial->SetDiffuseTexture(L"Textures/Level_Textures/PalmsTreesTexture.png");
+
+	pModel->SetMaterial(pSandMaterial, 0);
+	pModel->SetMaterial(pBrickMaterial, 1);
+	pModel->SetMaterial(pShipMaterial, 2);
+	pModel->SetMaterial(pBrickMaterial, 3);
+	pModel->SetMaterial(pTreeMaterial, 5);
+	pModel->SetMaterial(pLeaveMaterial, 4);
 
 	auto pRigidbody = new RigidBodyComponent(true);
 	auto triangleMesh = ContentManager::Load<PxTriangleMesh>(L"Models/Level/Level_Collision.ovpt");
