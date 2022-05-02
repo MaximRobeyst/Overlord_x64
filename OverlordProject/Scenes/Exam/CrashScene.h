@@ -32,5 +32,7 @@ private:
 	Crash* m_pCrash{nullptr};
 	PathCamera* m_pCamera{nullptr};
 	SpriteFont* m_pFont{};
+
+	FMOD::Sound* m_pTheme{};
 };
 

@@ -23,7 +23,10 @@ void CrashScene::Initialize()
 	m_SceneContext.settings.enableOnGUI = true;
 
 
-	m_SceneContext.pLights->SetDirectionalLight({ -95.6139526f,66.1346436f,-41.1850471f }, { 0.740129888f, -0.597205281f, 0.309117377f });
+	m_SceneContext.pLights->SetDirectionalLight({ -125.6139526f,66.1346436f,-41.1850471f }, { 0.740129888f, -0.597205281f, 0.309117377f });
+
+	SoundManager::Get()->GetSystem()->createStream("Resources/Audio/Crash_Theme.wav", FMOD_LOOP_NORMAL, nullptr, &m_pTheme);
+	SoundManager::Get()->GetSystem()->playSound(m_pTheme, nullptr, false, nullptr);
 
 	//Ground Plane
 	const auto pDefaultMaterial = PxGetPhysics().createMaterial(0.5f, 0.5f, 0.5f);
@@ -46,13 +49,16 @@ void CrashScene::Initialize()
 	m_pCamera = AddChild( 
 		new PathCamera(m_pCrash->GetTransform(),
 			std::vector<XMFLOAT3>{
-			XMFLOAT3(0.f,  1.25f, -5.5f),
+			XMFLOAT3(0.f, 1.25f, -5.5f),
 			XMFLOAT3{ 0.f, 1.25f, 10.f },
 			XMFLOAT3{ 0.f, -2.5f, 25.f },
 			XMFLOAT3{ 0.f, -1.75f, 37.5f },
 			XMFLOAT3{ 0.f, -1.75f, 50.f },
 			XMFLOAT3{ 0.f, 2.f , 65.f },
-			XMFLOAT3{ 0.f, 1.25f , 100.f }
+			XMFLOAT3{ 0.f, 1.25f , 100.f },
+			XMFLOAT3{ 0.f, 6.f, 107.f },
+			XMFLOAT3{ 0.f, 14.f, 110.f },
+			XMFLOAT3{ 0.f, 14.f, 125.f }
 		}, XMFLOAT3{0.f, 1.f, -2.5f}
 	));
 
