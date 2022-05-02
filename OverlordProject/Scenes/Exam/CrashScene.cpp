@@ -95,12 +95,16 @@ void CrashScene::Initialize()
 	auto pLeaveMaterial = MaterialManager::Get()->CreateMaterial<DiffuseMaterial_Shadow>();
 	pLeaveMaterial->SetDiffuseTexture(L"Textures/Level_Textures/PalmsTreesTexture.png");
 
+	auto pPillarMaterial = MaterialManager::Get()->CreateMaterial<DiffuseMaterial_Shadow>();
+	pPillarMaterial->SetDiffuseTexture(L"Textures/Level_Textures/Pillar_color.png");
+
 	pModel->SetMaterial(pSandMaterial, 0);
 	pModel->SetMaterial(pBrickMaterial, 1);
 	pModel->SetMaterial(pShipMaterial, 2);
 	pModel->SetMaterial(pBrickMaterial, 3);
-	pModel->SetMaterial(pTreeMaterial, 5);
 	pModel->SetMaterial(pLeaveMaterial, 4);
+	pModel->SetMaterial(pTreeMaterial, 5);
+	pModel->SetMaterial(pPillarMaterial, 6);
 
 	auto pRigidbody = new RigidBodyComponent(true);
 	auto triangleMesh = ContentManager::Load<PxTriangleMesh>(L"Models/Level/Level_Collision.ovpt");
