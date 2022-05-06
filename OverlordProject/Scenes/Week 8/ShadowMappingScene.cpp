@@ -65,7 +65,7 @@ void ShadowMappingScene::PostDraw()
 	//Draw ShadowMap (Debug Visualization)
 	if (m_DrawShadowMap) {
 
-		ShadowMapRenderer::Get()->Debug_DrawDepthSRV({ m_SceneContext.windowWidth - 10.f, 10.f }, { m_ShadowMapScale, m_ShadowMapScale }, { 1.f,0.f });
+		ShadowMapRenderer::Get()->Debug_DrawDepthSRV({ m_SceneContext.windowWidth - 1000.f, 10.f }, { m_ShadowMapScale, m_ShadowMapScale }, { 0.f,0.f });
 	}
 }
 

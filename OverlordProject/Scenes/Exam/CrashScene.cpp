@@ -23,9 +23,9 @@ void CrashScene::Initialize()
 	m_SceneContext.settings.enableOnGUI = true;
 
 
-	m_SceneContext.pLights->SetDirectionalLight({ -125.6139526f,66.1346436f,-41.1850471f }, { 0.740129888f, -0.597205281f, 0.309117377f });
+	m_SceneContext.pLights->SetDirectionalLight({ -250.f,66.1346436f,-41.1850471f }, { 0.740129888f, -0.597205281f, 0.309117377f });
 
-	SoundManager::Get()->GetSystem()->createStream("Resources/Audio/Crash_Theme.wav", FMOD_LOOP_NORMAL, nullptr, &m_pTheme);
+	//SoundManager::Get()->GetSystem()->createStream("Resources/Audio/Crash_Theme.wav", FMOD_LOOP_NORMAL, nullptr, &m_pTheme);
 	SoundManager::Get()->GetSystem()->playSound(m_pTheme, nullptr, false, nullptr);
 
 	//Ground Plane
@@ -49,16 +49,29 @@ void CrashScene::Initialize()
 	m_pCamera = AddChild( 
 		new PathCamera(m_pCrash->GetTransform(),
 			std::vector<XMFLOAT3>{
-			XMFLOAT3(0.f, 1.25f, -5.5f),
-			XMFLOAT3{ 0.f, 1.25f, 10.f },
-			XMFLOAT3{ 0.f, -2.5f, 25.f },
-			XMFLOAT3{ 0.f, -1.75f, 37.5f },
-			XMFLOAT3{ 0.f, -1.75f, 50.f },
-			XMFLOAT3{ 0.f, 2.f , 65.f },
-			XMFLOAT3{ 0.f, 1.25f , 100.f },
-			XMFLOAT3{ 0.f, 6.f, 107.f },
-			XMFLOAT3{ 0.f, 14.f, 110.f },
-			XMFLOAT3{ 0.f, 14.f, 125.f }
+					XMFLOAT3(0.f, 1.25f, -5.5f),
+					XMFLOAT3{ 0.f, 1.25f, 10.f },
+					XMFLOAT3{ 0.f, -2.5f, 25.f },
+					XMFLOAT3{ 0.f, -1.75f, 37.5f },
+					XMFLOAT3{ 0.f, -1.75f, 50.f },
+					XMFLOAT3{ 0.f, 2.f , 65.f },
+					XMFLOAT3{ 0.f, 1.25f , 100.f },
+					XMFLOAT3{ 0.f, 6.f, 107.f },
+					XMFLOAT3{ 0.f, 14.f, 110.f },
+					XMFLOAT3{ 0.f, 14.f, 125.f },
+					XMFLOAT3{ 4.f, 14.f, 150.f },
+					XMFLOAT3{3.750f, 14.f, 155.f},
+					XMFLOAT3{1.0f, 18.f, 165.f},
+					XMFLOAT3{ -2.0f, 18.f, 180.f },
+					XMFLOAT3{ -2.0f, 18.f, 195.f },	
+					XMFLOAT3{ -2.0, 18.f, 207.5f},
+						XMFLOAT3{3.0f, 18.f, 218.f},
+						XMFLOAT3{ 7.0f, 22.f, 230.f },
+						XMFLOAT3{ 7.0f, 23.f, 240.f },
+						XMFLOAT3{ 8.0f, 21.5f, 250.f },
+						XMFLOAT3{8.0f, 21.5f, 265.f},
+						XMFLOAT3{ 8.0f, 21.5f, 270.f },
+
 		}, XMFLOAT3{0.f, 1.f, -2.5f}
 	));
 
@@ -93,7 +106,7 @@ void CrashScene::Initialize()
 	auto pShipMaterial = MaterialManager::Get()->CreateMaterial<ColorMaterial>();
 
 	auto pRockMaterial = MaterialManager::Get()->CreateMaterial<DiffuseMaterial_Shadow>();
-	pRockMaterial->SetDiffuseTexture(L"Textures/Level_Textures/Rocks.jpeg");
+	pRockMaterial->SetDiffuseTexture(L"Textures/Level_Textures/Rocks.png");
 
 	auto pTreeMaterial = MaterialManager::Get()->CreateMaterial<DiffuseMaterial_Shadow>();
 	pTreeMaterial->SetDiffuseTexture(L"Textures/Level_Textures/palmTr.png");
@@ -111,9 +124,9 @@ void CrashScene::Initialize()
 	pModel->SetMaterial(pBrickMaterial, 1);
 	pModel->SetMaterial(pShipMaterial, 2);
 	pModel->SetMaterial(pRockMaterial, 3);
-	//pModel->SetMaterial(pRockMaterial, 3);
-	pModel->SetMaterial(pTreeMaterial, 4);
+	pModel->SetMaterial(pRockMaterial, 4);
 	pModel->SetMaterial(pLeaveMaterial, 5);
+	pModel->SetMaterial(pTreeMaterial, 6);
 	pModel->SetMaterial(pPillarMaterial, 7);
 	//pModel->SetMaterial(pTempleMaterial, 8);
 
@@ -126,7 +139,7 @@ void CrashScene::Initialize()
 
 	auto pKillTrigger = AddChild(new GameObject());
 	pRigidbody = pKillTrigger->AddComponent(new RigidBodyComponent(true));
-	pRigidbody->AddCollider(PxBoxGeometry{ 100.f, .5f, 100.f }, *pDefaultMaterial, true);
+	pRigidbody->AddCollider(PxBoxGeometry{ 1000.f, .5f, 1000.f }, *pDefaultMaterial, true);
 
 	pKillTrigger->GetTransform()->Translate(0, -7.5f, 0.f);
 
@@ -156,8 +169,18 @@ void CrashScene::Update()
 {
 }
 
+void CrashScene::PostDraw()
+{
+	//Draw ShadowMap (Debug Visualization)
+	//if (m_DrawShadowMap) {
+	//
+	//	ShadowMapRenderer::Get()->Debug_DrawDepthSRV({ m_SceneContext.windowWidth - (720.f * m_ShadowMapScale), 10.f }, { m_ShadowMapScale, m_ShadowMapScale }, { 0.f,0.f });
+	//}
+}
+
 void CrashScene::OnGUI()
 {
+	ImGui::Checkbox("Draw ShadowMap", &m_DrawShadowMap);
 	m_pCrash->DrawImGui();
 	m_pCamera->DrawImGui();
 }

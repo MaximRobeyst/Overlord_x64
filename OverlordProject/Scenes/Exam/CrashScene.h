@@ -15,6 +15,7 @@ public:
 protected:
 	void Initialize() override;
 	void Update() override;
+	void PostDraw() override;
 	void OnGUI() override;
 private:
 	void Killzone(GameObject* /*pTriggerObject*/, GameObject* pOtherObject, PxTriggerAction action);
@@ -28,6 +29,9 @@ private:
 		CharacterJump,
 		CharacterAttack
 	};
+
+	bool m_DrawShadowMap{ true };
+	float m_ShadowMapScale{ 0.1f };
 
 	Crash* m_pCrash{nullptr};
 	PathCamera* m_pCamera{nullptr};

@@ -130,6 +130,7 @@ void Crash::Initialize(const SceneContext& sceneContext)
 	m_pSprite = AddChild(new GameObject());
 	m_pSprite->AddComponent(new SpriteComponent(L"Textures/LifeSprite.png", { 0.5, 0.5f }));
 	m_pSprite->GetTransform()->Translate(sceneContext.windowWidth - 175.f, 10.f, 0.f);
+	
 
 	SetCheckpoint(GetTransform()->GetPosition());
 }

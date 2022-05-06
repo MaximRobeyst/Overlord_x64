@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "PathCamera.h"
 
+#include <fstream>
+
 PathCamera::PathCamera(TransformComponent* pFollowTarget, const std::vector<XMFLOAT3>& path, const XMFLOAT3& offset)
 	: m_pFollowTarget{pFollowTarget}
 	, m_Path{path}
@@ -10,6 +12,21 @@ PathCamera::PathCamera(TransformComponent* pFollowTarget, const std::vector<XMFL
 	AddComponent(m_pCamera);
 
 	GetTransform()->Translate(path[0]);
+}
+
+PathCamera::~PathCamera()
+{
+	auto stream = std::ofstream("Resources/camerapath.bin");
+	size_t size = m_Path.size();
+
+	stream.write((char*)&size, sizeof(size_t));
+
+	for (size_t i = 0; i < size; ++i)
+	{
+		stream.write((char*)&m_Path[i], sizeof(XMFLOAT3));
+	}
+
+	stream.close();
 }
 
 void PathCamera::DrawImGui()
@@ -38,6 +55,11 @@ void PathCamera::DrawImGui()
 			{
 				m_Path[i] = XMFLOAT3{ point[0], point[1] , point[2] };
 			}
+		}
+
+		if (ImGui::Button("Add Button", ImVec2{ 100.0f, 20.0f }))
+		{
+			m_Path.push_back(XMFLOAT3{ m_Path[m_Path.size() - 1] });
 		}
 	}
 
