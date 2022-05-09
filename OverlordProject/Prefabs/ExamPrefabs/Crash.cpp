@@ -303,6 +303,8 @@ void Crash::Attack(const SceneContext& sceneContext)
 	if (m_AttackTimer >= m_AttackLength)
 	{
 		m_AttackTimer = 0.0f;
+		m_CurrentAttackRotation = 0.0f;
+		m_pModelObject->GetTransform()->Rotate(0, m_CurrentAngle, 0.0f);
 		m_Attacking = false;
 	}
 
