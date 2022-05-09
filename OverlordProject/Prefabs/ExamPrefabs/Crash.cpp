@@ -103,29 +103,22 @@ void Crash::Initialize(const SceneContext& sceneContext)
 	//Controller
 	m_pControllerComponent = AddComponent(new ControllerComponent(m_CharacterDesc.controller));
 
-	//Camera
-	
-	//m_pCameraComponent = pCamera->GetComponent<CameraComponent>();
-	//m_pCameraComponent->SetActive(true); //Uncomment to make this camera the active camera
-
 	// Model
-
-	auto material = MaterialManager::Get()->CreateMaterial<DiffuseMaterial_Shadow>();
-	material->SetDiffuseTexture(L"Textures/tex_crash.png");
+	auto material = MaterialManager::Get()->CreateMaterial<DiffuseMaterial_Skinned>();
+	material->SetDiffuseTexture(L"Textures/TestSprite.jpg");
 
 	m_pModelObject = AddChild(new GameObject());
-	auto model = m_pModelObject->AddComponent(new ModelComponent(L"Models/Crash.ovm"));
-	model->SetMaterial(material);
+	auto model = m_pModelObject->AddComponent(new ModelComponent(L"Models/Character/Test_Character.ovm"));
+	model->SetMaterial(material, 0);
+	model->SetMaterial(material, 1);
 
-	//m_pModelObject->GetTransform()->Scale(0.005f);
+	m_pModelObject->GetTransform()->Scale(0.005f);
 	m_pModelObject->GetTransform()->Rotate(XMFLOAT3{ 0, 180.0f, 0.0f });
 	m_pModelObject->GetTransform()->Translate(XMFLOAT3{ 0.0f, -m_CharacterDesc.controller.height * .5f, 0.f });
 
-	//m_pAnimator = model->GetAnimator();
-	//m_pAnimator->SetAnimation(L"Idle");
-	//m_pAnimator->Play();
-
-	//pCamera->GetTransform()->Translate(0.f, m_CharacterDesc.controller.height * 1.25f, -5.f);
+	m_pAnimator = model->GetAnimator();
+	m_pAnimator->SetAnimation(1);
+	m_pAnimator->Play();
 
 	m_pSprite = AddChild(new GameObject());
 	m_pSprite->AddComponent(new SpriteComponent(L"Textures/LifeSprite.png", { 0.5, 0.5f }));
@@ -139,6 +132,8 @@ void Crash::Update(const SceneContext& sceneContext)
 {
 	if (m_Active)
 	{
+		if (m_Attacking) Attack(sceneContext);
+
 		//constexpr float epsilon{ 0.01f }; //Constant that can be used to compare if a float is near zero
 
 		//***************
@@ -171,7 +166,7 @@ void Crash::Update(const SceneContext& sceneContext)
 			look.y = (float)InputManager::GetMouseMovement().y;
 		}
 
-		if (sceneContext.pInput->IsActionTriggered((int)m_CharacterDesc.actionId_Attack)) Attack(sceneContext);
+		if (sceneContext.pInput->IsActionTriggered((int)m_CharacterDesc.actionId_Attack)) m_Attacking = true;
 
 		//************************
 		//GATHERING TRANSFORM INFO
@@ -296,11 +291,23 @@ void Crash::Draw(const SceneContext& sceneContext)
 	TextRenderer::Get()->DrawText(m_pFont, std::to_wstring(m_Lives), XMFLOAT2{ sceneContext.windowWidth - 100.f, 10.f }, XMFLOAT4{ Colors::Orange });
 }
 
-void Crash::Attack(const SceneContext& /*sceneContext*/)
+void Crash::Attack(const SceneContext& sceneContext)
 {
 	//Logger::LogInfo(L"Player is attacking");
+	if (m_AttackTimer == 0.0f)
+	{
+		SoundManager::Get()->GetSystem()->playSound(m_pAttackSound, nullptr, false, nullptr);
+	}
 
-	SoundManager::Get()->GetSystem()->playSound(m_pAttackSound, nullptr, false, nullptr);
+	m_AttackTimer += sceneContext.pGameTime->GetElapsed();
+	if (m_AttackTimer >= m_AttackLength)
+	{
+		m_AttackTimer = 0.0f;
+		m_Attacking = false;
+	}
+
+	m_CurrentAttackRotation += m_AttackRotationSpeed * sceneContext.pGameTime->GetElapsed();
+	m_pModelObject->GetTransform()->Rotate( 0, m_CurrentAttackRotation, 0.f);
 
 	int rays = (int)(360 / m_HitAngleOffset);
 

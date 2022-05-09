@@ -53,33 +53,7 @@ void CrashScene::Initialize()
 
 
 	m_pCamera = AddChild( 
-		new PathCamera(m_pCrash->GetTransform(),
-			std::vector<XMFLOAT3>{
-					XMFLOAT3(0.f, 1.25f, -5.5f),
-					XMFLOAT3{ 0.f, 1.25f, 10.f },
-					XMFLOAT3{ 0.f, -2.5f, 25.f },
-					XMFLOAT3{ 0.f, -1.75f, 37.5f },
-					XMFLOAT3{ 0.f, -1.75f, 50.f },
-					XMFLOAT3{ 0.f, 2.f , 65.f },
-					XMFLOAT3{ 0.f, 1.25f , 100.f },
-					XMFLOAT3{ 0.f, 6.f, 107.f },
-					XMFLOAT3{ 0.f, 14.f, 110.f },
-					XMFLOAT3{ 0.f, 14.f, 125.f },
-					XMFLOAT3{ 4.f, 14.f, 150.f },
-					XMFLOAT3{3.750f, 14.f, 155.f},
-					XMFLOAT3{1.0f, 18.f, 165.f},
-					XMFLOAT3{ -2.0f, 18.f, 180.f },
-					XMFLOAT3{ -2.0f, 18.f, 195.f },	
-					XMFLOAT3{ -2.0, 18.f, 207.5f},
-						XMFLOAT3{3.0f, 18.f, 218.f},
-						XMFLOAT3{ 7.0f, 22.f, 230.f },
-						XMFLOAT3{ 7.0f, 23.f, 240.f },
-						XMFLOAT3{ 8.0f, 21.5f, 250.f },
-						XMFLOAT3{8.0f, 21.5f, 265.f},
-						XMFLOAT3{ 8.0f, 21.5f, 270.f },
-
-		}, XMFLOAT3{0.f, 1.f, -2.5f}
-	));
+		new PathCamera(m_pCrash->GetTransform(), XMFLOAT3{0.f, 1.f, -2.5f}));
 
 	auto cameraComponent = m_pCamera->GetComponent<CameraComponent>();
 	cameraComponent->SetActive(true); //Uncomment to make this camera the active camera

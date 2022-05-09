@@ -71,6 +71,12 @@ private:
 	bool m_Grounded{ false };
 	bool m_Active{ true };
 
+	bool m_Attacking{ false };
+	float m_AttackTimer{ 0.0f };
+	float m_AttackLength{ 0.5f };
+	float m_AttackRotationSpeed{ 1440.f };
+	float m_CurrentAttackRotation{ 0.0f };
+
 	float m_CurrentAngle{ 0.0f };
 
 	int m_Lives{ 4 };

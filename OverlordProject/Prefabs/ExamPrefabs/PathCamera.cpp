@@ -3,15 +3,23 @@
 
 #include <fstream>
 
-PathCamera::PathCamera(TransformComponent* pFollowTarget, const std::vector<XMFLOAT3>& path, const XMFLOAT3& offset)
+PathCamera::PathCamera(TransformComponent* pFollowTarget, const XMFLOAT3& offset)
 	: m_pFollowTarget{pFollowTarget}
-	, m_Path{path}
 	, m_Offset{offset}
 {
 	m_pCamera = new CameraComponent();
 	AddComponent(m_pCamera);
 
-	GetTransform()->Translate(path[0]);
+	auto stream = std::ifstream("Resources/camerapath.bin");
+	size_t size;
+	stream.read((char*)&size, sizeof(size_t));
+	m_Path.resize(size);
+	for (size_t i = 0; i < size; ++i)
+	{
+		stream.read((char*)&m_Path[i], sizeof(XMFLOAT3));
+	}
+
+	GetTransform()->Translate(m_Path[0]);
 }
 
 PathCamera::~PathCamera()

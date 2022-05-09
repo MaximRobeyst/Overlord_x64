@@ -2,7 +2,7 @@
 class PathCamera final : public GameObject
 {
 public:
-	PathCamera(TransformComponent* followTarget, const std::vector<XMFLOAT3>& m_Path, const XMFLOAT3& offset = XMFLOAT3{});
+	PathCamera(TransformComponent* followTarget, const XMFLOAT3& offset = XMFLOAT3{});
 	~PathCamera() override;
 	PathCamera(const PathCamera & other) = delete;
 	PathCamera(PathCamera && other) noexcept = delete;
