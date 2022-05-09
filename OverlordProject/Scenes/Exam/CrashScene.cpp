@@ -23,7 +23,13 @@ void CrashScene::Initialize()
 	m_SceneContext.settings.enableOnGUI = true;
 
 
-	m_SceneContext.pLights->SetDirectionalLight({ -250.f,66.1346436f,-41.1850471f }, { 0.740129888f, -0.597205281f, 0.309117377f });
+	m_SceneContext.pLights->SetDirectionalLight({ -96.f,66.1346436f,-41.1850471f }, { 0.740129888f, -0.597205281f, 0.309117377f });
+	GameObject* pLightViz = new GameObject();
+	auto crateModel = pLightViz->AddComponent(new ModelComponent(L"Models/crate.ovm"));
+	auto material = MaterialManager::Get()->CreateMaterial<ColorMaterial>();
+	crateModel->SetMaterial(material);
+	pLightViz->GetTransform()->Translate(-96.f, 66.1346436f, -41.1850471f);
+	AddChild(pLightViz);
 
 	//SoundManager::Get()->GetSystem()->createStream("Resources/Audio/Crash_Theme.wav", FMOD_LOOP_NORMAL, nullptr, &m_pTheme);
 	SoundManager::Get()->GetSystem()->playSound(m_pTheme, nullptr, false, nullptr);
@@ -167,6 +173,7 @@ void CrashScene::Initialize()
 
 void CrashScene::Update()
 {
+	m_SceneContext.pLights->GetDirectionalLight().position.z = -41.1850471f + m_pCrash->GetTransform()->GetPosition().z;
 }
 
 void CrashScene::PostDraw()
@@ -181,8 +188,30 @@ void CrashScene::PostDraw()
 void CrashScene::OnGUI()
 {
 	ImGui::Checkbox("Draw ShadowMap", &m_DrawShadowMap);
+	float position[3]{ m_SceneContext.pLights->GetDirectionalLight().position.x, m_SceneContext.pLights->GetDirectionalLight().position.y, m_SceneContext.pLights->GetDirectionalLight().position.z };
+	if (ImGui::InputFloat3("Camera position: ", position))
+	{
+		XMFLOAT4 directionalLightPosition{ position[0], position[1], position[2], m_SceneContext.pLights->GetDirectionalLight().position.w };
+		m_SceneContext.pLights->GetDirectionalLight().position = directionalLightPosition;
+	}
+
+	//float direction[3]{ m_SceneContext.pLights->GetDirectionalLight().direction.x, m_SceneContext.pLights->GetDirectionalLight().direction.y, m_SceneContext.pLights->GetDirectionalLight().direction.z };
+	//if (ImGui::InputFloat3("Camera position: ", direction, "%.3f", 1))
+	//{
+	//	XMFLOAT4 directionalLightPosition{ direction[0], direction[1], direction[2], m_SceneContext.pLights->GetDirectionalLight().direction.w };
+	//	m_SceneContext.pLights->GetDirectionalLight().position = directionalLightPosition;
+	//}
+
 	m_pCrash->DrawImGui();
 	m_pCamera->DrawImGui();
+
+	
+	XMFLOAT3 lightPosition;
+	XMStoreFloat3(&lightPosition, XMLoadFloat4(&m_SceneContext.pLights->GetDirectionalLight().position));
+	XMFLOAT3 targetPosition;
+	XMStoreFloat3(&targetPosition, XMLoadFloat4(&m_SceneContext.pLights->GetDirectionalLight().position) + XMLoadFloat4(&m_SceneContext.pLights->GetDirectionalLight().direction));
+
+	DebugRenderer::DrawLine(lightPosition, targetPosition, XMFLOAT4{ Colors::Green });
 }
 
 void CrashScene::Killzone(GameObject*, GameObject* pOtherObject, PxTriggerAction action)
