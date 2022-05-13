@@ -95,8 +95,14 @@ void PathCamera::Update(const SceneContext& /*sceneContext*/)
 	XMStoreFloat(&distancePlayer, XMVector3LengthSq(v1 - targetPosition));
 	XMStoreFloat(&dot, XMVector3Dot(targetPosition - v1, v2 - v1));
 
+
 	percentage = distancePlayer / length;
 	auto newPosition = XMVectorLerp(v1, v2, percentage);
+
+	//const XMVECTOR upVec = XMLoadFloat3(&GetTransform()->GetUp());
+	//auto lookatMatrix = XMMatrixLookAtRH(newPosition, v2, upVec);
+	//auto rotation  = XMQuaternionRotationMatrix(lookatMatrix);
+	//GetTransform()->Rotate(rotation, true);
 
 	if (percentage >= 1.0f)
 		++m_CurrentIndex %= m_Path.size();

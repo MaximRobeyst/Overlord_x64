@@ -61,6 +61,7 @@
 #endif
 
 #ifdef Exam
+#include "Scenes\Exam\MainMenuScene.h"
 #include"Scenes/Exam/CrashScene.h"
 #include "Scenes/Exam/VertexAnimationScene.h"
 #endif
@@ -146,6 +147,7 @@ void MainGame::Initialize()
 
 #ifdef Exam
 	//SceneManager::Get()->AddGameScene(new VertexAnimationScene());
+	SceneManager::Get()->AddGameScene(new MainMenuScene());
 	SceneManager::Get()->AddGameScene(new CrashScene());
 #endif // Exam
 
