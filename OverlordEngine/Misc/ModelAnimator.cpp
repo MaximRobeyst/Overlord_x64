@@ -88,6 +88,8 @@ void ModelAnimator::Update(const SceneContext& sceneContext)
 
 void ModelAnimator::SetAnimation(const std::wstring& clipName)
 {
+	if (clipName == m_CurrentClip.name) return;
+
 	//Set m_ClipSet to false
 	m_ClipSet = false;
 	//Iterate the m_AnimationClips vector and search for an AnimationClip with the given name (clipName)

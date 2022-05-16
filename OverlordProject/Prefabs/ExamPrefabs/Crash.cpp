@@ -92,7 +92,7 @@ void Crash::Jump(const SceneContext& sceneContext)
 {
 	//Set m_TotalVelocity.y equal to CharacterDesc::JumpSpeed
 
-	//m_pAnimator->SetAnimation(L"Jump");
+	m_pAnimator->SetAnimation(L"Jump");
 	m_TotalVelocity.y = m_CharacterDesc.JumpSpeed * sceneContext.pGameTime->GetElapsed();
 	m_Grounded = false;
 }
@@ -105,7 +105,7 @@ void Crash::Initialize(const SceneContext& sceneContext)
 
 	// Model
 	auto material = MaterialManager::Get()->CreateMaterial<DiffuseMaterial_Skinned>();
-	material->SetDiffuseTexture(L"Textures/TestSprite.jpg");
+	material->SetDiffuseTexture(L"Textures/tex_crash.png");
 
 	m_pModelObject = AddChild(new GameObject());
 	auto model = m_pModelObject->AddComponent(new ModelComponent(L"Models/Character/Test_Character.ovm"));
@@ -117,7 +117,7 @@ void Crash::Initialize(const SceneContext& sceneContext)
 	m_pModelObject->GetTransform()->Translate(XMFLOAT3{ 0.0f, -m_CharacterDesc.controller.height * .5f, 0.f });
 
 	m_pAnimator = model->GetAnimator();
-	m_pAnimator->SetAnimation(1);
+	m_pAnimator->SetAnimation(L"Idle");
 	m_pAnimator->Play();
 
 	m_pSprite = AddChild(new GameObject());
@@ -197,7 +197,7 @@ void Crash::Update(const SceneContext& sceneContext)
 		//If the character is moving (= input is pressed)
 		if (move.x != 0 || move.y != 0)
 		{
-			//m_pAnimator->SetAnimation(L"Walk");
+			m_pAnimator->SetAnimation(L"Walk");
 			//Calculate & Store the current direction (m_CurrentDirection) >> based on the forward/right vectors and the pressed input
 			XMVECTOR newDirection = (forward * move.y) + (right * move.x);
 
@@ -222,7 +222,8 @@ void Crash::Update(const SceneContext& sceneContext)
 		//Else (character is not moving, or stopped moving)
 		else
 		{
-			//m_pAnimator->SetAnimation(L"Idle");
+			if(IsGrounded())
+				m_pAnimator->SetAnimation(L"Idle");
 			//Decrease the current MoveSpeed with the current Acceleration (m_MoveSpeed)
 			m_MoveSpeed -= m_MoveAcceleration * sceneContext.pGameTime->GetElapsed();
 
@@ -246,6 +247,9 @@ void Crash::Update(const SceneContext& sceneContext)
 		m_Grounded = IsGrounded(); //m_pControllerComponent->GetCollisionFlags() == PxControllerCollisionFlag::eCOLLISION_DOWN;
 		if (!m_Grounded)
 		{
+
+			m_pAnimator->SetAnimation(L"Falling");
+
 			//Decrease the y component of m_TotalVelocity with a fraction (ElapsedTime) of the Fall Acceleration (m_FallAcceleration)
 			m_TotalVelocity.y -= m_FallAcceleration * (sceneContext.pGameTime->GetElapsed() * sceneContext.pGameTime->GetElapsed());
 			//Make sure that the minimum speed stays above -CharacterDesc::maxFallSpeed (negative!)
@@ -311,7 +315,7 @@ void Crash::Attack(const SceneContext& sceneContext)
 	m_CurrentAttackRotation += m_AttackRotationSpeed * sceneContext.pGameTime->GetElapsed();
 	m_pModelObject->GetTransform()->Rotate( 0, m_CurrentAttackRotation, 0.f);
 
-	int rays = (int)(360 / m_HitAngleOffset);
+	int rays = (int)(360.f / m_HitAngleOffset);
 
 	XMVECTOR forward = XMLoadFloat3(&GetTransform()->GetForward());
 	XMMATRIX rotationMatrix{};

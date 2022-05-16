@@ -14,7 +14,7 @@ struct CrashDesc
 		controller.material = pMaterial;
 	}
 
-	float maxMoveSpeed{ 15.f }; //Maximum Move
+	float maxMoveSpeed{ 10.f }; //Maximum Move
 	float maxFallSpeed{ 10.f };
 
 	float JumpSpeed{ 10.f };
@@ -26,7 +26,7 @@ struct CrashDesc
 
 	float rotationSpeed{ 60.f };
 
-	float attackTime{ 2.0f };
+	float attackTime{ 1.0f };
 
 	int actionId_MoveLeft{ -1 };
 	int actionId_MoveRight{ -1 };
@@ -74,7 +74,7 @@ private:
 	bool m_Attacking{ false };
 	float m_AttackTimer{ 0.0f };
 	float m_AttackLength{ 0.5f };
-	float m_AttackRotationSpeed{ 1440.f };
+	float m_AttackRotationSpeed{ 2160.f };
 	float m_CurrentAttackRotation{ 0.0f };
 
 	float m_CurrentAngle{ 0.0f };

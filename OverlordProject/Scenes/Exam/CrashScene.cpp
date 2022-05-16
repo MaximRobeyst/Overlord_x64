@@ -121,6 +121,10 @@ void CrashScene::Initialize()
 	pRigidbody = pKillTrigger->AddComponent(new RigidBodyComponent(true));
 	pRigidbody->AddCollider(PxBoxGeometry{ 1000.f, .5f, 1000.f }, *pDefaultMaterial, true);
 
+	m_pCrates.push_back(new Crate(XMFLOAT3{ 1.0f, 2.0f, 100.0f }, Crate::CrateType::Jump_Crate, -1));
+	AddChild(m_pCrates.back());
+	
+
 	pKillTrigger->GetTransform()->Translate(0, -7.5f, 0.f);
 
 	pKillTrigger->SetOnTriggerCallBack(std::bind(&CrashScene::Killzone, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
@@ -178,6 +182,19 @@ void CrashScene::OnGUI()
 
 	m_pCrash->DrawImGui();
 	m_pCamera->DrawImGui();
+
+	if (ImGui::CollapsingHeader("Crates"))
+	{
+		for (auto crate : m_pCrates)
+		{
+			float cratePosition[3] = { crate->GetTransform()->GetPosition().x, crate->GetTransform()->GetPosition().y, crate->GetTransform()->GetPosition().z};
+			
+			if (ImGui::InputFloat3("Crate position", cratePosition))
+			{
+				crate->GetTransform()->Translate(cratePosition[0], cratePosition[1], cratePosition[2]);
+			}
+		}
+	}
 
 	
 	XMFLOAT3 lightPosition;

@@ -69,6 +69,10 @@ void PathCamera::DrawImGui()
 		{
 			m_Path.push_back(XMFLOAT3{ m_Path[m_Path.size() - 1] });
 		}
+		if (ImGui::Button("Remove Point", ImVec2{ 100.0f, 20.0f }))
+		{
+			m_Path.pop_back();
+		}
 	}
 
 

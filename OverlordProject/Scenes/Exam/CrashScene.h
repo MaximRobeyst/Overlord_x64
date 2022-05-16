@@ -2,6 +2,7 @@
 
 class Crash;
 class PathCamera;
+class Crate;
 class CrashScene : public GameScene
 {
 public:
@@ -36,6 +37,8 @@ private:
 	Crash* m_pCrash{nullptr};
 	PathCamera* m_pCamera{nullptr};
 	SpriteFont* m_pFont{};
+
+	std::vector<Crate*> m_pCrates;
 
 	FMOD::Sound* m_pTheme{};
 };
