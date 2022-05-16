@@ -110,9 +110,9 @@ void Crash::Initialize(const SceneContext& sceneContext)
 	m_pModelObject = AddChild(new GameObject());
 	auto model = m_pModelObject->AddComponent(new ModelComponent(L"Models/Character/Test_Character.ovm"));
 	model->SetMaterial(material, 0);
-	model->SetMaterial(material, 1);
+	//model->SetMaterial(material, 1);
 
-	m_pModelObject->GetTransform()->Scale(0.005f);
+	//m_pModelObject->GetTransform()->Scale(1.0f);
 	m_pModelObject->GetTransform()->Rotate(XMFLOAT3{ 0, 180.0f, 0.0f });
 	m_pModelObject->GetTransform()->Translate(XMFLOAT3{ 0.0f, -m_CharacterDesc.controller.height * .5f, 0.f });
 

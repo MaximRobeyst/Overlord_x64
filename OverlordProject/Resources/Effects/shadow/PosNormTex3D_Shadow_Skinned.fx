@@ -66,23 +66,32 @@ RasterizerState NoCulling
 //--------------------------------------------------------------------------------------
 VS_OUTPUT VS(VS_INPUT input)
 {
-	VS_OUTPUT output = (VS_OUTPUT)0;
 
-	//TODO: complete Vertex Shader 
-	//Hint: use the previously made shaders PosNormTex3D_Shadow and PosNormTex3D_Skinned as a guide
-	output.pos = float4(input.pos, 1.0f);
-	output.normal = input.normal;
+	VS_OUTPUT output = (VS_OUTPUT)0;
+	float4 transofrmedPosition = 0;
+	float3 transformedNormal = 0;
+
 	for(int i = 0; i < 4; ++i)
 	{
-		output.pos += mul(float4(input.pos, 1.0f), gBones[input.BoneIndices[i]] * input.BoneWeights[i]);
-		output.normal += mul(output.normal, (float3x3)(gBones[input.BoneIndices[i]] * input.BoneWeights[i]));
+		int index = (int)input.BoneIndices[i];
+		if(index >= 0)
+		{
+			transofrmedPosition += mul(float4(input.pos, 1.0f), gBones[index] * input.BoneWeights[i]);
+			transformedNormal += mul(input.normal, (float3x3)(gBones[index] * input.BoneWeights[i]));
+		}
 	}
-	float4 finalPos = output.pos;
-	output.pos = mul(finalPos, gWorldViewProj);
-	output.normal = normalize(mul(output.normal, (float3x3)gWorld));
-	output.texCoord = input.texCoord;
-	output.lPos = mul(finalPos, gWorldViewProj_Light);
+	float4 finalPos = transofrmedPosition;
 
+
+	// Step 1:	convert position into float4 and multiply with matWorldViewProj
+	output.pos = mul ( finalPos, gWorldViewProj );
+	// Step 2:	rotate the normal: NO TRANSLATION
+	//			this is achieved by clipping the 4x4 to a 3x3 matrix, 
+	//			thus removing the postion row of the matrix
+	output.normal = normalize(mul(transformedNormal, (float3x3)gWorld));
+	output.texCoord = input.texCoord;
+	
+	output.lPos = mul(finalPos, gWorldViewProj_Light);
 	return output;
 }
 

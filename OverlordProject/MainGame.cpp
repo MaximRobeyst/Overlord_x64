@@ -147,7 +147,7 @@ void MainGame::Initialize()
 
 #ifdef Exam
 	//SceneManager::Get()->AddGameScene(new VertexAnimationScene());
-	SceneManager::Get()->AddGameScene(new MainMenuScene());
+	//SceneManager::Get()->AddGameScene(new MainMenuScene());
 	SceneManager::Get()->AddGameScene(new CrashScene());
 #endif // Exam
 
