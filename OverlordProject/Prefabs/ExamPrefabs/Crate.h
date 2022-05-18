@@ -22,6 +22,7 @@ public:
 	Crate& operator=(Crate && other) noexcept = delete;
 
 	void Destoy(Crash* pCrash);
+	void RenderGui();
 
 protected:
 	void Initialize(const SceneContext&) override;

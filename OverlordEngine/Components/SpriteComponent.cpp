@@ -20,6 +20,7 @@ void SpriteComponent::SetTexture(const std::wstring& spriteAsset)
 
 void SpriteComponent::Draw(const SceneContext& sceneContext)
 {
+	assert(m_pTexture != nullptr);
 	if (!m_pTexture)
 		return;
 

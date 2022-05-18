@@ -41,5 +41,7 @@ private:
 	std::vector<Crate*> m_pCrates;
 
 	FMOD::Sound* m_pTheme{};
+
+	XMFLOAT3 m_LightPosition{ -96.f,66.1346436f,-41.1850471f };
 };
 

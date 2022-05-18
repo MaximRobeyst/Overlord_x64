@@ -2,7 +2,7 @@
 class Button : public GameObject
 {
 public:
-	Button();
+	Button(std::wstring text,XMFLOAT2 position, XMFLOAT4 color, XMFLOAT2 bounds);
 	~Button() override = default;
 
 	Button(const Button& other) = delete;
@@ -10,7 +10,21 @@ public:
 	Button& operator=(const Button& other) = delete;
 	Button& operator=(Button&& other) noexcept = delete;
 
-protected:
+	void SetOnClickFunction(std::function<void()> newClickFunction);
 
+protected:
+	void Draw(const SceneContext&) override;
+	void Update(const SceneContext&) override;
+
+private:
+	bool IsOverrlapping(const SceneContext&);
+
+	SpriteFont* m_pFont{};
+	std::function<void()> m_OnClickFunction{};
+
+	std::wstring m_Text{};
+	XMFLOAT2 m_Position{};
+	XMFLOAT4 m_Color{};
+	XMFLOAT2 m_Bounds{};
 };
 

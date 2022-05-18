@@ -77,7 +77,10 @@ void ParticleEmitterComponent::UpdateParticle(Particle& p, float elapsedTime) co
 
 	p.currentEnergy -= elapsedTime;
 	if (p.currentEnergy < 0.0f)
+	{
 		p.isActive = false;
+		return;
+	}
 
 	auto position = XMLoadFloat3(&p.vertexInfo.Position);
 	auto velocity = XMLoadFloat3(&m_EmitterSettings.velocity);
@@ -86,10 +89,10 @@ void ParticleEmitterComponent::UpdateParticle(Particle& p, float elapsedTime) co
 	float lifePercent = p.currentEnergy / p.totalEnergy;
 
 	// Match the color
-	p.vertexInfo.Color.w = p.vertexInfo.Color.w;
+	p.vertexInfo.Color.w =  p.vertexInfo.Color.w * lifePercent;
+	MathHelper::Clamp(p.vertexInfo.Color.w, 1.0f, 0.f);
 
-	//p.vertexInfo.Size = p.sizeChange < 1 ? p.initialSize - (p.sizeChange * lifePercent) : p.initialSize + (p.sizeChange * lifePercent);
-	p.vertexInfo.Size = p.initialSize + (p.sizeChange * lifePercent);
+	p.vertexInfo.Size = p.initialSize + p.sizeChange * (1.0f - lifePercent);
 
 }
 

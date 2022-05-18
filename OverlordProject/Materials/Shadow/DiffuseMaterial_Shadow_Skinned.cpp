@@ -39,7 +39,7 @@ void DiffuseMaterial_Shadow_Skinned::OnUpdateModelVariables(const SceneContext& 
 	SetVariable_Matrix(L"gWorldViewProj_Light", lightWVPloaded);
 	SetVariable_Texture(L"gShadowMap", ShadowMapRenderer::Get()->GetShadowMap());
 	SetVariable_Vector(L"gLightDirection", XMFLOAT3{ &sceneContext.pLights->GetDirectionalLight().direction.x });
-	SetVariable_MatrixArray(L"gBones", &pModel->GetAnimator()->GetBoneTransforms()[0].m[0][0], (UINT)pModel->GetAnimator()->GetBoneTransforms().size());
+	SetVariable_MatrixArray(L"gBones", &pModel->GetAnimator()->GetBoneTransforms()[0]._11, (UINT)pModel->GetAnimator()->GetBoneTransforms().size());
 
 
 	//Update Shadow Variables

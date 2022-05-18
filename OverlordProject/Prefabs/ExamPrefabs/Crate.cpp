@@ -30,6 +30,17 @@ void Crate::Destoy(Crash* pCrash)
 	m_Lives = 0;
 }
 
+void Crate::RenderGui()
+{
+	if (ImGui::CollapsingHeader("Crate"))
+	{
+		float position[3] = { GetTransform()->GetPosition().x, GetTransform()->GetPosition().y, GetTransform()->GetPosition().z };
+		if (ImGui::InputFloat3("Position", position))
+			GetTransform()->Translate(position[0], position[1], position[2]);
+
+	}
+}
+
 void Crate::Initialize(const SceneContext&)
 {
 	GetTransform()->Translate(m_Position);

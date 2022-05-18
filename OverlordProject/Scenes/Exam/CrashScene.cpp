@@ -22,8 +22,7 @@ void CrashScene::Initialize()
 {
 	m_SceneContext.settings.enableOnGUI = true;
 
-
-	m_SceneContext.pLights->SetDirectionalLight({ -96.f,66.1346436f,-41.1850471f }, { 0.740129888f, -0.597205281f, 0.309117377f });
+	m_SceneContext.pLights->SetDirectionalLight( m_LightPosition, {0.740129888f, -0.597205281f, 0.309117377f});
 	GameObject* pLightViz = new GameObject();
 	auto crateModel = pLightViz->AddComponent(new ModelComponent(L"Models/crate.ovm"));
 	auto material = MaterialManager::Get()->CreateMaterial<ColorMaterial>();
@@ -151,7 +150,7 @@ void CrashScene::Initialize()
 
 void CrashScene::Update()
 {
-	m_SceneContext.pLights->GetDirectionalLight().position.z = -41.1850471f + m_pCrash->GetTransform()->GetPosition().z;
+	m_SceneContext.pLights->GetDirectionalLight().position.z = m_LightPosition.z + m_pCrash->GetTransform()->GetPosition().z;
 }
 
 void CrashScene::PostDraw()

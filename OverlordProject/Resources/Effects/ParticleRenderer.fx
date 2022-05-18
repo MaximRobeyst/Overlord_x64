@@ -94,20 +94,26 @@ void MainGS(point VS_DATA vertex[1], inout TriangleStream<GS_DATA> triStream)
 	float size = vertex[0].Size;
 	float3 origin = vertex[0].Position;
 
-	//Vertices (Keep in mind that 'origin' contains the center of the quad
-	topLeft = 		float3(- size, + size,0); 
-	topRight = 		float3(+ size, + size,0);
-	bottomLeft = 	float3(- size, - size,0);
-	bottomRight = 	float3(+ size, - size,0);
+	float3x3 uvRotation = 
+	{
+		cos(vertex[0].Rotation), - sin(vertex[0].Rotation), 0,
+	 	sin(vertex[0].Rotation), cos(vertex[0].Rotation), 0,
+		 0, 0, 1
+	};
 
+	//Vertices (Keep in mind that 'origin' contains the center of the quad
+	topLeft = 		mul( float3(- size, + size,0) , uvRotation); 
+	topRight = 		mul( float3(+ size, + size,0) , uvRotation);
+	bottomLeft = 	mul( float3(- size, - size,0) , uvRotation);
+	bottomRight = 	mul( float3(+ size, - size,0) , uvRotation);
+	
+	//This is the 2x2 rotation matrix we need to transform our TextureCoordinates (Texture Rotation)
 	//Transform the vertices using the ViewInverse (Rotational Part Only!!! (~ normal transformation)), this will force them to always point towards the camera (cfr. BillBoarding)
 	topLeft = mul(topLeft, (float3x3)gViewInverse);
 	topRight = mul(topRight, (float3x3)gViewInverse);
 	bottomLeft = mul(bottomLeft, (float3x3)gViewInverse);
 	bottomRight = mul(bottomRight, (float3x3)gViewInverse);
 
-	//This is the 2x2 rotation matrix we need to transform our TextureCoordinates (Texture Rotation)
-	float2x2 uvRotation = {cos(vertex[0].Rotation), - sin(vertex[0].Rotation), sin(vertex[0].Rotation), cos(vertex[0].Rotation)};
 	
 	//Create Geometry (Trianglestrip)
 	CreateVertex(triStream,bottomLeft + origin, float2(0,1), vertex[0].Color, uvRotation);

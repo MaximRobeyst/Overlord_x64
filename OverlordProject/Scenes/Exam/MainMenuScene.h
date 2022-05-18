@@ -13,10 +13,14 @@ public:
 protected:
 	void Initialize() override;
 	void Update() override;
-	void PostDraw() override;
+	void Draw() override;
 	void OnGUI() override;
 
 private:
 	GameObject* m_pStartButton{ nullptr };
+	GameObject* m_pHeader{ nullptr };
+
+	SpriteFont* m_pFont{};
+	FixedCamera* m_pFixedCamera{ nullptr };
 };
 
