@@ -76,7 +76,7 @@ void Crash::PlayerDeath()
 	--m_Lives;
 
 	if (m_Lives < 0)
-		Logger::LogInfo(L"Game Over!");
+		SceneManager::Get()->NextScene();
 
 	GetTransform()->Translate(m_RespawnPosition);
 	m_TotalVelocity.y = 0.f;

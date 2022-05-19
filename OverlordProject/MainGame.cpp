@@ -64,6 +64,7 @@
 #include "Scenes\Exam\MainMenuScene.h"
 #include"Scenes/Exam/CrashScene.h"
 #include "Scenes/Exam/VertexAnimationScene.h"
+#include "Scenes/Exam/GameOverScene.h"
 #endif
 
 #ifdef MILESTONE_1
@@ -149,6 +150,7 @@ void MainGame::Initialize()
 	//SceneManager::Get()->AddGameScene(new VertexAnimationScene());
 	SceneManager::Get()->AddGameScene(new MainMenuScene());
 	SceneManager::Get()->AddGameScene(new CrashScene());
+	SceneManager::Get()->AddGameScene(new GameOverScene());
 #endif // Exam
 
 
