@@ -96,6 +96,7 @@ void MainMenuScene::Initialize()
 	pButton = AddChild(new Button(L"Quit", XMFLOAT2{ 250.f, 510.f }, XMFLOAT4{ Colors::Orange }, XMFLOAT2{ 125.f, 50.f }));
 	pButton->SetOnClickFunction([&]()
 		{
+			PostQuitMessage(0);
 		});
 }
 

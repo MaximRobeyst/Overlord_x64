@@ -114,7 +114,7 @@ void Crash::Initialize(const SceneContext& sceneContext)
 
 	//m_pModelObject->GetTransform()->Scale(1.0f);
 	m_pModelObject->GetTransform()->Rotate(XMFLOAT3{ 0, 180.0f, 0.0f });
-	m_pModelObject->GetTransform()->Translate(XMFLOAT3{ 0.0f, -m_CharacterDesc.controller.height * .5f, 0.f });
+	m_pModelObject->GetTransform()->Translate(XMFLOAT3{ m_pControllerComponent->GetFootPosition() });
 
 	m_pAnimator = model->GetAnimator();
 	m_pAnimator->SetAnimation(L"Idle");
