@@ -92,7 +92,7 @@ void ParticleEmitterComponent::UpdateParticle(Particle& p, float elapsedTime) co
 	p.vertexInfo.Color.w =  p.vertexInfo.Color.w * lifePercent;
 	MathHelper::Clamp(p.vertexInfo.Color.w, 1.0f, 0.f);
 
-	p.vertexInfo.Size = p.initialSize + p.sizeChange * (1.0f - lifePercent);
+	p.vertexInfo.Size = (p.initialSize + p.sizeChange * (1.0f - lifePercent));
 
 }
 
@@ -114,7 +114,7 @@ void ParticleEmitterComponent::SpawnParticle(Particle& p)
 
 	auto randomSize = MathHelper::randF(m_EmitterSettings.minScale, m_EmitterSettings.maxScale);
 	p.vertexInfo.Size = randomSize;
-	p.initialSize = randomSize;
+	p.initialSize = GetTransform()->GetScale().x;
 
 	p.vertexInfo.Rotation = MathHelper::randF(-XM_PI, XM_PI);
 

@@ -154,8 +154,6 @@
     <ClCompile Include="Scenes\Week 4\UberMaterialScene.cpp" />
     <ClCompile Include="Materials\UberMaterial.cpp" />
     <ClCompile Include="Prefabs\ExamPrefabs\WumpaFruit.cpp" />
-    <ClCompile Include="Scenes\Exam\VertexAnimationScene.cpp" />
-    <ClCompile Include="Materials\VertexAnimationMaterial.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OverlordEngine\OverlordEngine.vcxproj">
@@ -208,8 +206,6 @@
     <ClInclude Include="Scenes\Week 4\UberMaterialScene.h" />
     <ClInclude Include="Materials\UberMaterial.h" />
     <ClInclude Include="Prefabs\ExamPrefabs\WumpaFruit.h" />
-    <ClInclude Include="Scenes\Exam\VertexAnimationScene.h" />
-    <ClInclude Include="Materials\VertexAnimationMaterial.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
