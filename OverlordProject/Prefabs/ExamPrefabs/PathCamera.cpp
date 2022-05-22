@@ -16,14 +16,17 @@ PathCamera::PathCamera(TransformComponent* pFollowTarget, const XMFLOAT3& offset
 	m_Path.resize(size);
 	for (size_t i = 0; i < size; ++i)
 	{
-		stream.read((char*)&m_Path[i], sizeof(XMFLOAT3));
+		stream.read((char*)&m_Path[i].point, sizeof(XMFLOAT3));
+		stream.read((char*)&m_Path[i].rotation, sizeof(XMFLOAT3));
 	}
 
-	GetTransform()->Translate(m_Path[0]);
+	GetTransform()->Translate(m_Path[0].point);
 }
 
 PathCamera::~PathCamera()
 {
+	if (!m_Save) return;
+
 	auto stream = std::ofstream("Resources/camerapath.bin");
 	size_t size = m_Path.size();
 
@@ -31,8 +34,9 @@ PathCamera::~PathCamera()
 
 	for (size_t i = 0; i < size; ++i)
 	{
-		stream.write((char*)&m_Path[i], sizeof(XMFLOAT3));
-		//stream.write((char*)&XMFLOAT3 {}, sizeof(XMFLOAT3));
+		XMFLOAT3 rotation{};
+		stream.write((char*)&m_Path[i].point, sizeof(XMFLOAT3));
+		stream.write((char*)&m_Path[i].rotation, sizeof(XMFLOAT3));
 	}
 
 	stream.close();
@@ -42,6 +46,8 @@ void PathCamera::DrawImGui()
 {
 	if (ImGui::CollapsingHeader("Path Camera"))
 	{
+		ImGui::Checkbox("Save path", &m_Save);
+
 		bool active = m_pCamera->IsActive();
 		if (ImGui::Checkbox("Camera Active", &active))
 		{
@@ -59,16 +65,22 @@ void PathCamera::DrawImGui()
 		ImGui::Text( ("Current point " + std::to_string(m_CurrentIndex)).c_str() );
 		for (int i = 0; i < m_Path.size(); ++i)
 		{
-			float point[3] = { m_Path[i].x, m_Path[i].y, m_Path[i].z };
-			if (ImGui::InputFloat3(("Path " + std::to_string(i)).c_str(), point))
+			float point[3] = { m_Path[i].point.x, m_Path[i].point.y, m_Path[i].point.z };
+			if (ImGui::InputFloat3(("Path position " + std::to_string(i)).c_str(), point))
 			{
-				m_Path[i] = XMFLOAT3{ point[0], point[1] , point[2] };
+				m_Path[i].point = XMFLOAT3{ point[0], point[1] , point[2] };
 			}
+			float rotation[3] = { m_Path[i].rotation.x, m_Path[i].rotation.y, m_Path[i].rotation.z };
+			if (ImGui::InputFloat3(("Path rotation " + std::to_string(i)).c_str(), rotation))
+			{
+				m_Path[i].rotation = XMFLOAT3{ rotation[0], rotation[1] , rotation[2] };
+			}
+			ImGui::Spacing();
 		}
 
 		if (ImGui::Button("Add Button", ImVec2{ 100.0f, 20.0f }))
 		{
-			m_Path.push_back(XMFLOAT3{ m_Path[m_Path.size() - 1] });
+			m_Path.push_back(PathPoint{ m_Path[m_Path.size() - 1] });
 		}
 		if (ImGui::Button("Remove Point", ImVec2{ 100.0f, 20.0f }))
 		{
@@ -85,10 +97,13 @@ void PathCamera::Initialize(const SceneContext& /*sceneContext*/)
 
 void PathCamera::Update(const SceneContext& /*sceneContext*/)
 {
-	XMVECTOR targetPosition = XMLoadFloat3(&m_pFollowTarget->GetPosition());
+	XMFLOAT3 followTargetPosition = m_pFollowTarget->GetPosition();
+	followTargetPosition.y = 0.0f;
+
+	XMVECTOR targetPosition = XMLoadFloat3(&followTargetPosition);
 	XMVECTOR offset = XMLoadFloat3(&m_Offset);
-	XMVECTOR v1 = XMLoadFloat3(&m_Path[m_CurrentIndex - 1]);
-	XMVECTOR v2 = XMLoadFloat3(&m_Path[m_CurrentIndex]);
+	XMVECTOR v1 = XMLoadFloat3(&m_Path[m_CurrentIndex - 1].point);
+	XMVECTOR v2 = XMLoadFloat3(&m_Path[m_CurrentIndex].point);
 	
 	targetPosition = targetPosition + offset;
 	
@@ -106,10 +121,7 @@ void PathCamera::Update(const SceneContext& /*sceneContext*/)
 	percentage = distancePlayer / length;
 	auto newPosition = XMVectorLerp(v1, v2, percentage);
 
-	//const XMVECTOR upVec = XMLoadFloat3(&GetTransform()->GetUp());
-	//auto lookatMatrix = XMMatrixLookAtRH(newPosition, v2, upVec);
-	//auto rotation  = XMQuaternionRotationMatrix(lookatMatrix);
-	//GetTransform()->Rotate(rotation, true);
+	GetTransform()->Rotate(m_Path[m_CurrentIndex].rotation);
 
 	if (percentage >= 1.0f)
 		++m_CurrentIndex %= m_Path.size();
@@ -117,6 +129,16 @@ void PathCamera::Update(const SceneContext& /*sceneContext*/)
 		--m_CurrentIndex;
 	
 	GetTransform()->Translate(newPosition);
+
+	//XMFLOAT3 currenEulerRotation = MathHelper::QuaternionToEuler(GetTransform()->GetRotation());
+	//auto rotation1 = XMLoadFloat3(&currenEulerRotation);
+	//auto rotation2 = XMLoadFloat3(&m_Path[m_CurrentIndex].rotation);
+	//
+	//auto currentRotation = XMVectorLerp(rotation1, rotation2, sceneContext.pGameTime->GetElapsed());
+	//
+	//XMFLOAT3 finalRotation;
+	//XMStoreFloat3(&finalRotation, currentRotation);
+	//GetTransform()->Rotate(finalRotation);
 
 	//GetTransform()->Rotate(XMQuaternionRotationMatrix(XMMatrixLookAtLH(newPosition, v2, up)), true);
 	
@@ -130,6 +152,6 @@ void PathCamera::Draw(const SceneContext& /*sceneContext*/)
 {
 	for (int i = 1; i < m_Path.size(); ++i)
 	{
-		DebugRenderer::DrawLine(m_Path[i - 1], m_Path[i], XMFLOAT4{ Colors::Red });
+		DebugRenderer::DrawLine(m_Path[i - 1].point, m_Path[i].point, XMFLOAT4{ Colors::Red });
 	}
 }

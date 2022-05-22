@@ -91,6 +91,7 @@ void Crash::SetCheckpoint(XMFLOAT3 position)
 void Crash::Jump(const SceneContext& sceneContext)
 {
 	//Set m_TotalVelocity.y equal to CharacterDesc::JumpSpeed
+	if (m_TotalVelocity.y > 0.f) return;
 
 	m_pAnimator->SetAnimation(L"Jump");
 	m_TotalVelocity.y = m_CharacterDesc.JumpSpeed * sceneContext.pGameTime->GetElapsed();

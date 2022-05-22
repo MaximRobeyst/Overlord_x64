@@ -18,11 +18,11 @@ protected:
 
 private:
 	struct PathPoint {
-		XMFLOAT3 m_Point;
-		XMFLOAT3 m_Rotation;
+		XMFLOAT3 point;
+		XMFLOAT3 rotation;
 	};
 
-	std::vector<XMFLOAT3> m_Path{};
+	std::vector<PathPoint> m_Path{};
 	XMFLOAT3 m_Offset{};
 
 	TransformComponent* m_pFollowTarget{};
@@ -30,5 +30,6 @@ private:
 
 	int m_CurrentIndex{ 1 };
 	float m_Percentage{ 0.0f };
+	bool m_Save{ true };
 };
 

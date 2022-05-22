@@ -14,11 +14,15 @@ void GameOverScene::Initialize()
 		{
 			SceneManager::Get()->PreviousScene();
 		});
-	pButton = AddChild(new Button(L"Options", XMFLOAT2{ 250.f, 460.f }, XMFLOAT4{ Colors::Orange }, XMFLOAT2{ 200.f, 50.f }));
-	pButton = AddChild(new Button(L"Quit", XMFLOAT2{ 250.f, 510.f }, XMFLOAT4{ Colors::Orange }, XMFLOAT2{ 125.f, 50.f }));
+	pButton = AddChild(new Button(L"Main Menu", XMFLOAT2{ 250.f, 460.f }, XMFLOAT4{ Colors::Orange }, XMFLOAT2{ 200.f, 50.f }));
 	pButton->SetOnClickFunction([&]()
 		{
 			SceneManager::Get()->SetActiveGameScene(L"Main menu");
+		});
+	pButton = AddChild(new Button(L"Quit", XMFLOAT2{ 250.f, 510.f }, XMFLOAT4{ Colors::Orange }, XMFLOAT2{ 125.f, 50.f }));
+	pButton->SetOnClickFunction([&]()
+		{
+			PostQuitMessage(1);
 		});
 }
 
