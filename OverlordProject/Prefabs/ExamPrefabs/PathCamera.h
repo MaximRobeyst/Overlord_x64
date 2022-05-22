@@ -17,6 +17,11 @@ protected:
 	void Draw(const SceneContext& sceneContext) override;
 
 private:
+	struct PathPoint {
+		XMFLOAT3 m_Point;
+		XMFLOAT3 m_Rotation;
+	};
+
 	std::vector<XMFLOAT3> m_Path{};
 	XMFLOAT3 m_Offset{};
 

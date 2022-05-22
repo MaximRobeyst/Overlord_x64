@@ -102,8 +102,8 @@ void CrashScene::Initialize()
 	pModel->SetMaterial(pSandMaterial, 0);
 	pModel->SetMaterial(pBrickMaterial, 1);
 	pModel->SetMaterial(pShipMaterial, 2);
-	pModel->SetMaterial(pRockMaterial, 3);
-	pModel->SetMaterial(pRockMaterial, 4);
+	pModel->SetMaterial(pTempleMaterial, 3);
+	pModel->SetMaterial(pTempleMaterial, 4);
 	pModel->SetMaterial(pLeaveMaterial, 5);
 	pModel->SetMaterial(pTreeMaterial, 6);
 	pModel->SetMaterial(pPillarMaterial, 7);
@@ -120,7 +120,7 @@ void CrashScene::Initialize()
 	pRigidbody = pKillTrigger->AddComponent(new RigidBodyComponent(true));
 	pRigidbody->AddCollider(PxBoxGeometry{ 1000.f, .5f, 1000.f }, *pDefaultMaterial, true);
 
-	m_pCrates.push_back(new Crate(XMFLOAT3{ 1.0f, 2.0f, 100.0f }, Crate::CrateType::Jump_Crate, -1));
+	m_pCrates.push_back(new Crate(XMFLOAT3{ 1.0f, 2.0f, 100.0f }, Crate::CrateType::Jump_Crate, 1));
 	AddChild(m_pCrates.back());
 	
 

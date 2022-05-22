@@ -32,6 +32,7 @@ PathCamera::~PathCamera()
 	for (size_t i = 0; i < size; ++i)
 	{
 		stream.write((char*)&m_Path[i], sizeof(XMFLOAT3));
+		//stream.write((char*)&XMFLOAT3 {}, sizeof(XMFLOAT3));
 	}
 
 	stream.close();

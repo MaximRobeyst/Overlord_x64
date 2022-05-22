@@ -14,10 +14,10 @@ struct CrashDesc
 		controller.material = pMaterial;
 	}
 
-	float maxMoveSpeed{ 15.f }; //Maximum Move
-	float maxFallSpeed{ 10.f };
+	float maxMoveSpeed{ 10.f }; //Maximum Move
+	float maxFallSpeed{ 13.5f };
 
-	float JumpSpeed{ 15.f };
+	float JumpSpeed{ 13.5f };
 
 	float moveAccelerationTime{ .3f };
 	float fallAccelerationTime{ .3f };
