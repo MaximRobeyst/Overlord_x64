@@ -10,6 +10,7 @@ public:
 	PathCamera& operator=(PathCamera && other) noexcept = delete;
 
 	void DrawImGui();
+	void ResetCamera();
 
 protected:
 	void Initialize(const SceneContext& sceneContext) override;

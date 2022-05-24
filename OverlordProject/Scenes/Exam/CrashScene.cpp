@@ -10,9 +10,12 @@
 #include <Prefabs/ExamPrefabs/Crate.h>
 #include <Prefabs/ExamPrefabs/PathCamera.h>
 #include <Prefabs/ExamPrefabs/Crab.h>
+#include <Prefabs/ExamPrefabs/Button.h>
 
 #include <Materials/ColorMaterial.h>
 #include <Materials/Shadow/DiffuseMaterial_Shadow.h>
+#include <Materials/Skybox.h>
+
 
 CrashScene::~CrashScene()
 {
@@ -61,12 +64,47 @@ void CrashScene::Initialize()
 	//{
 	//	AddChild(new WumpaFruit(XMFLOAT3{ 0.f, .5f, 1.f + 10.f * i}));
 	//}
-	auto pCrate = AddChild(new Crate(XMFLOAT3{ -1.0f, 0.f, 2.0f }));
 
-	pCrate = AddChild(new Crate(XMFLOAT3{ -1.0f, 0.f, 5.0f }));
-	
-	pCrate = AddChild(new Crate(XMFLOAT3{ 1.0f, 0.f, 3.5f }, Crate::CrateType::PowerUp_Crate, 1));
-	pCrate = AddChild(new Crate(XMFLOAT3{ 1.0f, -3.75f, 37.f }, Crate::CrateType::CheckPoint_Crate, 1));
+	m_pCrates.push_back(new Crate(XMFLOAT3{ -1.0f, 0.f, 2.0f }));
+	AddChild(m_pCrates.back());
+
+
+	m_pCrates.push_back(new Crate(XMFLOAT3{ -1.0f, 0.f, 5.0f }));
+	AddChild(m_pCrates.back());
+
+	m_pCrates.push_back(new Crate(XMFLOAT3{ 1.0f, 0.f, 3.5f }, Crate::CrateType::PowerUp_Crate, 1));
+	AddChild(m_pCrates.back());
+	m_pCrates.push_back(new Crate(XMFLOAT3{ -2.75f, -3.75f, 38.f }, Crate::CrateType::CheckPoint_Crate, 1));
+	AddChild(m_pCrates.back());
+	m_pCrates.push_back(new Crate(XMFLOAT3{ 1.0f, -3.f, 60.f }, Crate::CrateType::CheckPoint_Crate, 1));
+	AddChild(m_pCrates.back());
+	m_pCrates.push_back(new Crate(XMFLOAT3{ 1.0f, 0.0f, 60.f }, Crate::CrateType::CheckPoint_Crate, 1));
+	AddChild(m_pCrates.back());
+	m_pCrates.push_back(new Crate(XMFLOAT3{ -2.75f, 0.65f, 67.5f }, Crate::CrateType::CheckPoint_Crate, 1));
+	AddChild(m_pCrates.back());
+	m_pCrates.push_back(new Crate(XMFLOAT3{ -.25f, 0.f, 102.5f }, Crate::CrateType::CheckPoint_Crate, 1));
+	AddChild(m_pCrates.back());
+	m_pCrates.push_back(new Crate(XMFLOAT3{ -.25f, 0.75f, 102.5f }, Crate::CrateType::CheckPoint_Crate, 1));
+	AddChild(m_pCrates.back());
+	m_pCrates.push_back(new Crate(XMFLOAT3{ -1.75f, 5.15f, 111.85f }, Crate::CrateType::CheckPoint_Crate, 1));
+	AddChild(m_pCrates.back());
+	m_pCrates.push_back(new Crate(XMFLOAT3{ 1.3f, 7.1f, 113.850f }, Crate::CrateType::CheckPoint_Crate, 1));
+	AddChild(m_pCrates.back());
+	m_pCrates.push_back(new Crate(XMFLOAT3{ 1.3f, 7.1f, 112.6f }, Crate::CrateType::CheckPoint_Crate, 1));
+	AddChild(m_pCrates.back());
+	m_pCrates.push_back(new Crate(XMFLOAT3{ 2.05f, 7.1f, 112.6f }, Crate::CrateType::CheckPoint_Crate, 1));
+	AddChild(m_pCrates.back());
+	m_pCrates.push_back(new Crate(XMFLOAT3{ 2.05f, 7.1f, 113.850f }, Crate::CrateType::CheckPoint_Crate, 1));
+	AddChild(m_pCrates.back());
+	m_pCrates.push_back(new Crate(XMFLOAT3{ -3.0f, 9.15f, 114.75f }, Crate::CrateType::CheckPoint_Crate, 1));
+	AddChild(m_pCrates.back());
+	m_pCrates.push_back(new Crate(XMFLOAT3{ -.25f, 12.75f, 118.5f }, Crate::CrateType::CheckPoint_Crate, 1));
+	AddChild(m_pCrates.back());
+	m_pCrates.push_back(new Crate(XMFLOAT3{ 1.25f, 12.75f, 122.f }, Crate::CrateType::CheckPoint_Crate, 1));
+	AddChild(m_pCrates.back());
+	m_pCrates.push_back(new Crate(XMFLOAT3{ -1.75f, 12.75f, 127.f }, Crate::CrateType::CheckPoint_Crate, 1));
+	AddChild(m_pCrates.back());
+
 
 	AddChild(new Crab(XMFLOAT3{ 4.0f, -4.f, 27.5f }, XMFLOAT3{ -1.0f, -4.f, 27.5f }));
 
@@ -99,15 +137,28 @@ void CrashScene::Initialize()
 	auto pTempleMaterial = MaterialManager::Get()->CreateMaterial<DiffuseMaterial_Shadow>();
 	pTempleMaterial->SetDiffuseTexture(L"Textures/Level_Textures/Temple_Texture.png");
 
+	auto pTotemMaterial = MaterialManager::Get()->CreateMaterial<DiffuseMaterial_Shadow>();
+	pTotemMaterial->SetDiffuseTexture(L"Textures/Level_Textures/lambert4_albedo.jpeg");
+
 	pModel->SetMaterial(pSandMaterial, 0);
 	pModel->SetMaterial(pBrickMaterial, 1);
 	pModel->SetMaterial(pShipMaterial, 2);
 	pModel->SetMaterial(pTempleMaterial, 3);
-	pModel->SetMaterial(pTempleMaterial, 4);
+	pModel->SetMaterial(pRockMaterial , 4);
 	pModel->SetMaterial(pLeaveMaterial, 5);
 	pModel->SetMaterial(pTreeMaterial, 6);
 	pModel->SetMaterial(pPillarMaterial, 7);
+	pModel->SetMaterial(pPillarMaterial, 8);
+	pModel->SetMaterial(pTotemMaterial, 9);
 	//pModel->SetMaterial(pTempleMaterial, 8);
+
+
+
+	auto pSkybox = AddChild(new GameObject());
+	pSkybox->GetTransform()->Scale(500.f,500.f, 500.f);
+	auto pSkyboxModel = pSkybox->AddComponent<ModelComponent>(new ModelComponent(L"Models/Cube.ovm"));
+	auto pSkyboxMat = MaterialManager::Get()->CreateMaterial<Skybox>();
+	pSkyboxModel->SetMaterial(pSkyboxMat);
 
 	auto pRigidbody = new RigidBodyComponent(true);
 	auto triangleMesh = ContentManager::Load<PxTriangleMesh>(L"Models/Level/Level_Collision.ovpt");
@@ -116,17 +167,33 @@ void CrashScene::Initialize()
 
 	pLevel->GetTransform()->Rotate(90.f, 0.f, 0.0f);
 
+	
 	auto pKillTrigger = AddChild(new GameObject());
 	pRigidbody = pKillTrigger->AddComponent(new RigidBodyComponent(true));
-	pRigidbody->AddCollider(PxBoxGeometry{ 1000.f, .5f, 1000.f }, *pDefaultMaterial, true);
-
-	m_pCrates.push_back(new Crate(XMFLOAT3{ 1.0f, 2.0f, 100.0f }, Crate::CrateType::Jump_Crate, 1));
-	AddChild(m_pCrates.back());
-	
-
-	pKillTrigger->GetTransform()->Translate(0, -7.5f, 0.f);
-
+	pRigidbody->AddCollider(PxBoxGeometry{ 5.f, 2.f, 2.f }, * pDefaultMaterial, true);
+	pKillTrigger->GetTransform()->Translate(0, -7.5f, 31.5f);
 	pKillTrigger->SetOnTriggerCallBack(std::bind(&CrashScene::Killzone, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+	m_pKillTriggers.emplace_back(pKillTrigger);
+
+	pKillTrigger = AddChild(new GameObject());
+	pRigidbody = pKillTrigger->AddComponent(new RigidBodyComponent(true));
+	pRigidbody->AddCollider(PxBoxGeometry{ 5.f, 2.f, 2.f }, * pDefaultMaterial, true);
+	pKillTrigger->GetTransform()->Translate(0, -7.5f, 48.9f);
+	pKillTrigger->SetOnTriggerCallBack(std::bind(&CrashScene::Killzone, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+	m_pKillTriggers.emplace_back(pKillTrigger);
+	pKillTrigger = AddChild(new GameObject());
+	pRigidbody = pKillTrigger->AddComponent(new RigidBodyComponent(true));
+	pRigidbody->AddCollider(PxBoxGeometry{ 5.f, 2.f, 2.f }, * pDefaultMaterial, true);
+	pKillTrigger->GetTransform()->Translate(0, -7.5f, 83.5f);
+	pKillTrigger->SetOnTriggerCallBack(std::bind(&CrashScene::Killzone, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+	m_pKillTriggers.emplace_back(pKillTrigger);
+	pKillTrigger = AddChild(new GameObject());
+	pRigidbody = pKillTrigger->AddComponent(new RigidBodyComponent(true));
+	pRigidbody->AddCollider(PxBoxGeometry{ 5.f, 2.f, 2.f }, * pDefaultMaterial, true);
+	pKillTrigger->GetTransform()->Translate(0, -7.5f, 93.750f);
+	pKillTrigger->SetOnTriggerCallBack(std::bind(&CrashScene::Killzone, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+	m_pKillTriggers.emplace_back(pKillTrigger);
+
 
 	//Input
 	auto inputAction = InputAction(CharacterMoveLeft, InputState::down, 'A');
@@ -146,10 +213,32 @@ void CrashScene::Initialize()
 
 	inputAction = InputAction(CharacterAttack, InputState::pressed, 'Q');
 	m_SceneContext.pInput->AddInputAction(inputAction);
+
 }
 
 void CrashScene::Update()
 {
+	if (GetSceneContext().pInput->IsKeyboardKey(InputState::pressed, VK_ESCAPE))
+	{
+		if (m_Paused)
+		{
+			DestoyMenu();
+			m_Paused = false;
+			m_SceneContext.pGameTime->Start();
+		}
+		else
+		{
+			GenerateMenu();
+			m_Paused = true;
+			m_SceneContext.pGameTime->Stop();
+		}
+	}
+
+	if (!m_Paused && m_pMenu != nullptr)
+	{
+		DestoyMenu();
+	}
+
 	m_SceneContext.pLights->GetDirectionalLight().position.z = m_LightPosition.z + m_pCrash->GetTransform()->GetPosition().z;
 }
 
@@ -172,26 +261,47 @@ void CrashScene::OnGUI()
 		m_SceneContext.pLights->GetDirectionalLight().position = directionalLightPosition;
 	}
 
-	//float direction[3]{ m_SceneContext.pLights->GetDirectionalLight().direction.x, m_SceneContext.pLights->GetDirectionalLight().direction.y, m_SceneContext.pLights->GetDirectionalLight().direction.z };
-	//if (ImGui::InputFloat3("Camera position: ", direction, "%.3f", 1))
-	//{
-	//	XMFLOAT4 directionalLightPosition{ direction[0], direction[1], direction[2], m_SceneContext.pLights->GetDirectionalLight().direction.w };
-	//	m_SceneContext.pLights->GetDirectionalLight().position = directionalLightPosition;
-	//}
-
 	m_pCrash->DrawImGui();
 	m_pCamera->DrawImGui();
-
+	
 	if (ImGui::CollapsingHeader("Crates"))
 	{
-		for (auto crate : m_pCrates)
+		for (int i = 0; i < m_pCrates.size(); ++i)
 		{
-			float cratePosition[3] = { crate->GetTransform()->GetPosition().x, crate->GetTransform()->GetPosition().y, crate->GetTransform()->GetPosition().z};
+			float cratePosition[3] = { m_pCrates[i]->GetTransform()->GetPosition().x,  m_pCrates[i]->GetTransform()->GetPosition().y,  m_pCrates[i]->GetTransform()->GetPosition().z};
 			
-			if (ImGui::InputFloat3("Crate position", cratePosition))
+			if (ImGui::InputFloat3( ("Crate position" + std::to_string(i)).c_str(), cratePosition))
 			{
-				crate->GetTransform()->Translate(cratePosition[0], cratePosition[1], cratePosition[2]);
+				m_pCrates[i]->GetTransform()->Translate(cratePosition[0], cratePosition[1], cratePosition[2]);
 			}
+		}
+		if (ImGui::Button("Add Crates"))
+		{
+			m_pCrates.push_back(new Crate(m_pCrates.back()->GetTransform()->GetPosition()));
+			AddChild(m_pCrates.back());
+		}
+	}
+
+	if (ImGui::CollapsingHeader("Killzones"))
+	{
+		for (int i = 0; i < m_pKillTriggers.size(); ++i)
+		{
+			float killzonePosition[3] = { m_pKillTriggers[i]->GetTransform()->GetPosition().x,  m_pKillTriggers[i]->GetTransform()->GetPosition().y,  m_pKillTriggers[i]->GetTransform()->GetPosition().z };
+
+			if (ImGui::InputFloat3(("Killzone position" + std::to_string(i)).c_str(), killzonePosition))
+			{
+				m_pKillTriggers[i]->GetTransform()->Translate(killzonePosition[0], killzonePosition[1], killzonePosition[2]);
+			}
+		}
+		if (ImGui::Button("Add Killzone"))
+		{
+			const auto pDefaultMaterial = PxGetPhysics().createMaterial(0.5f, 0.5f, 0.5f);
+			auto pKillTrigger = AddChild(new GameObject());
+			auto pRigidbody = pKillTrigger->AddComponent(new RigidBodyComponent(true));
+			pRigidbody->AddCollider(PxBoxGeometry{ 5.f, 2.f, 2.f }, *pDefaultMaterial, true);
+			pKillTrigger->GetTransform()->Translate(0, -7.5f, 0.f);
+			pKillTrigger->SetOnTriggerCallBack(std::bind(&CrashScene::Killzone, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+			m_pKillTriggers.emplace_back(pKillTrigger);
 		}
 	}
 
@@ -209,5 +319,60 @@ void CrashScene::Killzone(GameObject*, GameObject* pOtherObject, PxTriggerAction
 	if (pOtherObject->GetTag() == L"Player" && action == PxTriggerAction::ENTER)
 	{
 		m_pCrash->PlayerDeath();
+		m_pCamera->ResetCamera();
 	}
+}
+
+void CrashScene::GenerateMenu()
+{
+	// Pause menu
+	m_pMenu = AddChild(new GameObject());
+	m_pMenu->AddComponent(new SpriteComponent(L"Textures/Panel.png", XMFLOAT2{ 1.0f, 1.0f }));
+	m_pMenu->GetTransform()->Scale(0.25f);
+	m_pMenu->GetTransform()->Translate(0, 0, -1.f);
+
+	auto pButton = m_pMenu->AddChild(new Button(
+		L"Resume",
+		XMFLOAT2{ (m_SceneContext.windowWidth/2.f) - 100.f , (m_SceneContext.windowHeight / 2.f) - 75.f },
+		XMFLOAT4{ Colors::Orange },
+		XMFLOAT2{ 200.f, 50.f })
+	);
+	pButton->SetOnClickFunction([&]()
+		{
+			m_Paused = false;
+			m_SceneContext.pGameTime->Start();
+		});
+	pButton = m_pMenu->AddChild(new Button(
+		L"Main Menu",
+		XMFLOAT2{ (m_SceneContext.windowWidth / 2.f) -150.f, (m_SceneContext.windowHeight / 2.f) },
+		XMFLOAT4{ Colors::Orange },
+		XMFLOAT2{ 300.f, 50.f })
+	);
+
+	pButton->SetOnClickFunction([&]()
+		{
+			SceneManager::Get()->SetActiveGameScene(L"Main menu");
+		});
+	pButton = m_pMenu->AddChild(new Button(
+		L"Quit",
+		XMFLOAT2{ (m_SceneContext.windowWidth / 2.f) - 62.5f ,  (m_SceneContext.windowHeight / 2.f) + 75.f},
+		XMFLOAT4{ Colors::Orange },
+		XMFLOAT2{ 125.f, 50.f })
+	);
+	pButton->SetOnClickFunction([&]()
+		{
+			PostQuitMessage(1);
+		});
+}
+
+void CrashScene::DestoyMenu()
+{
+	for (auto& child : m_pMenu->GetChildren<GameObject>())
+	{
+		m_pMenu->RemoveChild(child, true);
+	}
+
+	RemoveChild(m_pMenu, true);
+	
+	m_pMenu = nullptr;
 }

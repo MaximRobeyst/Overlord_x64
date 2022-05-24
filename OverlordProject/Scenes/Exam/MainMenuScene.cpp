@@ -60,7 +60,7 @@ void MainMenuScene::Initialize()
 	//m_pStartButton->GetTransform()->Translate(m_SceneContext.windowWidth - 175.f, 10.f, 0.f);
 
 	auto pHeader = AddChild(new GameObject());
-	pHeader->AddComponent(new SpriteComponent(L"Textures/Banner.png", XMFLOAT2{1.0f, -0.025f}));
+	pHeader->AddComponent(new SpriteComponent(L"Textures/Banner.png", XMFLOAT2{1.0f, -1.f}));
 	pHeader->GetTransform()->Translate(0, m_SceneContext.windowHeight, 0.f);
 	pHeader->GetTransform()->Scale(0.5f, 0.5f, 1.0f);
 	

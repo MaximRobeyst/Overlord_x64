@@ -21,6 +21,9 @@ protected:
 private:
 	void Killzone(GameObject* /*pTriggerObject*/, GameObject* pOtherObject, PxTriggerAction action);
 
+	void GenerateMenu();
+	void DestoyMenu();
+
 	enum InputIds
 	{
 		CharacterMoveLeft,
@@ -34,11 +37,15 @@ private:
 	bool m_DrawShadowMap{ true };
 	float m_ShadowMapScale{ 0.1f };
 
+	bool m_Paused{ false };
+
 	Crash* m_pCrash{nullptr};
 	PathCamera* m_pCamera{nullptr};
 	SpriteFont* m_pFont{};
+	GameObject* m_pMenu{ nullptr };
 
 	std::vector<Crate*> m_pCrates;
+	std::vector<GameObject*> m_pKillTriggers;
 
 	FMOD::Sound* m_pTheme{};
 

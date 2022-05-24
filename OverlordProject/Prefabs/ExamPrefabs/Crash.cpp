@@ -24,6 +24,7 @@ void Crash::DrawImGui()
 {
 	if (ImGui::CollapsingHeader("Character"))
 	{
+		ImGui::Text(std::format("Position {},{},{}", GetTransform()->GetPosition().x, GetTransform()->GetPosition().y, GetTransform()->GetPosition().z).c_str());
 		ImGui::Text(std::format("Move Speed: {:0.1f} m/s", m_MoveSpeed).c_str());
 		ImGui::Text(std::format("Fall Speed: {:0.1f} m/s", m_TotalVelocity.y).c_str());
 		ImGui::Text(("Grounded: " + std::to_string(m_Grounded)).c_str() );
@@ -122,8 +123,8 @@ void Crash::Initialize(const SceneContext& sceneContext)
 	m_pAnimator->Play();
 
 	m_pSprite = AddChild(new GameObject());
-	m_pSprite->AddComponent(new SpriteComponent(L"Textures/LifeSprite.png", { 0.5, 0.5f }));
-	m_pSprite->GetTransform()->Translate(sceneContext.windowWidth - 175.f, 10.f, 0.f);
+	m_pSprite->AddComponent(new SpriteComponent(L"Textures/LifeSprite.png", { 0.0f, 0.0f }));
+	m_pSprite->GetTransform()->Translate(sceneContext.windowWidth - 175.f, 50.f, 0.f);
 	
 
 	SetCheckpoint(GetTransform()->GetPosition());

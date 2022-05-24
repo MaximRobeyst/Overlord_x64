@@ -75,6 +75,11 @@ void PathCamera::DrawImGui()
 			{
 				m_Path[i].rotation = XMFLOAT3{ rotation[0], rotation[1] , rotation[2] };
 			}
+			if (ImGui::Button("InsertAfter"))
+			{
+				m_Path.insert(m_Path.begin() + i, m_Path[i]);
+			}
+
 			ImGui::Spacing();
 		}
 
@@ -91,14 +96,22 @@ void PathCamera::DrawImGui()
 
 }
 
+void PathCamera::ResetCamera()
+{
+	m_CurrentIndex = 1;
+}
+
 void PathCamera::Initialize(const SceneContext& /*sceneContext*/)
 {
 }
 
 void PathCamera::Update(const SceneContext& /*sceneContext*/)
 {
+	// Proaby best to set a point when a checkpoint is set
+
 	XMFLOAT3 followTargetPosition = m_pFollowTarget->GetPosition();
-	followTargetPosition.y = 0.0f;
+	followTargetPosition.y = GetTransform()->GetPosition().y;
+	followTargetPosition.x = GetTransform()->GetPosition().x;
 
 	XMVECTOR targetPosition = XMLoadFloat3(&followTargetPosition);
 	XMVECTOR offset = XMLoadFloat3(&m_Offset);

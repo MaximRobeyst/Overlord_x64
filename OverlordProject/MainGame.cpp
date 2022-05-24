@@ -63,7 +63,6 @@
 #ifdef Exam
 #include "Scenes\Exam\MainMenuScene.h"
 #include"Scenes/Exam/CrashScene.h"
-#include "Scenes/Exam/VertexAnimationScene.h"
 #include "Scenes/Exam/GameOverScene.h"
 #endif
 

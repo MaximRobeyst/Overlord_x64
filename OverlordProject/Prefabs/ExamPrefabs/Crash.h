@@ -15,7 +15,7 @@ struct CrashDesc
 	}
 
 	float maxMoveSpeed{ 10.f }; //Maximum Move
-	float maxFallSpeed{ 13.5f };
+	float maxFallSpeed{ 10.f };
 
 	float JumpSpeed{ 13.5f };
 

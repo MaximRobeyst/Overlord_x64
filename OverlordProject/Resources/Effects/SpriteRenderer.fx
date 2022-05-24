@@ -98,7 +98,7 @@ void MainGS(point VS_DATA vertex[1], inout TriangleStream<GS_DATA> triStream)
     float2 scale = float2(vertex[0].TransformData2.z, vertex[0].TransformData2.w); //Extract the scale data from the VS_DATA vertex struct
     float2 texCoord = float2(0, 0); //Initial Texture Coordinate
 	
-	pivot = float3(pivot.x * gTextureSize.x * scale.x, pivot.y * gTextureSize.x * scale.x, 0);
+	pivot = float3(pivot.x * gTextureSize.x * scale.x, pivot.y * gTextureSize.y * scale.y, 0);
 	
 	float2 rotCosSin = float2(0,0);
 	if(rotation != 0)
@@ -132,7 +132,6 @@ void MainGS(point VS_DATA vertex[1], inout TriangleStream<GS_DATA> triStream)
 //************
 float4 MainPS(GS_DATA input) : SV_TARGET
 {
-
     return gSpriteTexture.Sample(samPoint, input.TexCoord) * input.Color;
 }
 
@@ -143,7 +142,7 @@ technique10 Default
     {
         SetRasterizerState(BackCulling);
         SetBlendState(EnableBlending, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xFFFFFFFF);
-		//SetDepthStencilState(NoDepth,0);
+		// SetDepthStencilState(NoDepth,0);
         SetVertexShader(CompileShader(vs_4_0, MainVS()));
         SetGeometryShader(CompileShader(gs_4_0, MainGS()));
         SetPixelShader(CompileShader(ps_4_0, MainPS()));
