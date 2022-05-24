@@ -263,6 +263,16 @@ void CrashScene::OnGUI()
 
 	m_pCrash->DrawImGui();
 	m_pCamera->DrawImGui();
+
+	if (m_pMenu != nullptr)
+	{
+		float menuPosition[3] = { m_pMenu->GetTransform()->GetPosition().x,  m_pMenu->GetTransform()->GetPosition().y,  m_pMenu->GetTransform()->GetPosition().z };
+
+		if (ImGui::InputFloat3("Menu position", menuPosition))
+		{
+			m_pMenu->GetTransform()->Translate(menuPosition[0], menuPosition[1], menuPosition[2]);
+		}
+	}
 	
 	if (ImGui::CollapsingHeader("Crates"))
 	{
@@ -327,9 +337,11 @@ void CrashScene::GenerateMenu()
 {
 	// Pause menu
 	m_pMenu = AddChild(new GameObject());
-	m_pMenu->AddComponent(new SpriteComponent(L"Textures/Panel.png", XMFLOAT2{ 1.0f, 1.0f }));
-	m_pMenu->GetTransform()->Scale(0.25f);
-	m_pMenu->GetTransform()->Translate(0, 0, -1.f);
+	auto pSpriteComponent = m_pMenu->AddComponent(new SpriteComponent(L"Textures/Panel.png", XMFLOAT2{ 0.5f, 0.5f }));
+	m_pMenu->GetTransform()->Scale(0.35f);
+	m_pMenu->GetTransform()->Translate( 
+		(m_SceneContext.windowWidth / 2.0f) -( (pSpriteComponent->GetScale().x / 2.0f) * 0.35f), 
+		(m_SceneContext.windowHeight / 2.0f) -( (pSpriteComponent->GetScale().y / 2.0f) * 0.35f), 0.f);
 
 	auto pButton = m_pMenu->AddChild(new Button(
 		L"Resume",

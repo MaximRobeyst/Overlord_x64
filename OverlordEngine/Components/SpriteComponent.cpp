@@ -12,6 +12,11 @@ void SpriteComponent::Initialize(const SceneContext& /*sceneContext*/)
 	m_pTexture = ContentManager::Load<TextureData>(m_SpriteAsset);
 }
 
+const XMFLOAT2& SpriteComponent::GetScale() const 
+{ 
+	return m_pTexture->GetDimension(); 
+}
+
 void SpriteComponent::SetTexture(const std::wstring& spriteAsset)
 {
 	m_SpriteAsset = spriteAsset;
@@ -35,7 +40,7 @@ void SpriteComponent::Draw(const SceneContext& sceneContext)
 	XMFLOAT2 scale = XMFLOAT2{ transform->GetScale().x, transform->GetScale().y };
 	float rotationz = MathHelper::QuaternionToEuler(transform->GetRotation()).z;
 
-	SpriteRenderer::Get()->AppendSprite(m_pTexture, position, XMFLOAT4{ Colors::White }, m_Pivot, scale, rotationz, transform->GetPosition().z);
+	SpriteRenderer::Get()->AppendSprite(m_pTexture, position, XMFLOAT4{ Colors::White }, m_Pivot, scale, rotationz, 0.9f);
 	SpriteRenderer::Get()->Draw(sceneContext);
 
 }
