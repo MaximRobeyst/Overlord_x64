@@ -93,6 +93,7 @@
     <PostBuildEvent />
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Materials\Post\Bloom.cpp" />
     <ClCompile Include="Scenes\Exam\GameOverScene.cpp" />
     <ClCompile Include="Prefabs\ExamPrefabs\Button.cpp" />
     <ClCompile Include="Scenes\Exam\MainMenuScene.cpp" />
@@ -136,6 +137,7 @@
     <ClCompile Include="Scenes\Week 8\ShadowMappingScene.cpp" />
     <ClCompile Include="Scenes\Week 9\ParticleScene.cpp" />
     <ClCompile Include="Materials\Skybox.cpp" />
+    <ClCompile Include="Materials\Post\SSAO.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">stdafx.h</PrecompiledHeaderFile>
@@ -162,6 +164,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Materials\Post\Bloom.h" />
     <ClInclude Include="Scenes\Exam\GameOverScene.h" />
     <ClInclude Include="Prefabs\ExamPrefabs\Button.h" />
     <ClInclude Include="Scenes\Exam\MainMenuScene.h" />
@@ -202,6 +205,7 @@
     <ClInclude Include="Scenes\Week 8\ShadowMappingScene.h" />
     <ClInclude Include="Scenes\Week 9\ParticleScene.h" />
     <ClInclude Include="Materials\Skybox.h" />
+    <ClInclude Include="Materials\Post\SSAO.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="MainGame.h" />
     <ClInclude Include="Scenes\Week 3\TestScene.h" />

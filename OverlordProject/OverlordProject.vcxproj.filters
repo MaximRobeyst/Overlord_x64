@@ -48,6 +48,8 @@
     <ClCompile Include="Prefabs\ExamPrefabs\Button.cpp" />
     <ClCompile Include="Scenes\Exam\GameOverScene.cpp" />
     <ClCompile Include="Materials\Skybox.cpp" />
+    <ClCompile Include="Materials\Post\SSAO.cpp" />
+    <ClCompile Include="Materials\Post\Bloom.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainGame.h" />
@@ -96,5 +98,7 @@
     <ClInclude Include="Prefabs\ExamPrefabs\Button.h" />
     <ClInclude Include="Scenes\Exam\GameOverScene.h" />
     <ClInclude Include="Materials\Skybox.h" />
+    <ClInclude Include="Materials\Post\SSAO.h" />
+    <ClInclude Include="Materials\Post\Bloom.h" />
   </ItemGroup>
 </Project>

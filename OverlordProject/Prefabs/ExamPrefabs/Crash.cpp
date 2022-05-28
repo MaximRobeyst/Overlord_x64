@@ -123,7 +123,7 @@ void Crash::Initialize(const SceneContext& sceneContext)
 	m_pAnimator->Play();
 
 	m_pSprite = AddChild(new GameObject());
-	m_pSprite->AddComponent(new SpriteComponent(L"Textures/LifeSprite.png", { 0.0f, 0.0f }));
+	m_pSprite->AddComponent(new SpriteComponent(L"Textures/OneUp_Sprite.png", { 0.0f, 0.0f }));
 	m_pSprite->GetTransform()->Translate(sceneContext.windowWidth - 175.f, 50.f, 0.f);
 	
 

@@ -9,7 +9,7 @@ struct RENDERTARGET_DESC
 	bool enableDepthBuffer{true};
 	//Enable this if you want to use the DepthStencilBuffer
 	//as a ShaderResourceView (Texture in a shader)
-	bool enableDepthSRV{false};
+	bool enableDepthSRV{true};
 	//Enable this if you want to create a RenderTarget (color)
 	bool enableColorBuffer{true};
 	//Enable this if you want to use the RenderTarget

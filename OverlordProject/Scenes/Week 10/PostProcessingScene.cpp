@@ -10,6 +10,8 @@
 
 #include "Materials/Post/PostGrayscale.h"
 #include "Materials/Post/PostBlur.h"
+#include "Materials/Post/SSAO.h"
+#include "Materials\Post\Bloom.h"
 
 void PostProcessingScene::Initialize()
 {
@@ -55,9 +57,14 @@ void PostProcessingScene::Initialize()
 
 	//Post Processing Stack
 	//=====================
+	m_pSSAO = MaterialManager::Get()->CreateMaterial<SSAO>();
 	m_pPostGrayscale = MaterialManager::Get()->CreateMaterial<PostGrayscale>();
 	m_pPostBlur = MaterialManager::Get()->CreateMaterial<PostBlur>();
+	m_pBloom = MaterialManager::Get()->CreateMaterial<Bloom>();
 
+
+	//AddPostProcessingEffect(m_pSSAO);
+	AddPostProcessingEffect(m_pBloom);
 	AddPostProcessingEffect(m_pPostGrayscale);
 	AddPostProcessingEffect(m_pPostBlur);
 
@@ -76,4 +83,6 @@ void PostProcessingScene::OnGUI()
 	isEnabled = m_pPostBlur->IsEnabled();
 	ImGui::Checkbox("Blur PP", &isEnabled);
 	m_pPostBlur->SetIsEnabled(isEnabled);
+
+	m_pBloom->DrawGui();
 }

@@ -15,6 +15,7 @@
 #include <Materials/ColorMaterial.h>
 #include <Materials/Shadow/DiffuseMaterial_Shadow.h>
 #include <Materials/Skybox.h>
+#include <Materials/Post/Bloom.h>
 
 
 CrashScene::~CrashScene()
@@ -24,6 +25,10 @@ CrashScene::~CrashScene()
 void CrashScene::Initialize()
 {
 	m_SceneContext.settings.enableOnGUI = true;
+
+	//m_pBloom = MaterialManager::Get()->CreateMaterial<Bloom>();
+
+	//AddPostProcessingEffect(m_pBloom);
 
 	m_SceneContext.pLights->SetDirectionalLight( m_LightPosition, {0.740129888f, -0.597205281f, 0.309117377f});
 	GameObject* pLightViz = new GameObject();
@@ -253,7 +258,6 @@ void CrashScene::PostDraw()
 
 void CrashScene::OnGUI()
 {
-	ImGui::Checkbox("Draw ShadowMap", &m_DrawShadowMap);
 	float position[3]{ m_SceneContext.pLights->GetDirectionalLight().position.x, m_SceneContext.pLights->GetDirectionalLight().position.y, m_SceneContext.pLights->GetDirectionalLight().position.z };
 	if (ImGui::InputFloat3("Camera position: ", position))
 	{

@@ -3,6 +3,7 @@
 class Crash;
 class PathCamera;
 class Crate;
+class Bloom;
 class CrashScene : public GameScene
 {
 public:
@@ -50,5 +51,7 @@ private:
 	FMOD::Sound* m_pTheme{};
 
 	XMFLOAT3 m_LightPosition{ -96.f,66.1346436f,-41.1850471f };
+
+	Bloom* m_pBloom{};
 };
 

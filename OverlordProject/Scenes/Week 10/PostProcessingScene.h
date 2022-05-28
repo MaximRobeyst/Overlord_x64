@@ -1,6 +1,8 @@
 #pragma once
 class PostGrayscale;
 class PostBlur;
+class SSAO;
+class Bloom;
 
 class PostProcessingScene : public GameScene
 {
@@ -19,5 +21,7 @@ protected:
 private:
 	PostBlur* m_pPostBlur{};
 	PostGrayscale* m_pPostGrayscale{};
+	SSAO* m_pSSAO{};
+	Bloom* m_pBloom{};
 };
 

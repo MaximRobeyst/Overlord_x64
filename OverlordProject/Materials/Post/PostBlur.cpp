@@ -5,3 +5,4 @@ PostBlur::PostBlur()
 	:PostProcessingMaterial(L"Effects/Post/Blur.fx")
 {
 }
+

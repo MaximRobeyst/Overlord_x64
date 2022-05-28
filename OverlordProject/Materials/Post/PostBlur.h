@@ -9,6 +9,7 @@ public:
 	PostBlur& operator=(const PostBlur& other) = delete;
 	PostBlur& operator=(PostBlur&& other) noexcept = delete;
 
+
 protected:
 	void Initialize(const GameContext& /*gameContext*/) override {}
 
