@@ -13,8 +13,10 @@ float gLineOpacity1 = 1.25f;
 float gLineOpacity2 = 0.1f;
 
 float gBrightness = 1.f;
-float gVignetteRoundness = 1.f;
-float gVignetteOpacity = 0.75f;
+float gVignetteRoundness = 10.f;
+float gVignetteOpacity = 3.5f;
+
+float2 gCurvature = float2(15.0f, 15.0f);
 
 float gPI = 3.141592f;
 
@@ -60,7 +62,7 @@ PS_INPUT VS(VS_INPUT input)
 float2 curveUV(float2 uv)
 {
     uv = uv * 2.0f - 1.0f;
-    float2 offset = abs(uv.yx) / float2(3.0f, 3.0f);
+    float2 offset = abs(uv.yx) / gCurvature;
     uv = uv + uv * offset * offset;
     uv = uv * 0.5 + 0.5;
     return uv;
@@ -75,10 +77,10 @@ float4 scanlineIntensity(float uv, float resolution, float opacity)
     return float4(power, power, power, 1.0);
 }
 
-float4 vignetteIntensity(float2 uv, float2 resolution, float opacity float roundness)
+float4 vignetteIntensity(float2 uv, float2 resolution, float opacity, float roundness)
 {
     float intensity = uv.x * uv.y * (1.0 - uv.x) * (1.0 - uv.y);
-    float power = clamp(pow((resolution.x / roundness) * intensity, opacity), 0.0, 1.0);
+    float power = saturate(pow((resolution.x / roundness) * intensity, opacity));
     return float4(power, power, power, 1.0);
 }
 

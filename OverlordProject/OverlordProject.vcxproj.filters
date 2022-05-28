@@ -49,7 +49,7 @@
     <ClCompile Include="Scenes\Exam\GameOverScene.cpp" />
     <ClCompile Include="Materials\Skybox.cpp" />
     <ClCompile Include="Materials\Post\SSAO.cpp" />
-    <ClCompile Include="Materials\Post\Bloom.cpp" />
+    <ClCompile Include="Materials\Post\CRTEffect.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainGame.h" />
@@ -99,6 +99,6 @@
     <ClInclude Include="Scenes\Exam\GameOverScene.h" />
     <ClInclude Include="Materials\Skybox.h" />
     <ClInclude Include="Materials\Post\SSAO.h" />
-    <ClInclude Include="Materials\Post\Bloom.h" />
+    <ClInclude Include="Materials\Post\CRTEffect.h" />
   </ItemGroup>
 </Project>

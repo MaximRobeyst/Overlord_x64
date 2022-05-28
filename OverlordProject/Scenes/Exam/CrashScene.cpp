@@ -15,7 +15,7 @@
 #include <Materials/ColorMaterial.h>
 #include <Materials/Shadow/DiffuseMaterial_Shadow.h>
 #include <Materials/Skybox.h>
-#include <Materials/Post/Bloom.h>
+#include <Materials/Post/CRTEffect.h>
 
 
 CrashScene::~CrashScene()

@@ -11,7 +11,7 @@
 #include "Materials/Post/PostGrayscale.h"
 #include "Materials/Post/PostBlur.h"
 #include "Materials/Post/SSAO.h"
-#include "Materials\Post\Bloom.h"
+#include <Materials/Post/CRTEffect.h>
 
 void PostProcessingScene::Initialize()
 {
@@ -60,7 +60,7 @@ void PostProcessingScene::Initialize()
 	m_pSSAO = MaterialManager::Get()->CreateMaterial<SSAO>();
 	m_pPostGrayscale = MaterialManager::Get()->CreateMaterial<PostGrayscale>();
 	m_pPostBlur = MaterialManager::Get()->CreateMaterial<PostBlur>();
-	m_pBloom = MaterialManager::Get()->CreateMaterial<Bloom>();
+	m_pBloom = MaterialManager::Get()->CreateMaterial<CRTEffect>();
 
 
 	//AddPostProcessingEffect(m_pSSAO);

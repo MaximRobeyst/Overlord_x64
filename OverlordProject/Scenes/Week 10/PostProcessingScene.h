@@ -2,7 +2,7 @@
 class PostGrayscale;
 class PostBlur;
 class SSAO;
-class Bloom;
+class CRTEffect;
 
 class PostProcessingScene : public GameScene
 {
@@ -22,6 +22,6 @@ private:
 	PostBlur* m_pPostBlur{};
 	PostGrayscale* m_pPostGrayscale{};
 	SSAO* m_pSSAO{};
-	Bloom* m_pBloom{};
+	CRTEffect* m_pBloom{};
 };
 
