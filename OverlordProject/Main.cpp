@@ -16,6 +16,8 @@ int wmain(int argc, wchar_t* argv[])
 #pragma warning(disable: 28251 6387)
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR /*pCmdLine*/, int /*nCmdShow*/)
 {
+	srand(NULL);
+
 	//UNREFERENCED_PARAMETER(nCmdShow);
 	//UNREFERENCED_PARAMETER(pCmdLine);
 	////notify user if heap is corrupt

@@ -97,7 +97,9 @@ void Crate::Update(const SceneContext& /*sceneContext*/)
 	if (m_Lives <= 0)
 	{
 		SoundManager::Get()->GetSystem()->playSound(m_pCrateBreakSound, nullptr, false, nullptr);
-		GetScene()->AddChild(new ParticleLifetime(GetTransform()->GetPosition(), 1.0f));
+		auto pGameobject = GetScene()->AddChild(new ParticleLifetime(GetTransform()->GetPosition(), 1.0f));
+		pGameobject->GetTransform()->Scale(0.25f);
+
 
 		GetScene()->RemoveChild(this, true);
 

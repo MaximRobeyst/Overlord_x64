@@ -18,6 +18,7 @@ private:
 	bool m_AutoMove{ true };
 
 	ParticleEmitterComponent* m_pEmitter{};
+	ParticleEmitterComponent* m_pEmitter2{};
 	GameObject* m_pTeapot{};
 };
 

@@ -16,6 +16,7 @@ public:
 
 protected:
 	void Initialize() override;
+	void Draw() override;
 	void OnGUI() override;
 
 private:
@@ -23,5 +24,7 @@ private:
 	PostGrayscale* m_pPostGrayscale{};
 	SSAO* m_pSSAO{};
 	CRTEffect* m_pBloom{};
+
+	SpriteFont* m_pFont;
 };
 

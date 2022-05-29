@@ -19,7 +19,8 @@ void PostProcessingScene::Initialize()
 	m_SceneContext.settings.enableOnGUI = true;
 
 	m_SceneContext.pLights->SetDirectionalLight({ -95.6139526f,66.1346436f,-41.1850471f }, { 0.740129888f, -0.597205281f, 0.309117377f });
-
+	
+	m_pFont = ContentManager::Load<SpriteFont>(L"SpriteFonts/CrashALike_64.fnt");
 	//Materials
 	//*********
 	const auto pPeasantMaterial = MaterialManager::Get()->CreateMaterial<DiffuseMaterial_Shadow_Skinned>(); //Shadow variant
@@ -60,11 +61,11 @@ void PostProcessingScene::Initialize()
 	m_pSSAO = MaterialManager::Get()->CreateMaterial<SSAO>();
 	m_pPostGrayscale = MaterialManager::Get()->CreateMaterial<PostGrayscale>();
 	m_pPostBlur = MaterialManager::Get()->CreateMaterial<PostBlur>();
-	m_pBloom = MaterialManager::Get()->CreateMaterial<CRTEffect>();
+	//m_pBloom = MaterialManager::Get()->CreateMaterial<CRTEffect>();
 
 
 	//AddPostProcessingEffect(m_pSSAO);
-	AddPostProcessingEffect(m_pBloom);
+	//AddPostProcessingEffect(m_pBloom);
 	AddPostProcessingEffect(m_pPostGrayscale);
 	AddPostProcessingEffect(m_pPostBlur);
 
@@ -72,6 +73,11 @@ void PostProcessingScene::Initialize()
 	//Create and add a PostBlur material class (using Blur.fx)
 	//Add the material to the PostProcessing Stack + Uncomment the corresponding ImGui code below
 	//If you already have shadow mapping working you can change the code above to use the shadow variant shaders
+}
+
+void PostProcessingScene::Draw()
+{
+	TextRenderer::Get()->DrawText(m_pFont, L"no transparency :(", XMFLOAT2{ 10, 10 });
 }
 
 void PostProcessingScene::OnGUI()
@@ -84,5 +90,6 @@ void PostProcessingScene::OnGUI()
 	ImGui::Checkbox("Blur PP", &isEnabled);
 	m_pPostBlur->SetIsEnabled(isEnabled);
 
-	m_pBloom->DrawGui();
+	if(m_pBloom)
+		m_pBloom->DrawGui();
 }

@@ -16,7 +16,7 @@
 #include <Materials/Shadow/DiffuseMaterial_Shadow.h>
 #include <Materials/Skybox.h>
 #include <Materials/Post/CRTEffect.h>
-
+#include <Materials\/Post/PostBlur.h>
 
 CrashScene::~CrashScene()
 {
@@ -26,9 +26,11 @@ void CrashScene::Initialize()
 {
 	m_SceneContext.settings.enableOnGUI = true;
 
-	//m_pBloom = MaterialManager::Get()->CreateMaterial<Bloom>();
+	//auto pEffect = MaterialManager::Get()->CreateMaterial<CRTEffect>();
+	//AddPostProcessingEffect(pEffect);
 
-	//AddPostProcessingEffect(m_pBloom);
+	//auto pBlurEffect = MaterialManager::Get()->CreateMaterial<PostBlur>();
+	//AddPostProcessingEffect(pBlurEffect);
 
 	m_SceneContext.pLights->SetDirectionalLight( m_LightPosition, {0.740129888f, -0.597205281f, 0.309117377f});
 	GameObject* pLightViz = new GameObject();
@@ -65,25 +67,19 @@ void CrashScene::Initialize()
 	auto cameraComponent = m_pCamera->GetComponent<CameraComponent>();
 	cameraComponent->SetActive(true); //Uncomment to make this camera the active camera
 
-	//for (int i = 0; i < 20; ++i)
-	//{
-	//	AddChild(new WumpaFruit(XMFLOAT3{ 0.f, .5f, 1.f + 10.f * i}));
-	//}
-
 	m_pCrates.push_back(new Crate(XMFLOAT3{ -1.0f, 0.f, 2.0f }));
 	AddChild(m_pCrates.back());
-
 
 	m_pCrates.push_back(new Crate(XMFLOAT3{ -1.0f, 0.f, 5.0f }));
 	AddChild(m_pCrates.back());
 
 	m_pCrates.push_back(new Crate(XMFLOAT3{ 1.0f, 0.f, 3.5f }, Crate::CrateType::PowerUp_Crate, 1));
 	AddChild(m_pCrates.back());
-	m_pCrates.push_back(new Crate(XMFLOAT3{ -2.75f, -3.75f, 38.f }, Crate::CrateType::CheckPoint_Crate, 1));
+	m_pCrates.push_back(new Crate(XMFLOAT3{ -2.75f, -3.75f, 38.f }, Crate::CrateType::Defaut_Crate, 1));
 	AddChild(m_pCrates.back());
-	m_pCrates.push_back(new Crate(XMFLOAT3{ 1.0f, -3.f, 60.f }, Crate::CrateType::CheckPoint_Crate, 1));
+	m_pCrates.push_back(new Crate(XMFLOAT3{ 1.0f, -3.f, 60.f }, Crate::CrateType::Jump_Crate, 100));
 	AddChild(m_pCrates.back());
-	m_pCrates.push_back(new Crate(XMFLOAT3{ 1.0f, 0.0f, 60.f }, Crate::CrateType::CheckPoint_Crate, 1));
+	m_pCrates.push_back(new Crate(XMFLOAT3{ 1.0f, 0.0f, 60.f }, Crate::CrateType::Defaut_Crate, 9));
 	AddChild(m_pCrates.back());
 	m_pCrates.push_back(new Crate(XMFLOAT3{ -2.75f, 0.65f, 67.5f }, Crate::CrateType::CheckPoint_Crate, 1));
 	AddChild(m_pCrates.back());
@@ -110,14 +106,12 @@ void CrashScene::Initialize()
 	m_pCrates.push_back(new Crate(XMFLOAT3{ -1.75f, 12.75f, 127.f }, Crate::CrateType::CheckPoint_Crate, 1));
 	AddChild(m_pCrates.back());
 
-
 	AddChild(new Crab(XMFLOAT3{ 4.0f, -4.f, 27.5f }, XMFLOAT3{ -1.0f, -4.f, 27.5f }));
 
 	m_pFont = ContentManager::Load<SpriteFont>(L"SpriteFonts/CrashALike_32.fnt");
 
 	GameObject* pLevel = AddChild(new GameObject());
 	auto pModel = pLevel->AddComponent(new ModelComponent(L"Models/Level/Level_Detail.ovm"));
-
 
 	auto pSandMaterial = MaterialManager::Get()->CreateMaterial<DiffuseMaterial_Shadow>();
 	pSandMaterial->SetDiffuseTexture(L"Textures/Level_Textures/Sand.png");
@@ -157,8 +151,6 @@ void CrashScene::Initialize()
 	pModel->SetMaterial(pTotemMaterial, 9);
 	//pModel->SetMaterial(pTempleMaterial, 8);
 
-
-
 	auto pSkybox = AddChild(new GameObject());
 	pSkybox->GetTransform()->Scale(500.f,500.f, 500.f);
 	auto pSkyboxModel = pSkybox->AddComponent<ModelComponent>(new ModelComponent(L"Models/Cube.ovm"));
@@ -171,7 +163,6 @@ void CrashScene::Initialize()
 	pLevel->AddComponent(pRigidbody);
 
 	pLevel->GetTransform()->Rotate(90.f, 0.f, 0.0f);
-
 	
 	auto pKillTrigger = AddChild(new GameObject());
 	pRigidbody = pKillTrigger->AddComponent(new RigidBodyComponent(true));
@@ -198,7 +189,6 @@ void CrashScene::Initialize()
 	pKillTrigger->GetTransform()->Translate(0, -7.5f, 93.750f);
 	pKillTrigger->SetOnTriggerCallBack(std::bind(&CrashScene::Killzone, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
 	m_pKillTriggers.emplace_back(pKillTrigger);
-
 
 	//Input
 	auto inputAction = InputAction(CharacterMoveLeft, InputState::down, 'A');

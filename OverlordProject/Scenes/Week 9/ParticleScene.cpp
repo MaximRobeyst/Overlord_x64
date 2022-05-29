@@ -10,7 +10,8 @@ void ParticleScene::Initialize()
 
 	//Particle System
 	ParticleEmitterSettings settings{};
-	settings.velocity = { 0.f,6.f,0.f };
+	settings.maxVelocity = { 2.f,5.f,0.f };
+	settings.minVelocity = { -2.f,10.f,0.f };
 	settings.minSize = 1.f;
 	settings.maxSize = 2.f;
 	settings.minEnergy = 1.f;
@@ -25,19 +26,19 @@ void ParticleScene::Initialize()
 	m_pEmitter = pObject->AddComponent(new ParticleEmitterComponent(L"Textures/Smoke.png", settings, 200));
 
 	//Teapot
-	m_pTeapot = AddChild(new GameObject());
-	const auto pModel = m_pTeapot->AddComponent(new ModelComponent(L"Meshes/Teapot.ovm"));
+	//m_pTeapot = AddChild(new GameObject());
+	//const auto pModel = m_pTeapot->AddComponent(new ModelComponent(L"Meshes/Teapot.ovm"));
 
 	const auto pMaterial = MaterialManager::Get()->CreateMaterial<ColorMaterial>();
 	pMaterial->SetColor(XMFLOAT4{ Colors::White });
-	pModel->SetMaterial(pMaterial);
-	m_pTeapot->GetTransform()->Scale(.3f, .3f, .3f);
+	//pModel->SetMaterial(pMaterial);
+	//m_pTeapot->GetTransform()->Scale(.3f, .3f, .3f);
 }
 
 void ParticleScene::Update()
 {
 	//Rotate Teapot
-	m_pTeapot->GetTransform()->Rotate(.0f, XM_PIDIV2 * m_SceneContext.pGameTime->GetTotal(), .0f, false);
+	//m_pTeapot->GetTransform()->Rotate(.0f, XM_PIDIV2 * m_SceneContext.pGameTime->GetTotal(), .0f, false);
 
 	//Move Particle System
 	auto particlePosition = m_pEmitter->GetTransform()->GetPosition();
@@ -70,4 +71,5 @@ void ParticleScene::OnGUI()
 {
 	ImGui::Checkbox("Auto Move", &m_AutoMove);
 	m_pEmitter->DrawImGui();
+	m_pEmitter2->DrawImGui();
 }
