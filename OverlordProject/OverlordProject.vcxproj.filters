@@ -50,6 +50,7 @@
     <ClCompile Include="Materials\Skybox.cpp" />
     <ClCompile Include="Materials\Post\SSAO.cpp" />
     <ClCompile Include="Materials\Post\CRTEffect.cpp" />
+    <ClCompile Include="Scenes\Exam\YouWinScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainGame.h" />
@@ -100,5 +101,6 @@
     <ClInclude Include="Materials\Skybox.h" />
     <ClInclude Include="Materials\Post\SSAO.h" />
     <ClInclude Include="Materials\Post\CRTEffect.h" />
+    <ClInclude Include="Scenes\Exam\YouWinScene.h" />
   </ItemGroup>
 </Project>

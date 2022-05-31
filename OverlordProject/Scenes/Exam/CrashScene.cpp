@@ -33,12 +33,6 @@ void CrashScene::Initialize()
 	//AddPostProcessingEffect(pBlurEffect);
 
 	m_SceneContext.pLights->SetDirectionalLight( m_LightPosition, {0.740129888f, -0.597205281f, 0.309117377f});
-	GameObject* pLightViz = new GameObject();
-	auto crateModel = pLightViz->AddComponent(new ModelComponent(L"Models/crate.ovm"));
-	auto material = MaterialManager::Get()->CreateMaterial<ColorMaterial>();
-	crateModel->SetMaterial(material);
-	pLightViz->GetTransform()->Translate(-96.f, 66.1346436f, -41.1850471f);
-	AddChild(pLightViz);
 
 	//SoundManager::Get()->GetSystem()->createStream("Resources/Audio/Crash_Theme.wav", FMOD_LOOP_NORMAL, nullptr, &m_pTheme);
 	SoundManager::Get()->GetSystem()->playSound(m_pTheme, nullptr, false, nullptr);
@@ -77,33 +71,33 @@ void CrashScene::Initialize()
 	AddChild(m_pCrates.back());
 	m_pCrates.push_back(new Crate(XMFLOAT3{ -2.75f, -3.75f, 38.f }, Crate::CrateType::Defaut_Crate, 1));
 	AddChild(m_pCrates.back());
-	m_pCrates.push_back(new Crate(XMFLOAT3{ 1.0f, -3.f, 60.f }, Crate::CrateType::Jump_Crate, 100));
+	m_pCrates.push_back(new Crate(XMFLOAT3{ 1.0f, -3.f, 60.f }, Crate::CrateType::Defaut_Crate, 9));
 	AddChild(m_pCrates.back());
-	m_pCrates.push_back(new Crate(XMFLOAT3{ 1.0f, 0.0f, 60.f }, Crate::CrateType::Defaut_Crate, 9));
+	//m_pCrates.push_back(new Crate(XMFLOAT3{ 1.0f, 0.0f, 60.f }, Crate::CrateType::Defaut_Crate, 9));
+	//AddChild(m_pCrates.back());
+	m_pCrates.push_back(new Crate(XMFLOAT3{ -2.75f, -0.75f, 67.5f }, Crate::CrateType::Defaut_Crate, 1));
 	AddChild(m_pCrates.back());
-	m_pCrates.push_back(new Crate(XMFLOAT3{ -2.75f, 0.65f, 67.5f }, Crate::CrateType::CheckPoint_Crate, 1));
+	m_pCrates.push_back(new Crate(XMFLOAT3{ -.25f, 0.f, 102.5f }, Crate::CrateType::Defaut_Crate, 1));
 	AddChild(m_pCrates.back());
-	m_pCrates.push_back(new Crate(XMFLOAT3{ -.25f, 0.f, 102.5f }, Crate::CrateType::CheckPoint_Crate, 1));
+	m_pCrates.push_back(new Crate(XMFLOAT3{ -.25f, 0.75f, 102.5f }, Crate::CrateType::Defaut_Crate, 1));
 	AddChild(m_pCrates.back());
-	m_pCrates.push_back(new Crate(XMFLOAT3{ -.25f, 0.75f, 102.5f }, Crate::CrateType::CheckPoint_Crate, 1));
+	m_pCrates.push_back(new Crate(XMFLOAT3{ -1.75f, 5.15f, 111.85f }, Crate::CrateType::Defaut_Crate, 1));
 	AddChild(m_pCrates.back());
-	m_pCrates.push_back(new Crate(XMFLOAT3{ -1.75f, 5.15f, 111.85f }, Crate::CrateType::CheckPoint_Crate, 1));
+	m_pCrates.push_back(new Crate(XMFLOAT3{ 1.3f, 7.1f, 113.350f }, Crate::CrateType::Defaut_Crate, 1));
 	AddChild(m_pCrates.back());
-	m_pCrates.push_back(new Crate(XMFLOAT3{ 1.3f, 7.1f, 113.850f }, Crate::CrateType::CheckPoint_Crate, 1));
+	m_pCrates.push_back(new Crate(XMFLOAT3{ 1.3f, 7.1f, 112.6f }, Crate::CrateType::Defaut_Crate, 1));
 	AddChild(m_pCrates.back());
-	m_pCrates.push_back(new Crate(XMFLOAT3{ 1.3f, 7.1f, 112.6f }, Crate::CrateType::CheckPoint_Crate, 1));
+	m_pCrates.push_back(new Crate(XMFLOAT3{ 2.05f, 7.1f, 112.6f }, Crate::CrateType::Defaut_Crate, 1));
 	AddChild(m_pCrates.back());
-	m_pCrates.push_back(new Crate(XMFLOAT3{ 2.05f, 7.1f, 112.6f }, Crate::CrateType::CheckPoint_Crate, 1));
+	m_pCrates.push_back(new Crate(XMFLOAT3{ 2.05f, 7.1f, 113.350f }, Crate::CrateType::Defaut_Crate, 1));
 	AddChild(m_pCrates.back());
-	m_pCrates.push_back(new Crate(XMFLOAT3{ 2.05f, 7.1f, 113.850f }, Crate::CrateType::CheckPoint_Crate, 1));
-	AddChild(m_pCrates.back());
-	m_pCrates.push_back(new Crate(XMFLOAT3{ -3.0f, 9.15f, 114.75f }, Crate::CrateType::CheckPoint_Crate, 1));
+	m_pCrates.push_back(new Crate(XMFLOAT3{ -3.0f, 9.15f, 114.75f }, Crate::CrateType::Defaut_Crate, 1));
 	AddChild(m_pCrates.back());
 	m_pCrates.push_back(new Crate(XMFLOAT3{ -.25f, 12.75f, 118.5f }, Crate::CrateType::CheckPoint_Crate, 1));
 	AddChild(m_pCrates.back());
-	m_pCrates.push_back(new Crate(XMFLOAT3{ 1.25f, 12.75f, 122.f }, Crate::CrateType::CheckPoint_Crate, 1));
+	m_pCrates.push_back(new Crate(XMFLOAT3{ 1.25f, 12.75f, 122.f }, Crate::CrateType::Defaut_Crate, 1));
 	AddChild(m_pCrates.back());
-	m_pCrates.push_back(new Crate(XMFLOAT3{ -1.75f, 12.75f, 127.f }, Crate::CrateType::CheckPoint_Crate, 1));
+	m_pCrates.push_back(new Crate(XMFLOAT3{ -1.75f, 12.75f, 127.f }, Crate::CrateType::Defaut_Crate, 1));
 	AddChild(m_pCrates.back());
 
 	AddChild(new Crab(XMFLOAT3{ 4.0f, -4.f, 27.5f }, XMFLOAT3{ -1.0f, -4.f, 27.5f }));
@@ -189,6 +183,15 @@ void CrashScene::Initialize()
 	pKillTrigger->GetTransform()->Translate(0, -7.5f, 93.750f);
 	pKillTrigger->SetOnTriggerCallBack(std::bind(&CrashScene::Killzone, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
 	m_pKillTriggers.emplace_back(pKillTrigger);
+
+	auto pWinTrigger = AddChild(new GameObject());
+	pWinTrigger->GetTransform()->Translate(1.25f, 12.75f, 131.25f);
+	pRigidbody = pWinTrigger->AddComponent(new RigidBodyComponent(true));
+	pRigidbody->AddCollider(PxSphereGeometry{ 2.f }, * pDefaultMaterial, true);
+	pWinTrigger->SetOnTriggerCallBack([](GameObject* /*pTriggerObject*/, GameObject* pOtherObject, PxTriggerAction action) {
+		if (pOtherObject->GetTag() != L"Player" || action != PxTriggerAction::ENTER) return;
+		SceneManager::Get()->SetActiveGameScene(L"YouWinScene");
+		});;
 
 	//Input
 	auto inputAction = InputAction(CharacterMoveLeft, InputState::down, 'A');
@@ -332,7 +335,7 @@ void CrashScene::GenerateMenu()
 	// Pause menu
 	m_pMenu = AddChild(new GameObject());
 	auto pSpriteComponent = m_pMenu->AddComponent(new SpriteComponent(L"Textures/Panel.png", XMFLOAT2{ 0.5f, 0.5f }));
-	m_pMenu->GetTransform()->Scale(0.35f);
+	m_pMenu->GetTransform()->Scale(0.45f);
 	m_pMenu->GetTransform()->Translate( 
 		(m_SceneContext.windowWidth / 2.0f) -( (pSpriteComponent->GetScale().x / 2.0f) * 0.35f), 
 		(m_SceneContext.windowHeight / 2.0f) -( (pSpriteComponent->GetScale().y / 2.0f) * 0.35f), 0.f);
@@ -348,9 +351,22 @@ void CrashScene::GenerateMenu()
 			m_Paused = false;
 			m_SceneContext.pGameTime->Start();
 		});
+
+	pButton = m_pMenu->AddChild(new Button(
+		L"Restart",
+		XMFLOAT2{ (m_SceneContext.windowWidth / 2.f) - 100.f , (m_SceneContext.windowHeight / 2.f) },
+		XMFLOAT4{ Colors::Orange },
+		XMFLOAT2{ 200.f, 50.f })
+	);
+	pButton->SetOnClickFunction([&]()
+		{
+			m_Paused = false;
+			m_SceneContext.pGameTime->Start();
+		});
+
 	pButton = m_pMenu->AddChild(new Button(
 		L"Main Menu",
-		XMFLOAT2{ (m_SceneContext.windowWidth / 2.f) -150.f, (m_SceneContext.windowHeight / 2.f) },
+		XMFLOAT2{ (m_SceneContext.windowWidth / 2.f) -150.f, (m_SceneContext.windowHeight / 2.f) + 75.f  },
 		XMFLOAT4{ Colors::Orange },
 		XMFLOAT2{ 300.f, 50.f })
 	);
@@ -361,7 +377,7 @@ void CrashScene::GenerateMenu()
 		});
 	pButton = m_pMenu->AddChild(new Button(
 		L"Quit",
-		XMFLOAT2{ (m_SceneContext.windowWidth / 2.f) - 62.5f ,  (m_SceneContext.windowHeight / 2.f) + 75.f},
+		XMFLOAT2{ (m_SceneContext.windowWidth / 2.f) - 62.5f ,  (m_SceneContext.windowHeight / 2.f) + 150.f},
 		XMFLOAT4{ Colors::Orange },
 		XMFLOAT2{ 125.f, 50.f })
 	);

@@ -8,7 +8,7 @@
 //#define W6
 //#define W7
 //#define W8
-#define W9
+//#define W9
 //#define W10
 
 #define Exam
@@ -64,6 +64,7 @@
 #include "Scenes\Exam\MainMenuScene.h"
 #include"Scenes/Exam/CrashScene.h"
 #include "Scenes/Exam/GameOverScene.h"
+#include "Scenes/Exam/YouWinScene.h"
 #endif
 
 #ifdef MILESTONE_1
@@ -150,6 +151,7 @@ void MainGame::Initialize()
 	SceneManager::Get()->AddGameScene(new MainMenuScene());
 	SceneManager::Get()->AddGameScene(new CrashScene());
 	SceneManager::Get()->AddGameScene(new GameOverScene());
+	SceneManager::Get()->AddGameScene(new YouWinScene());
 #endif // Exam
 
 

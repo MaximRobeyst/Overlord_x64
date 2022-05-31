@@ -8,11 +8,16 @@
 #include <Materials/Shadow/DiffuseMaterial_Shadow.h>
 #include <Prefabs/ExamPrefabs/ParticleLifetime.h>
 
+int Crate::m_AmountOfBoxes{};
+int Crate::m_MaxAmountOfBoxes{};
+
 Crate::Crate(const XMFLOAT3& position, CrateType cratetype, int lives)
 	: m_Position{position}
 	, m_CrateType{cratetype}
 	, m_Lives{lives}
 {
+	++m_AmountOfBoxes;
+	++m_MaxAmountOfBoxes;
 	SoundManager::Get()->GetSystem()->createStream("Resources/Audio/Bounce_Crate.wav", FMOD_DEFAULT, nullptr, &m_pBounceSound);
 	SoundManager::Get()->GetSystem()->createStream("Resources/Audio/Crate_Break.wav", FMOD_DEFAULT, nullptr, &m_pCrateBreakSound);
 }
@@ -41,6 +46,11 @@ void Crate::RenderGui()
 	}
 }
 
+float Crate::GetPercentageOfBoxes()
+{
+	return static_cast<float>( m_AmountOfBoxes / m_MaxAmountOfBoxes);
+}
+
 void Crate::Initialize(const SceneContext&)
 {
 	GetTransform()->Translate(m_Position);
@@ -49,6 +59,10 @@ void Crate::Initialize(const SceneContext&)
 	auto bounceObject = AddChild(new GameObject());
 	bounceObject->GetTransform()->Translate(m_Position.x, m_Position.y + 0.75f, m_Position.z);
 	bounceObject->SetTag(L"Crate");
+
+	auto pBreakBox = AddChild(new GameObject());
+	pBreakBox->GetTransform()->Translate(m_Position.x, m_Position.y, m_Position.z);
+	pBreakBox->SetTag(L"Crate_Bottom");
 
 	ModelComponent* pModel;
 	switch (m_CrateType)
@@ -73,7 +87,11 @@ void Crate::Initialize(const SceneContext&)
 	rigidbody = bounceObject->AddComponent(new RigidBodyComponent(true));
 	rigidbody->AddCollider(PxBoxGeometry{ 0.35f, 0.125f , 0.35f }, *pDefaultMaterial, true);
 
+	rigidbody = pBreakBox->AddComponent(new RigidBodyComponent(true));
+	rigidbody->AddCollider(PxBoxGeometry{ 0.35f, 0.125f , 0.35f }, *pDefaultMaterial, true);
+
 	bounceObject->SetOnTriggerCallBack(std::bind(&Crate::OnBoxJump, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+	pBreakBox->SetOnTriggerCallBack(std::bind(&Crate::OnBoxHit, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
 }
 
 void Crate::Update(const SceneContext& /*sceneContext*/)
@@ -117,8 +135,18 @@ void Crate::OnBoxJump(GameObject* pThisObject, GameObject* pOtherObject, PxTrigg
 			pCrash->SetCheckpoint(pThisObject->GetTransform()->GetPosition());
 
 		--m_Lives;
+		--m_AmountOfBoxes;
 		m_Hit = true;
 
 		SoundManager::Get()->GetSystem()->playSound(m_pBounceSound, nullptr, false, nullptr);
+	}
+}
+
+void Crate::OnBoxHit(GameObject* /*pThisObject*/, GameObject* pOtherObject, PxTriggerAction action)
+{
+	if (pOtherObject->GetTag() == L"Player" && action == PxTriggerAction::ENTER)
+	{
+		--m_Lives;
+		m_Hit = true;
 	}
 }

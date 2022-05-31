@@ -24,12 +24,18 @@ public:
 	void Destoy(Crash* pCrash);
 	void RenderGui();
 
+	static float GetPercentageOfBoxes();
+
 protected:
 	void Initialize(const SceneContext&) override;
 	void Update(const SceneContext&) override;
 
 private:
+	static int m_AmountOfBoxes;
+	static int m_MaxAmountOfBoxes;
+
 	void OnBoxJump(GameObject* pTriggerObject, GameObject* pOtherObject, PxTriggerAction action);
+	void OnBoxHit(GameObject* pTriggerObject, GameObject* pOtherObject, PxTriggerAction action);
 
 	XMFLOAT3 m_Position{};
 

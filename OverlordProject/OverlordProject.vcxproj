@@ -157,6 +157,7 @@
     <ClCompile Include="Scenes\Week 4\UberMaterialScene.cpp" />
     <ClCompile Include="Materials\UberMaterial.cpp" />
     <ClCompile Include="Prefabs\ExamPrefabs\WumpaFruit.cpp" />
+    <ClCompile Include="Scenes\Exam\YouWinScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OverlordEngine\OverlordEngine.vcxproj">
@@ -212,6 +213,7 @@
     <ClInclude Include="Scenes\Week 4\UberMaterialScene.h" />
     <ClInclude Include="Materials\UberMaterial.h" />
     <ClInclude Include="Prefabs\ExamPrefabs\WumpaFruit.h" />
+    <ClInclude Include="Scenes\Exam\YouWinScene.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
