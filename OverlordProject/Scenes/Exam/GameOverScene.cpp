@@ -19,8 +19,14 @@ GameOverScene::~GameOverScene()
 
 void GameOverScene::Initialize()
 {
-	m_SceneContext.settings.drawGrid = false;
+
+#ifdef _DEBUG
 	m_SceneContext.settings.enableOnGUI = true;
+#else
+	m_SceneContext.settings.showInfoOverlay = false;
+#endif // _DEBUG
+
+	m_SceneContext.settings.drawGrid = false;
 
 	m_SceneContext.pLights->SetDirectionalLight({ -96.f,66.1346436f,-41.1850471f }, { 0.740129888f, -0.597205281f, 0.309117377f });
 

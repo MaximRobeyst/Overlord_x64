@@ -25,6 +25,13 @@ bool MainMenuScene::PostProcessing()
 
 void MainMenuScene::Initialize()
 {
+
+#ifdef _DEBUG
+	m_SceneContext.settings.enableOnGUI = true;
+#else
+	m_SceneContext.settings.showInfoOverlay = false;
+#endif // _DEBUG
+
 	SoundManager::Get()->GetSystem()->createStream("Resources/Audio/Crash_Theme.wav", FMOD_LOOP_NORMAL, nullptr, &m_pTheme);
 	SoundManager::Get()->GetSystem()->playSound(m_pTheme, nullptr, false, nullptr);
 

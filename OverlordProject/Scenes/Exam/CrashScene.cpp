@@ -26,7 +26,15 @@ CrashScene::~CrashScene()
 void CrashScene::Initialize()
 {
 
+#ifdef _DEBUG
 	m_SceneContext.settings.enableOnGUI = true;
+#else
+	m_SceneContext.settings.showInfoOverlay = false;
+	m_SceneContext.settings.drawGrid = false;
+	m_SceneContext.settings.drawPhysXDebug = false;
+	m_SceneContext.settings.drawUserDebug = false;
+#endif // _DEBUG
+
 
 	const auto pDefaultMaterial = PxGetPhysics().createMaterial(0.5f, 0.5f, 0.5f);
 
