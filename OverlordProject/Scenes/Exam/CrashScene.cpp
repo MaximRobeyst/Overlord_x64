@@ -17,6 +17,7 @@
 #include <Materials/Skybox.h>
 #include <Materials/Post/CRTEffect.h>
 #include <Materials\/Post/PostBlur.h>
+#include <Scenes\Exam\MainMenuScene.h>
 
 CrashScene::~CrashScene()
 {
@@ -25,6 +26,8 @@ CrashScene::~CrashScene()
 void CrashScene::Initialize()
 {
 	m_SceneContext.settings.enableOnGUI = true;
+
+	const auto pDefaultMaterial = PxGetPhysics().createMaterial(0.5f, 0.5f, 0.5f);
 
 	//auto pEffect = MaterialManager::Get()->CreateMaterial<CRTEffect>();
 	//AddPostProcessingEffect(pEffect);
@@ -38,21 +41,11 @@ void CrashScene::Initialize()
 	SoundManager::Get()->GetSystem()->playSound(m_pTheme, nullptr, false, nullptr);
 
 	//Ground Plane
-	const auto pDefaultMaterial = PxGetPhysics().createMaterial(0.5f, 0.5f, 0.5f);
 	//GameSceneExt::CreatePhysXGroundPlane(*this, pDefaultMaterial);
 
 
 	//Character
-	CrashDesc characterDesc{ pDefaultMaterial, 0.25f, 1.0f };
-	characterDesc.actionId_MoveForward = CharacterMoveForward;
-	characterDesc.actionId_MoveBackward = CharacterMoveBackward;
-	characterDesc.actionId_MoveLeft = CharacterMoveLeft;
-	characterDesc.actionId_MoveRight = CharacterMoveRight;
-	characterDesc.actionId_Jump = CharacterJump;
-	characterDesc.actionId_Attack = CharacterAttack;
-
-	m_pCrash = AddChild(new Crash(characterDesc));
-	m_pCrash->GetTransform()->Translate(0.f, 6.f, 0.f);
+	SpawnPlayer();
 
 
 	m_pCamera = AddChild( 
@@ -60,7 +53,6 @@ void CrashScene::Initialize()
 
 	auto cameraComponent = m_pCamera->GetComponent<CameraComponent>();
 	cameraComponent->SetActive(true); //Uncomment to make this camera the active camera
-
 	m_pCrates.push_back(new Crate(XMFLOAT3{ -1.0f, 0.f, 2.0f }));
 	AddChild(m_pCrates.back());
 
@@ -73,8 +65,6 @@ void CrashScene::Initialize()
 	AddChild(m_pCrates.back());
 	m_pCrates.push_back(new Crate(XMFLOAT3{ 1.0f, -3.f, 60.f }, Crate::CrateType::Defaut_Crate, 9));
 	AddChild(m_pCrates.back());
-	//m_pCrates.push_back(new Crate(XMFLOAT3{ 1.0f, 0.0f, 60.f }, Crate::CrateType::Defaut_Crate, 9));
-	//AddChild(m_pCrates.back());
 	m_pCrates.push_back(new Crate(XMFLOAT3{ -2.75f, -0.75f, 67.5f }, Crate::CrateType::Defaut_Crate, 1));
 	AddChild(m_pCrates.back());
 	m_pCrates.push_back(new Crate(XMFLOAT3{ -.25f, 0.f, 102.5f }, Crate::CrateType::Defaut_Crate, 1));
@@ -238,6 +228,7 @@ void CrashScene::Update()
 	}
 
 	m_SceneContext.pLights->GetDirectionalLight().position.z = m_LightPosition.z + m_pCrash->GetTransform()->GetPosition().z;
+
 }
 
 void CrashScene::PostDraw()
@@ -321,6 +312,22 @@ void CrashScene::OnGUI()
 	DebugRenderer::DrawLine(lightPosition, targetPosition, XMFLOAT4{ Colors::Green });
 }
 
+void CrashScene::OnSceneActivated()
+{
+	if (MainMenuScene::PostProcessing())
+	{
+		auto pBlur = MaterialManager::Get()->CreateMaterial<PostBlur>();
+		auto pCRTEffect = MaterialManager::Get()->CreateMaterial<CRTEffect>();
+
+		AddPostProcessingEffect(pCRTEffect);
+		AddPostProcessingEffect(pBlur);
+	}
+	else
+	{
+		ClearPostProcessing();
+	}
+}
+
 void CrashScene::Killzone(GameObject*, GameObject* pOtherObject, PxTriggerAction action)
 {
 	if (pOtherObject->GetTag() == L"Player" && action == PxTriggerAction::ENTER)
@@ -328,6 +335,22 @@ void CrashScene::Killzone(GameObject*, GameObject* pOtherObject, PxTriggerAction
 		m_pCrash->PlayerDeath();
 		m_pCamera->ResetCamera();
 	}
+}
+
+void CrashScene::SpawnPlayer()
+{
+	const auto pDefaultMaterial = PxGetPhysics().createMaterial(0.5f, 0.5f, 0.5f);
+
+	CrashDesc characterDesc{ pDefaultMaterial, 0.25f, 1.0f };
+	characterDesc.actionId_MoveForward = CharacterMoveForward;
+	characterDesc.actionId_MoveBackward = CharacterMoveBackward;
+	characterDesc.actionId_MoveLeft = CharacterMoveLeft;
+	characterDesc.actionId_MoveRight = CharacterMoveRight;
+	characterDesc.actionId_Jump = CharacterJump;
+	characterDesc.actionId_Attack = CharacterAttack;
+
+	m_pCrash = AddChild(new Crash(characterDesc));
+	m_pCrash->GetTransform()->Translate(0.f, 6.f, 0.f);
 }
 
 void CrashScene::GenerateMenu()
@@ -360,8 +383,7 @@ void CrashScene::GenerateMenu()
 	);
 	pButton->SetOnClickFunction([&]()
 		{
-			m_Paused = false;
-			m_SceneContext.pGameTime->Start();
+			SceneManager::Get()->SetActiveGameScene(L"Restart");
 		});
 
 	pButton = m_pMenu->AddChild(new Button(

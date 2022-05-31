@@ -65,6 +65,7 @@
 #include"Scenes/Exam/CrashScene.h"
 #include "Scenes/Exam/GameOverScene.h"
 #include "Scenes/Exam/YouWinScene.h"
+#include "Scenes\Exam\RestartScene.h"
 #endif
 
 #ifdef MILESTONE_1
@@ -152,6 +153,7 @@ void MainGame::Initialize()
 	SceneManager::Get()->AddGameScene(new CrashScene());
 	SceneManager::Get()->AddGameScene(new GameOverScene());
 	SceneManager::Get()->AddGameScene(new YouWinScene());
+	SceneManager::Get()->AddGameScene(new RestartScene());
 #endif // Exam
 
 

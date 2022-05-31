@@ -75,10 +75,6 @@ void PathCamera::DrawImGui()
 			{
 				m_Path[i].rotation = XMFLOAT3{ rotation[0], rotation[1] , rotation[2] };
 			}
-			if (ImGui::Button("InsertAfter"))
-			{
-				m_Path.insert(m_Path.begin() + i, m_Path[i]);
-			}
 
 			ImGui::Spacing();
 		}
@@ -90,6 +86,11 @@ void PathCamera::DrawImGui()
 		if (ImGui::Button("Remove Point", ImVec2{ 100.0f, 20.0f }))
 		{
 			m_Path.pop_back();
+		}
+
+		if (ImGui::Button("Set index 1", ImVec2{ 100.0f, 20.0f }))
+		{
+			m_CurrentIndex = 1;
 		}
 	}
 

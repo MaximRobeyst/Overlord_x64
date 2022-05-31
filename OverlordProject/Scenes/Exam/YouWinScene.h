@@ -13,6 +13,8 @@ protected:
 	void Initialize() override;
 	void Draw() override;
 
+	void OnSceneActivated() override;
+
 private:
 	SpriteFont* m_pFont;
 	GameObject* m_pMenu;

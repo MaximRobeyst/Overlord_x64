@@ -35,6 +35,8 @@ public:
 	void RemovePostProcessingEffect(PostProcessingMaterial* pMaterial);
 	void RemovePostProcessingEffect(UINT materialId);
 
+	void ClearPostProcessing();
+
 	PhysxProxy* GetPhysxProxy() const { return m_pPhysxProxy; }
 	void SetActiveCamera(CameraComponent* pCameraComponent);
 

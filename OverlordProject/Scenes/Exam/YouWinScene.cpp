@@ -6,9 +6,16 @@
 #include <Materials\Shadow\DiffuseMaterial_Shadow.h>
 #include <Materials\ColorMaterial.h>
 #include <Materials\Skybox.h>
+#include <Scenes\Exam\MainMenuScene.h>
+
+#include <Materials\Post\CRTEffect.h>
+#include <Materials\Post\PostBlur.h>
+
+#include <Scenes\Exam\CrashScene.h>
 
 void YouWinScene::Initialize()
 {
+
 	m_pFont = ContentManager::Load<SpriteFont>(L"SpriteFonts/CrashALike_64.fnt");
 
 	m_SceneContext.pLights->SetDirectionalLight(m_LightPosition, { 0.740129888f, -0.597205281f, 0.309117377f });
@@ -88,7 +95,12 @@ void YouWinScene::Initialize()
 	);
 	pButton->SetOnClickFunction([&]()
 		{
-			m_SceneContext.pGameTime->Start();
+			auto sceneManager = SceneManager::Get();
+
+			auto pScene = SceneManager::Get()->GetScene(L"Crash bandicoot");
+			sceneManager->RemoveGameScene(pScene, true);
+			sceneManager->AddGameScene(new CrashScene());
+			sceneManager->SetActiveGameScene(L"Crash bandicoot");
 		});
 
 	pButton = AddChild(new Button(
@@ -118,7 +130,25 @@ void YouWinScene::Initialize()
 	auto pSkyboxModel = pSkybox->AddComponent<ModelComponent>(new ModelComponent(L"Models/Cube.ovm"));
 	auto pSkyboxMat = MaterialManager::Get()->CreateMaterial<Skybox>();
 	pSkyboxModel->SetMaterial(pSkyboxMat);
+
+
 }
+void YouWinScene::OnSceneActivated()
+{
+	if (MainMenuScene::PostProcessing())
+	{
+		auto pBlur = MaterialManager::Get()->CreateMaterial<PostBlur>();
+		auto pCRTEffect = MaterialManager::Get()->CreateMaterial<CRTEffect>();
+
+		AddPostProcessingEffect(pCRTEffect);
+		AddPostProcessingEffect(pBlur);
+	}
+	else
+	{
+		ClearPostProcessing();
+	}
+}
+
 
 void YouWinScene::Draw()
 {

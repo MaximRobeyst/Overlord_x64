@@ -94,6 +94,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Materials\Post\CRTEffect.cpp" />
+    <ClCompile Include="Scenes\Exam\RestartScene.cpp" />
     <ClCompile Include="Scenes\Exam\GameOverScene.cpp" />
     <ClCompile Include="Prefabs\ExamPrefabs\Button.cpp" />
     <ClCompile Include="Scenes\Exam\MainMenuScene.cpp" />
@@ -166,6 +167,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Materials\Post\CRTEffect.h" />
+    <ClInclude Include="Scenes\Exam\RestartScene.h" />
     <ClInclude Include="Scenes\Exam\GameOverScene.h" />
     <ClInclude Include="Prefabs\ExamPrefabs\Button.h" />
     <ClInclude Include="Scenes\Exam\MainMenuScene.h" />

@@ -4,12 +4,21 @@
 #include <Materials\ColorMaterial.h>
 #include <Materials\Shadow\DiffuseMaterial_Shadow.h>
 #include <Materials\DiffuseMaterial_Skinned.h>
+#include <Materials\Post\CRTEffect.h>
+#include <Materials\Post\PostBlur.h>
 
 #include "Prefabs\ExamPrefabs\Button.h"
 #include <Materials\Skybox.h>
 
+bool MainMenuScene::m_PostProcessingOn{false};
+
 MainMenuScene::~MainMenuScene()
 {
+}
+
+bool MainMenuScene::PostProcessing()
+{
+	return m_PostProcessingOn;
 }
 
 void MainMenuScene::Initialize()
@@ -95,9 +104,28 @@ void MainMenuScene::Initialize()
 	auto pButton = AddChild(new Button(L"Start", XMFLOAT2{ 250.f, 410.f }, XMFLOAT4{ Colors::Orange }, XMFLOAT2{ 150.f, 50.f }));
 	pButton->SetOnClickFunction([]() 
 		{
-			SceneManager::Get()->NextScene();
+			SceneManager::Get()->SetActiveGameScene(L"Crash bandicoot");
 		});
 	pButton = AddChild(new Button(L"Options", XMFLOAT2{ 250.f, 460.f }, XMFLOAT4{ Colors::Orange }, XMFLOAT2{ 200.f, 50.f }));
+	pButton->SetOnClickFunction([&]() {
+		m_PostProcessingOn = !m_PostProcessingOn;
+		m_PostProcessingState = m_PostProcessingOn ? L"On" : L"Off";
+
+		if (m_PostProcessingOn)
+		{
+			m_pPostBlur = MaterialManager::Get()->CreateMaterial<PostBlur>();
+			m_pBloom = MaterialManager::Get()->CreateMaterial<CRTEffect>();
+
+			AddPostProcessingEffect(m_pBloom);
+			AddPostProcessingEffect(m_pPostBlur);
+		}
+		else
+		{
+			RemovePostProcessingEffect(m_pPostBlur);
+			RemovePostProcessingEffect(m_pBloom);
+		}
+
+		});
 	pButton = AddChild(new Button(L"Quit", XMFLOAT2{ 250.f, 510.f }, XMFLOAT4{ Colors::Orange }, XMFLOAT2{ 125.f, 50.f }));
 	pButton->SetOnClickFunction([&]()
 		{
@@ -119,6 +147,8 @@ void MainMenuScene::Update()
 void MainMenuScene::Draw()
 {
 	XMFLOAT2 offset{ 200.f, 400.f };
+
+	TextRenderer::Get()->DrawText(m_pFont, m_PostProcessingState, XMFLOAT2{ 475.f, 460.f }, m_PostProcessingState == L"On" ? XMFLOAT4{ Colors::Green } : XMFLOAT4{ Colors::Red });
 
 	//TextRenderer::Get()->DrawText(m_pFont, L"Start", XMFLOAT2{ offset.x + 50.f, offset.y + 10.f }, XMFLOAT4{ Colors::Orange });
 	//TextRenderer::Get()->DrawText(m_pFont, L"Options", XMFLOAT2{	offset.x + 50.f, offset.y + 60.f }, XMFLOAT4{ Colors::Orange });

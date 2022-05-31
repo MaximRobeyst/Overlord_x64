@@ -389,6 +389,11 @@ void GameScene::RemovePostProcessingEffect(PostProcessingMaterial* pMaterial)
 	if (std::ranges::find(m_PostProcessingMaterials, pMaterial) != m_PostProcessingMaterials.end())
 		m_PostProcessingMaterials.erase(std::ranges::remove(m_PostProcessingMaterials, pMaterial).begin());
 }
+
+void GameScene::ClearPostProcessing()
+{
+	m_PostProcessingMaterials.clear();
+}
  
 void GameScene::SetActiveCamera(CameraComponent* pCameraComponent)
 {

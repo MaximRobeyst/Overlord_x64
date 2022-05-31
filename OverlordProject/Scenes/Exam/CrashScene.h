@@ -14,13 +14,20 @@ public:
 	CrashScene& operator=(const CrashScene& other) = delete;
 	CrashScene& operator=(CrashScene&& other) noexcept = delete;
 
+	void Restart();
+
 protected:
 	void Initialize() override;
 	void Update() override;
 	void PostDraw() override;
 	void OnGUI() override;
+
+	void OnSceneActivated() override;
+
 private:
 	void Killzone(GameObject* /*pTriggerObject*/, GameObject* pOtherObject, PxTriggerAction action);
+
+	void SpawnPlayer();
 
 	void GenerateMenu();
 	void DestoyMenu();
@@ -39,6 +46,7 @@ private:
 	float m_ShadowMapScale{ 0.1f };
 
 	bool m_Paused{ false };
+	bool m_Restart{ false };
 
 	Crash* m_pCrash{nullptr};
 	PathCamera* m_pCamera{nullptr};

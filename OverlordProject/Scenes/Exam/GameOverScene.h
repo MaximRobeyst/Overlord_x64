@@ -16,11 +16,15 @@ protected:
 	void Draw() override;
 	void OnGUI() override;
 
+	void OnSceneActivated() override;
+
 private:
 	GameObject* m_pStartButton{ nullptr };
 	GameObject* m_pHeader{ nullptr };
 
 	SpriteFont* m_pFont{};
 	FixedCamera* m_pFixedCamera{ nullptr };
+
+	XMFLOAT3 m_LightPosition{ -96.f,66.1346436f,-41.1850471f + 100.f };
 };
 
