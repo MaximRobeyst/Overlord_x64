@@ -15,7 +15,6 @@
 
 void YouWinScene::Initialize()
 {
-
 	m_pFont = ContentManager::Load<SpriteFont>(L"SpriteFonts/CrashALike_64.fnt");
 
 	m_SceneContext.pLights->SetDirectionalLight(m_LightPosition, { 0.740129888f, -0.597205281f, 0.309117377f });

@@ -26,6 +26,8 @@ private:
 	GameObject* m_pStartButton{ nullptr };
 	GameObject* m_pHeader{ nullptr };
 
+	GameObject* m_pControls{ nullptr };
+
 	SpriteFont* m_pFont{};
 	FixedCamera* m_pFixedCamera{ nullptr };
 
@@ -34,5 +36,7 @@ private:
 
 	PostBlur* m_pPostBlur{};
 	CRTEffect* m_pBloom{};
+
+	FMOD::Sound* m_pTheme{};
 };
 

@@ -10,6 +10,8 @@
 #include "Prefabs\ExamPrefabs\Button.h"
 #include <Materials\Skybox.h>
 
+#include <Scenes\Exam\CrashScene.h>
+
 bool MainMenuScene::m_PostProcessingOn{false};
 
 MainMenuScene::~MainMenuScene()
@@ -23,6 +25,9 @@ bool MainMenuScene::PostProcessing()
 
 void MainMenuScene::Initialize()
 {
+	SoundManager::Get()->GetSystem()->createStream("Resources/Audio/Crash_Theme.wav", FMOD_LOOP_NORMAL, nullptr, &m_pTheme);
+	SoundManager::Get()->GetSystem()->playSound(m_pTheme, nullptr, false, nullptr);
+
 	m_SceneContext.settings.drawGrid = false;
 	m_SceneContext.settings.enableOnGUI = true;
 
@@ -104,7 +109,12 @@ void MainMenuScene::Initialize()
 	auto pButton = AddChild(new Button(L"Start", XMFLOAT2{ 250.f, 410.f }, XMFLOAT4{ Colors::Orange }, XMFLOAT2{ 150.f, 50.f }));
 	pButton->SetOnClickFunction([]() 
 		{
-			SceneManager::Get()->SetActiveGameScene(L"Crash bandicoot");
+			auto sceneManager = SceneManager::Get();
+
+			auto pScene = SceneManager::Get()->GetScene(L"Crash bandicoot");
+			sceneManager->RemoveGameScene(pScene, true);
+			sceneManager->AddGameScene(new CrashScene());
+			sceneManager->SetActiveGameScene(L"Crash bandicoot");
 		});
 	pButton = AddChild(new Button(L"Options", XMFLOAT2{ 250.f, 460.f }, XMFLOAT4{ Colors::Orange }, XMFLOAT2{ 200.f, 50.f }));
 	pButton->SetOnClickFunction([&]() {
@@ -142,6 +152,13 @@ void MainMenuScene::Initialize()
 
 void MainMenuScene::Update()
 {
+	if (m_pControls == nullptr)
+	{
+		m_pControls = AddChild(new GameObject());
+		m_pControls->AddComponent<SpriteComponent>(new SpriteComponent(L"Textures/Controls.png", XMFLOAT2{ 1.f, 1.f }, XMFLOAT4{ Colors::White }));
+		m_pControls->GetTransform()->Scale(0.15f);
+		m_pControls->GetTransform()->Translate(0.f, 0.f, 0.f);
+	}
 }
 
 void MainMenuScene::Draw()

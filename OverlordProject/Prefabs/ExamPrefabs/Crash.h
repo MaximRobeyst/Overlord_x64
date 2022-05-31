@@ -87,7 +87,8 @@ private:
 	ModelAnimator* m_pAnimator{};
 
 	SpriteFont* m_pFont{};
-	GameObject* m_pSprite{};
+	GameObject* m_pLifeSprite{};
+	GameObject* m_pWumpaSprite{};
 	GameObject* m_pModelObject{};
 
 	FMOD::Sound* m_pAttackSound{};

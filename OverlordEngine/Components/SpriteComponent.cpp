@@ -41,6 +41,6 @@ void SpriteComponent::Draw(const SceneContext& sceneContext)
 	float rotationz = MathHelper::QuaternionToEuler(transform->GetRotation()).z;
 
 	SpriteRenderer::Get()->AppendSprite(m_pTexture, position, XMFLOAT4{ Colors::White }, m_Pivot, scale, rotationz, 0.9f);
-	SpriteRenderer::Get()->Draw(sceneContext);
+	//SpriteRenderer::Get()->Draw(sceneContext);
 
 }

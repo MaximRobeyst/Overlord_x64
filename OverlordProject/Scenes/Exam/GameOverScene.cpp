@@ -121,6 +121,7 @@ void GameOverScene::Update()
 
 void GameOverScene::Draw()
 {
+	TextRenderer::Get()->DrawText(m_pFont, L"Game Over!", XMFLOAT2{ (m_SceneContext.windowWidth / 2.f) - 200.f, 50.f}, XMFLOAT4{Colors::Orange});
 }
 
 void GameOverScene::OnGUI()

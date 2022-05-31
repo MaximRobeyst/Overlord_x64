@@ -25,6 +25,7 @@ CrashScene::~CrashScene()
 
 void CrashScene::Initialize()
 {
+
 	m_SceneContext.settings.enableOnGUI = true;
 
 	const auto pDefaultMaterial = PxGetPhysics().createMaterial(0.5f, 0.5f, 0.5f);
@@ -36,9 +37,6 @@ void CrashScene::Initialize()
 	//AddPostProcessingEffect(pBlurEffect);
 
 	m_SceneContext.pLights->SetDirectionalLight( m_LightPosition, {0.740129888f, -0.597205281f, 0.309117377f});
-
-	//SoundManager::Get()->GetSystem()->createStream("Resources/Audio/Crash_Theme.wav", FMOD_LOOP_NORMAL, nullptr, &m_pTheme);
-	SoundManager::Get()->GetSystem()->playSound(m_pTheme, nullptr, false, nullptr);
 
 	//Ground Plane
 	//GameSceneExt::CreatePhysXGroundPlane(*this, pDefaultMaterial);

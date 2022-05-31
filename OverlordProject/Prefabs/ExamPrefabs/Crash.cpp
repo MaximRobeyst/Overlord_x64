@@ -99,7 +99,7 @@ void Crash::Jump(const SceneContext& sceneContext)
 	m_Grounded = false;
 }
 
-void Crash::Initialize(const SceneContext& /*sceneContext*/)
+void Crash::Initialize(const SceneContext& sceneContext)
 {
 	SetTag(L"Player");
 	//Controller
@@ -122,13 +122,14 @@ void Crash::Initialize(const SceneContext& /*sceneContext*/)
 	m_pAnimator->SetAnimation(L"Idle");
 	m_pAnimator->Play();
 
-	//m_pSprite = AddChild(new GameObject());
-	//m_pSprite->AddComponent(new SpriteComponent(L"Textures/LifeSprite.png", { 0.0f, 0.0f }));
-	//m_pSprite->GetTransform()->Translate(sceneContext.windowWidth - 175.f, 50.f, 0.f);
+	m_pLifeSprite = AddChild(new GameObject());
+	m_pLifeSprite->AddComponent(new SpriteComponent(L"Textures/LifeSprite.png", { 0.0f, 0.0f }));
+	m_pLifeSprite->GetTransform()->Translate(sceneContext.windowWidth - 175.f, 50.f, 0.f);
 
-	//m_pSprite = AddChild(new GameObject());
-	//m_pSprite->AddComponent(new SpriteComponent(L"Textures/WumpaFruit.png", { 0.0f, 0.0f }));
-	//m_pSprite->GetTransform()->Translate(sceneContext.windowWidth - 175.f, 50.f, 0.f);
+	m_pWumpaSprite = AddChild(new GameObject());
+	m_pWumpaSprite->AddComponent(new SpriteComponent(L"Textures/WumpaFruit.png", { 1.0f, 0.0f }));
+	m_pWumpaSprite->GetTransform()->Translate(0.f, 50.f, 0.f);
+	m_pWumpaSprite->GetTransform()->Scale(0.075f);
 	
 
 	SetCheckpoint(GetTransform()->GetPosition());
@@ -297,7 +298,7 @@ void Crash::Update(const SceneContext& sceneContext)
 
 void Crash::Draw(const SceneContext& sceneContext)
 {
-	TextRenderer::Get()->DrawText(m_pFont, std::to_wstring(m_WumpaNumber), XMFLOAT2{ 50.f, 10.f }, XMFLOAT4{ Colors::Orange });
+	TextRenderer::Get()->DrawText(m_pFont, std::to_wstring(m_WumpaNumber), XMFLOAT2{ 100.f, 10.f }, XMFLOAT4{ Colors::Orange });
 	TextRenderer::Get()->DrawText(m_pFont, std::to_wstring(m_Lives), XMFLOAT2{ sceneContext.windowWidth - 100.f, 10.f }, XMFLOAT4{ Colors::Orange });
 }
 
