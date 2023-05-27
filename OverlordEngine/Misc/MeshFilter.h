@@ -146,13 +146,21 @@ public:
 	bool HasAnimations() const { return m_HasAnimations; }
 
 	int GetVertexBufferId(UINT inputLayoutId, UINT8 subMeshId) const;
-	void BuildVertexBuffer(const SceneContext& gameContext, UINT inputLayoutID, UINT inputLayoutSize, const std::vector<ILDescription>& inputLayoutDescriptions);
+
+	void BuildVertexBuffer(const SceneContext& sceneContext, UINT inputLayoutID, UINT inputLayoutSize, const std::vector<ILDescription>& inputLayoutDescriptions);
+
 	void BuildVertexBuffer(const SceneContext& sceneContext, BaseMaterial* pMaterial);
+	void BuildVertexBuffer(const D3D11Context& d3dContext, BaseMaterial* pMaterial);
+
 	void BuildIndexBuffer(const SceneContext& sceneContext);
+	void BuildIndexBuffer(const D3D11Context& d3dContext);
 
 	const VertexBufferData& GetVertexBufferData(const SceneContext& sceneContext, BaseMaterial* pMaterial, UINT8 subMeshId = 0);
 	const VertexBufferData& GetVertexBufferData(UINT inputLayoutId, UINT8 subMeshId = 0) const;
 	ID3D11Buffer* GetIndexBuffer(UINT8 subMeshId = 0) const;
+
+	UINT GetIndexCount(UINT8 subMeshId = 0) const { return m_Meshes[subMeshId].indexCount; }
+	UINT GetVertexCount(UINT8 subMeshId = 0) const { return m_Meshes[subMeshId].vertexCount; }
 
 private:
 	friend class MeshFilterLoader; //TODO: Resolve Friend Classes
@@ -160,7 +168,10 @@ private:
 	friend class ModelAnimator;
 
 	void BuildVertexBuffer(const SceneContext& sceneContext, BaseMaterial* pMaterial, UINT8 subMeshId);
+	void BuildVertexBuffer(const D3D11Context& d3dContext, BaseMaterial* pMaterial, UINT8 subMeshId);
+
 	void BuildVertexBuffer(const SceneContext& sceneContext, UINT inputLayoutID, UINT inputLayoutSize, const std::vector<ILDescription>& inputLayoutDescriptions, UINT8 subMeshId);
+	void BuildVertexBuffer(const D3D11Context& d3dContext, UINT inputLayoutID, UINT inputLayoutSize, const std::vector<ILDescription>& inputLayoutDescriptions, UINT8 subMeshId);
 
 	std::wstring m_MeshName{};
 	std::vector<SubMeshFilter> m_Meshes{};

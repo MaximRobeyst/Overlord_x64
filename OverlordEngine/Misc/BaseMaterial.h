@@ -21,6 +21,7 @@ public:
 
 	ID3DX11EffectVariable* GetVariable(const std::wstring& varName) const;
 
+	void SetVariable(const std::wstring& varName, const void* pData, uint32_t byteOffset, uint32_t byteCount) const;
 	void SetVariable_Scalar(const std::wstring& varName, float scalar) const;
 	void SetVariable_Scalar(const std::wstring& varName, bool scalar) const;
 	void SetVariable_Scalar(const std::wstring& varName, int scalar) const;

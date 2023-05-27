@@ -54,6 +54,9 @@
     <ClCompile Include="Misc\PostProcessingMaterial.cpp" />
     <ClCompile Include="Misc\ShadowMapMaterial.cpp" />
     <ClCompile Include="Managers\LightManager.cpp" />
+    <ClCompile Include="Deferred\DeferredLightRenderer.cpp" />
+    <ClCompile Include="Deferred\DeferredRenderer.cpp" />
+    <ClCompile Include="Deferred\QuadRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -119,5 +122,8 @@
     <ClInclude Include="Misc\ParticleMaterial.h" />
     <ClInclude Include="Misc\ShadowMapMaterial.h" />
     <ClInclude Include="Managers\LightManager.h" />
+    <ClInclude Include="Deferred\DeferredLightRenderer.h" />
+    <ClInclude Include="Deferred\DeferredRenderer.h" />
+    <ClInclude Include="Deferred\QuadRenderer.h" />
   </ItemGroup>
 </Project>

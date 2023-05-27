@@ -215,9 +215,9 @@ HRESULT RenderTarget::CreateDepth()
 	}
 	else
 	{
-		SafeRelease(m_pColor);
-		SafeRelease(m_pRenderTargetView);
-		SafeRelease(m_pColorShaderResourceView);
+		SafeRelease(m_pDepth);
+		SafeRelease(m_pDepthStencilView);
+		SafeRelease(m_pDepthShaderResourceView);
 	}
 
 	return S_OK;

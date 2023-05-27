@@ -25,6 +25,10 @@ OverlordGame::~OverlordGame()
 	SpriteRenderer::Destroy();
 	TextRenderer::Destroy();
 	ShadowMapRenderer::Destroy();
+
+	DeferredRenderer::Destroy();
+	QuadRenderer::Destroy();
+
 	Logger::Release(); //TODO > Singleton
 
 	//ImGui Cleanup
@@ -234,6 +238,10 @@ HRESULT OverlordGame::InitializeDirectX()
 
 	RENDERTARGET_DESC rtDesc;
 	rtDesc.pColor = pBackbuffer;
+	rtDesc.enableColorSRV = true;
+	rtDesc.enableDepthSRV = true;
+	rtDesc.depthFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
+
 	HANDLE_ERROR(m_pDefaultRenderTarget->Create(rtDesc))
 
 	//Set Default Rendertarget 
@@ -328,6 +336,9 @@ HRESULT OverlordGame::InitializeGame()
 	SpriteRenderer::Create(m_GameContext);
 	TextRenderer::Create(m_GameContext);
 	ShadowMapRenderer::Create(m_GameContext);
+
+	DeferredRenderer::Create(m_GameContext);
+	QuadRenderer::Create(m_GameContext);
 
 	//***************
 	//GAME INITIALIZE
@@ -486,7 +497,6 @@ void OverlordGame::SetRenderTarget(RenderTarget* renderTarget)
 {
 	if(renderTarget == nullptr)
 		renderTarget = m_pDefaultRenderTarget;
-
 
 	const auto pRTV = renderTarget->GetRenderTargetView();
 	m_GameContext.d3dContext.pDeviceContext->OMSetRenderTargets(1, &pRTV, renderTarget->GetDepthStencilView());

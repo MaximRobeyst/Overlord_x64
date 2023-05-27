@@ -141,9 +141,9 @@ void GameScene::RootUpdate()
 	Update();
 
 	//Root-Scene Update
-	for (int i = 0; i < m_pChildren.size(); ++i)
+	for (const auto pChild : m_pChildren)
 	{
-		m_pChildren[i]->RootUpdate(m_SceneContext);
+		pChild->RootUpdate(m_SceneContext);
 	}
 
 	m_pPhysxProxy->Update(m_SceneContext);
@@ -154,18 +154,17 @@ void GameScene::RootDraw()
 #pragma region SHADOW PASS
 	//SHADOW_PASS
 	//+++++++++++
-	//1. BEGIN > ShadowMapRenderer::Begin (Initiate the ShadowPass)
-	ShadowMapRenderer::Get()->Begin(m_SceneContext);
-	//2. DRAW_LOOP > For every GameObject (m_pChildren), call GameObject::RootShadowMapDraw
-	for (const auto pChild : m_pChildren)
-	{
-		pChild->RootShadowMapDraw(m_SceneContext);
-	}
-	//3. END > ShadowMapRenderer::End (Terminate the ShadowPass)
-	ShadowMapRenderer::Get()->End(m_SceneContext);
+	//TODO_W8(L"Implement Shadow Pass")
+		//1. BEGIN > ShadowMapRenderer::Begin (Initiate the ShadowPass)
+		//2. DRAW_LOOP > For every GameObject (m_pChildren), call GameObject::RootShadowMapDraw
+		//3. END > ShadowMapRenderer::End (Terminate the ShadowPass)
 #pragma endregion
 
 #pragma region USER PASS
+
+	//DEFERRED BEGIN
+	DeferredRenderer::Get()->Begin(m_SceneContext);
+
 	//USER_PASS
 	//+++++++++
 	//User-Scene Draw
@@ -176,6 +175,9 @@ void GameScene::RootDraw()
 	{
 		pChild->RootDraw(m_SceneContext);
 	}
+
+	//DEFERRED END
+	DeferredRenderer::Get()->End(m_SceneContext);
 
 	//SpriteRenderer Draw
 	SpriteRenderer::Get()->Draw(m_SceneContext);
@@ -201,36 +203,37 @@ void GameScene::RootDraw()
 	//POST-PROCESSING_PASS
 	//++++++++++++++++++++
 
+	//TODO_W10(L"Add Post-Processing PASS logic")
+
 	//No need to swap RenderTargets is there aren't any PP Effects...
 	if (m_PostProcessingMaterials.size() > 0)
 	{
 		//1. [PREV_RT & INIT_RT] Retrieve the current RenderTarget (OverlordGame::GetRenderTarget, every scene has access to the OverlordGame > m_pGame)
-		const auto pInitRenderTarget = m_pGame->GetRenderTarget();
-		auto pPrevRenderTarget = pInitRenderTarget;
+		//const auto pInitRenderTarget = m_pGame->GetRenderTarget();
+		//auto pPrevRenderTarget = pInitRenderTarget;
 
 		//2. Iterate the vector of PostProcessingMaterials (m_PostProcessingMaterials)
 		//		For Each Material
 		//			- If the material is disabled, skip
 		//			- Call the Draw function, the Source RenderTarget is our PREV_RT
 		//			- After drawing the effect, we want to swap PREV_RT with output from material we just used to draw with
-		for (int i = 0; i < m_PostProcessingMaterials.size(); ++i)
-		{
-			if (!m_PostProcessingMaterials[i]->IsEnabled())
-				continue;
-
-			m_PostProcessingMaterials[i]->Draw(m_SceneContext, pPrevRenderTarget);
-			pPrevRenderTarget = m_PostProcessingMaterials[i]->GetOutput();
-		}
+		//for (int i = 0; i < m_PostProcessingMaterials.size(); ++i)
+		//{
+		//	if (!m_PostProcessingMaterials[i]->IsEnabled())
+		//		continue;
+		//
+		//	m_PostProcessingMaterials[i]->Draw(m_SceneContext, pPrevRenderTarget);
+		//	pPrevRenderTarget = m_PostProcessingMaterials[i]->GetOutput();
+		//}
 
 		//3. All Materials are applied after each other, time to draw the final result to the screen
 		//		- If PREV_RT is still equal to INIT_RT, do nothing (means no PP effect was applied, nothing has changed)
 		//		- Else, reset the RenderTarget of the game to default (OverlordGame::SetRenderTarget)
 		//		- Use SpriteRenderer::DrawImmediate to render the ShaderResourceView from PREV_RT to the screen
-		if (pPrevRenderTarget == pInitRenderTarget) return;
-		m_pGame->SetRenderTarget(nullptr);
-		
-		SpriteRenderer::Get()->DrawImmediate(m_SceneContext.d3dContext, pPrevRenderTarget->GetColorShaderResourceView(), XMFLOAT2{ m_SceneContext.windowWidth / 2, m_SceneContext.windowHeight / 2 }, XMFLOAT4{ Colors::White }, XMFLOAT2{ 0, 0 }, XMFLOAT2{0.5, 0.5});
-
+		//if (pPrevRenderTarget == pInitRenderTarget) return;
+		//m_pGame->SetRenderTarget(nullptr);
+		//
+		//SpriteRenderer::Get()->DrawImmediate(m_SceneContext.d3dContext, pPrevRenderTarget->GetColorShaderResourceView(), XMFLOAT2{ m_SceneContext.windowWidth / 2, m_SceneContext.windowHeight / 2 }, XMFLOAT4{ Colors::White }, XMFLOAT2{ 0, 0 }, XMFLOAT2{ 0.5, 0.5 });
 
 		//Done!
 	}

@@ -10,8 +10,7 @@
 //#define W8
 //#define W9
 //#define W10
-
-#define Exam
+#define W11 //Deferred Rendering
 
 /*MILESTONE Content*/
 //#define MILESTONE_1
@@ -21,8 +20,8 @@
 #pragma region Lab/Milestone Includes
 #ifdef W3
 #include "Scenes/Week 3/MinionScene.h"
-#include "Scenes/Week 3/ComponentTestScene.h"
-#include "Scenes/Week 3/PongScene.h"
+//#include "Scenes/Week 3/ComponentTestScene.h"
+//#include "Scenes/Week 3/PongScene.h"
 #endif
 
 #ifdef W4
@@ -60,12 +59,8 @@
 #include "Scenes/Week 10/PostProcessingScene.h"
 #endif
 
-#ifdef Exam
-#include "Scenes\Exam\MainMenuScene.h"
-#include"Scenes/Exam/CrashScene.h"
-#include "Scenes/Exam/GameOverScene.h"
-#include "Scenes/Exam/YouWinScene.h"
-#include "Scenes\Exam\RestartScene.h"
+#ifdef W11
+#include "Scenes/Week 11/DeferredRenderingScene.h"
 #endif
 
 #ifdef MILESTONE_1
@@ -99,8 +94,7 @@ void MainGame::OnGamePreparing(GameContext& gameContext)
 	//gameContext.windowWidth=... (default is 1280)
 	//gameContext.windowHeight=... (default is 720)
 
-	//gameContext.windowTitle = L"GP2 - Milestone 3 (2022) | (2DAE13) Doe John";
-	gameContext.windowTitle = L"GP2 - Exam Project (2022) | (2DAE06) Robeyst Maxim";
+	gameContext.windowTitle = L"GP2 - Deferred Rendering";
 }
 
 void MainGame::Initialize()
@@ -108,8 +102,8 @@ void MainGame::Initialize()
 
 #ifdef W3
 	SceneManager::Get()->AddGameScene(new MinionScene());
-	SceneManager::Get()->AddGameScene(new ComponentTestScene());
-	SceneManager::Get()->AddGameScene(new PongScene());
+	//SceneManager::Get()->AddGameScene(new ComponentTestScene());
+	//SceneManager::Get()->AddGameScene(new PongScene());
 #endif
 
 #ifdef W4
@@ -147,15 +141,9 @@ void MainGame::Initialize()
 	SceneManager::Get()->AddGameScene(new PostProcessingScene());
 #endif
 
-#ifdef Exam
-	//SceneManager::Get()->AddGameScene(new VertexAnimationScene());
-	SceneManager::Get()->AddGameScene(new MainMenuScene());
-	SceneManager::Get()->AddGameScene(new CrashScene());
-	SceneManager::Get()->AddGameScene(new GameOverScene());
-	SceneManager::Get()->AddGameScene(new YouWinScene());
-	SceneManager::Get()->AddGameScene(new RestartScene());
-#endif // Exam
-
+#ifdef W11
+	SceneManager::Get()->AddGameScene(new DeferredRenderingScene());
+#endif
 
 #ifdef MILESTONE_1
 	SceneManager::Get()->AddGameScene(new PongScene());

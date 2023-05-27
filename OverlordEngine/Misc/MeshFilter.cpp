@@ -16,6 +16,11 @@ MeshFilter::~MeshFilter()
 
 void MeshFilter::BuildIndexBuffer(const SceneContext& sceneContext)
 {
+	BuildIndexBuffer(sceneContext.d3dContext);
+}
+
+void MeshFilter::BuildIndexBuffer(const D3D11Context& d3dContext)
+{
 	for (auto& subMesh : m_Meshes)
 	{
 		if (subMesh.buffers.pIndexBuffer)
@@ -30,7 +35,7 @@ void MeshFilter::BuildIndexBuffer(const SceneContext& sceneContext)
 		D3D11_SUBRESOURCE_DATA initData{};
 		initData.pSysMem = subMesh.indices.data();
 
-		HANDLE_ERROR(sceneContext.d3dContext.pDevice->CreateBuffer(&bd, &initData, &subMesh.buffers.pIndexBuffer))
+		HANDLE_ERROR(d3dContext.pDevice->CreateBuffer(&bd, &initData, &subMesh.buffers.pIndexBuffer))
 	}
 }
 
@@ -57,9 +62,14 @@ void MeshFilter::BuildVertexBuffer(const SceneContext& sceneContext, UINT inputL
 
 void MeshFilter::BuildVertexBuffer(const SceneContext& sceneContext, UINT inputLayoutID, UINT inputLayoutSize, const std::vector<ILDescription>& inputLayoutDescriptions, UINT8 subMeshId)
 {
+	BuildVertexBuffer(sceneContext.d3dContext, inputLayoutID, inputLayoutSize, inputLayoutDescriptions, subMeshId);
+}
+
+void MeshFilter::BuildVertexBuffer(const D3D11Context& d3dContext, UINT inputLayoutID, UINT inputLayoutSize, const std::vector<ILDescription>& inputLayoutDescriptions, UINT8 subMeshId)
+{
 	ASSERT_IF_(subMeshId >= m_Meshes.size())
 
-	auto& subMesh = m_Meshes[subMeshId];
+		auto& subMesh = m_Meshes[subMeshId];
 
 	//Check if VertexBufferInfo already exists with requested InputLayout
 	if (GetVertexBufferId(inputLayoutID, subMeshId) >= 0)
@@ -140,22 +150,32 @@ void MeshFilter::BuildVertexBuffer(const SceneContext& sceneContext, UINT inputL
 	initData.pSysMem = data.pDataStart;
 
 	//create a ID3D10Buffer in graphics memory containing the vertex info
-	sceneContext.d3dContext.pDevice->CreateBuffer(&bd, &initData, &data.pVertexBuffer);
+	d3dContext.pDevice->CreateBuffer(&bd, &initData, &data.pVertexBuffer);
 
 	subMesh.buffers.vertexbuffers.push_back(data);
 }
 
 void MeshFilter::BuildVertexBuffer(const SceneContext& sceneContext, BaseMaterial* pMaterial, UINT8 subMeshId)
 {
+	BuildVertexBuffer(sceneContext.d3dContext, pMaterial, subMeshId);
+}
+
+void MeshFilter::BuildVertexBuffer(const D3D11Context& d3dContext, BaseMaterial* pMaterial, UINT8 subMeshId)
+{
 	auto& techiqueContext = pMaterial->GetTechniqueContext();
-	return BuildVertexBuffer(sceneContext, techiqueContext.inputLayoutID, techiqueContext.inputLayoutSize, techiqueContext.pInputLayoutDescriptions, subMeshId);
+	return BuildVertexBuffer(d3dContext, techiqueContext.inputLayoutID, techiqueContext.inputLayoutSize, techiqueContext.pInputLayoutDescriptions, subMeshId);
 }
 
 void MeshFilter::BuildVertexBuffer(const SceneContext& sceneContext, BaseMaterial* pMaterial)
 {
+	BuildVertexBuffer(sceneContext.d3dContext, pMaterial);
+}
+
+void MeshFilter::BuildVertexBuffer(const D3D11Context& d3dContext, BaseMaterial* pMaterial)
+{
 	for (auto i{ 0 }; i < m_Meshes.size(); ++i)
 	{
-		BuildVertexBuffer(sceneContext, pMaterial, static_cast<UINT8>(i));
+		BuildVertexBuffer(d3dContext, pMaterial, static_cast<UINT8>(i));
 	}
 }
 

@@ -52,6 +52,9 @@
     <ClCompile Include="Materials\Post\CRTEffect.cpp" />
     <ClCompile Include="Scenes\Exam\YouWinScene.cpp" />
     <ClCompile Include="Scenes\Exam\RestartScene.cpp" />
+    <ClCompile Include="Scenes\Week 11\DeferredRenderingScene.cpp" />
+    <ClCompile Include="Materials\BasicMaterial.cpp" />
+    <ClCompile Include="Materials\BasicMaterial_Deferred.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainGame.h" />
@@ -104,5 +107,8 @@
     <ClInclude Include="Materials\Post\CRTEffect.h" />
     <ClInclude Include="Scenes\Exam\YouWinScene.h" />
     <ClInclude Include="Scenes\Exam\RestartScene.h" />
+    <ClInclude Include="Scenes\Week 11\DeferredRenderingScene.h" />
+    <ClInclude Include="Materials\BasicMaterial.h" />
+    <ClInclude Include="Materials\BasicMaterial_Deferred.h" />
   </ItemGroup>
 </Project>

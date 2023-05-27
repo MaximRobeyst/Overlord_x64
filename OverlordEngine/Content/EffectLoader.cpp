@@ -25,7 +25,7 @@ ID3DX11Effect* EffectLoader::LoadContent(const ContentLoadInfo& loadInfo)
 
 	hr = D3DX11CompileEffectFromFile(assetPath.c_str(),
 		nullptr,
-		nullptr,
+		D3D_COMPILE_STANDARD_FILE_INCLUDE,
 		shaderFlags,
 		0,
 		m_GameContext.d3dContext.pDevice,

@@ -95,6 +95,17 @@ ID3DX11EffectVariable* BaseMaterial::GetVariable(const std::wstring& varName) co
 	return m_pEffect->GetVariableByIndex(variableLUT.at(variableHash));
 }
 
+void BaseMaterial::SetVariable(const std::wstring& varName, const void* pData, uint32_t byteOffset, uint32_t byteCount) const
+{
+	if (const auto pShaderVariable = GetVariable(varName))
+	{
+		HANDLE_ERROR(pShaderVariable->SetRawValue(pData, byteOffset, byteCount));
+		return;
+	}
+
+	Logger::LogWarning(L"Shader variable \'{}\' not found for \'{}\'", varName, GetEffectName());
+}
+
 void BaseMaterial::SetVariable_Scalar(const std::wstring& varName, float scalar) const
 {
 	if(const auto pShaderVariable = GetVariable(varName))
