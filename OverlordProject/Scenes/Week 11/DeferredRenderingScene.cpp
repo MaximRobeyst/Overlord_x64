@@ -102,7 +102,10 @@ void DeferredRenderingScene::Update()
 	pos.w = 1.0f;
 
 	m_SceneContext.pLights->GetLight(1).position = pos;
-	m_SceneContext.pLights->GetLight(1).intensity = MathHelper::randF(0.2f, 1.2f);
+	float average = (1.2f + 0.2f) / 2.0f;
+	float amplitude = (1.2f - 0.2f) / 2.0f;
+
+	m_SceneContext.pLights->GetLight(1).intensity = average + amplitude * sin(m_SceneContext.pGameTime->GetTotal());
 
 	if (m_FlashLightMode)
 	{
